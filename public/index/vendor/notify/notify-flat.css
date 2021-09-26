@@ -1,0 +1,97 @@
+.notify .note {
+  position: relative;
+  padding: 21px 20px;
+  background-color: #1273eb;
+  color: #ffffff;
+  border-radius: 4px;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition:all 0.5s ease-in-out;
+  -ms-transition:all 0.5s ease-in-out;
+}
+.notify .note.note-success {
+  background-color: #5dab18;
+}
+.notify .note.note-info {
+  background-color: #1273eb;
+}
+.notify .note.note-warning {
+  background-color: #e4b42b;
+}
+.notify .note.note-danger {
+  background-color: #ec4f3d;
+}
+.notify .note .image,
+.notify .note .remove {
+  position: absolute;
+  font-size: 24px;
+  color: #ffffff;
+}
+.notify .note .remove {
+  top: 0;
+  right: 10px;
+  font-size: 18px;
+  background: rgba(0,0,0,0.2);
+  border: 0;
+  padding: 0;
+  border-radius: 0;
+  cursor: pointer;
+}
+.notify .note .remove:focus {
+  outline: none;
+  border: none;
+}
+.notify .note .image {
+  text-align: center;
+  top: 15px;
+}
+.notify .note .content {
+  margin-right: 31px;
+}
+.notify .note .image + .remove + .content {
+  margin-left: 40px;
+}
+.notify .note .title {
+  margin-right: 5px;
+}
+.notify.notify-notes {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1001;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition:all 0.5s ease-in-out;
+  -ms-transition:all 0.5s ease-in-out;  
+  width: 25%;
+}
+.notify.notify-messages {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 10000;
+}
+.notify.notify-notes .note:not(:last-child) {
+  margin-bottom: 10px;
+}
+.notify.notify-notes .image {
+  top: auto;
+}
+.notify .note .image i, .notify.notify-notes .image i, .notify .note .remove i {
+  text-shadow: none;
+}
+.notify.notify-notes .title {
+  display: block;
+  margin-right: 0;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+@media (min-width: 320px) and (max-width: 767px) {
+  .notify.notify-notes {
+    width: 50%;
+  }
+}
+@media (min-width: 768px) and (max-width: 1024px) {
+  .notify.notify-notes {
+    width: 30%;
+  }
+}

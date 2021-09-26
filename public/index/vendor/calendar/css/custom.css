@@ -1,0 +1,177 @@
+/* Schedule Calendar CSS */
+.schedule-calendar .fc-theme-standard .fc-scrollgrid {
+    border: 0
+}
+.schedule-calendar .fc .fc-toolbar.fc-header-toolbar {
+    margin-bottom: .5rem;
+}
+.schedule-calendar .fc .fc-button {
+    border: 1px solid transparent;
+    padding: .4em 0;
+    font-size: 12px;
+}
+.schedule-calendar .fc .fc-non-business {
+    background: transparent;
+}
+.schedule-calendar .fc .fc-bg-event {
+    background: #e5f0ff !important;
+    opacity: 1;
+}
+.schedule-calendar .fc .fc-button-primary {
+    background-color: transparent;
+    border-color: transparent;
+    color: #959ba2;
+}
+.schedule-calendar .fc .fc-toolbar-title {
+    font-size: .85em;
+    margin: 0;
+}
+.schedule-calendar .fc .fc-col-header-cell-cushion {
+    padding: 4px 4px;
+    color: #828992;
+    font-weight: 400;
+}
+.schedule-calendar .fc .fc-button:not(:disabled), 
+.schedule-calendar .fc a[data-navlink], 
+.schedule-calendar .fc-event.fc-event-draggable, 
+.schedule-calendar .fc-event[href] {
+    color: #959ba2;
+}
+.schedule-calendar .fc .fc-button-primary:not(:disabled).fc-button-active,
+.fc .fc-button-primary:not(:disabled):active {
+    color: #959ba2;
+    background-color: transparent;
+    border-color: transparent;
+}
+.schedule-calendar .fc-theme-standard td, .fc-theme-standard th {
+    border: 1px solid #ededf3;
+    font-size: 13px;
+}
+.schedule-calendar .fc-direction-ltr .fc-daygrid-event.fc-event-end,
+.schedule-calendar .fc-direction-rtl .fc-daygrid-event.fc-event-start {
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 30px !important;
+    font-size: 9px;
+}
+.schedule-calendar .fc-h-event {
+    background: #1273eb;
+    border: 0;
+}
+
+
+
+.fc-theme-standard .fc-scrollgrid {
+    border: 1px solid #ededf3;
+    border-right: 0;
+    border-bottom: 0;
+}
+.fc-theme-standard .fc-list-day-cushion {
+    background-color: #f6f6fd;
+}
+.fc-theme-standard .fc-list {
+    border: 1px solid #dedeef;
+}
+.fc-theme-standard td, .fc-theme-standard th {
+    border: 1px solid #ededf3;
+}
+.fc .fc-list-event:hover td {
+    background-color: #efeff7;
+}
+.fc .fc-list-event-dot {
+    border: 5px solid #1273eb;
+}
+.fc-daygrid-dot-event .fc-event-title {
+    font-weight: 600;
+}
+.fc-daygrid-event-dot {
+    border: 4px solid #1273eb;
+}
+.fc-daygrid-dot-event:hover {
+    background-color: #efeff7;
+}
+.fc-daygrid-event {
+    font-size: 10px;
+}
+.fc-theme-standard .fc-popover-header {
+    background: #1173eb;
+    color: #fff;
+    font-size: 12px;
+    padding: 6px 8px;
+}
+.fc .fc-toolbar-title {
+    font-size: 16px;
+}
+.fc .fc-button-primary {
+    border-color: #1273eb;
+    background-color: #1273eb;
+}
+.fc .fc-button .fc-icon {
+    font-size: 14px;
+}
+.fc .fc-col-header-cell-cushion {
+    padding: 6px 4px;
+    color: #828992;
+}
+.fc .fc-list-empty {
+    border: 0 solid #dedeef;
+    background: #f4f4fb;
+}
+
+
+
+/* Draggable */
+#external-events {
+    padding: 1rem;
+    border: 1px solid #dedeef;
+    background: #f4f4fb;
+    text-align: left;
+    margin-bottom: 20px;
+    border-radius: 3px;
+}
+#external-events h4 {
+    font-size: .9rem;
+    margin: 0 0 .7rem 0;
+}
+#external-events .fc-event {
+    margin: 3px 2px;
+    cursor: move;
+}
+#external-events p {
+    margin: .5rem 0 0 0;
+    font-size: 11px;
+}
+#external-events p input {
+    margin: 0;
+    vertical-align: middle;
+}
+#external-events label {
+    margin: 0;
+    font-size: .75rem;
+    font-weight: 400;
+    vertical-align: middle;
+}
+.fc .fc-toolbar.fc-header-toolbar {
+    flex-wrap: wrap;
+}
+.fc .fc-toolbar.fc-header-toolbar .fc-toolbar-chunk {
+    margin: 2px 0;
+}
+.fc-h-event {
+    border: 1px solid #1273eb;
+    background: #1273eb;
+    padding: 2px 7px;
+    font-size: 10px;
+    border-radius: 2px;
+}
+.fc-v-event {
+    border: 1px solid #1273eb;
+    background: #1273eb;
+}
+.fc table {
+    font-size: 13px;
+    color: #959ba2;
+}

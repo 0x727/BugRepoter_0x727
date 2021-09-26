@@ -1,0 +1,497 @@
+
+/*
+ * # Semantic UI - 1.12.3
+ * https://github.com/Semantic-Org/Semantic-UI
+ * http://www.semantic-ui.com/
+ *
+ * Copyright 2014 Contributors
+ * Released under the MIT license
+ * http://opensource.org/licenses/MIT
+ *
+ */
+
+/*!
+ * # Semantic UI - Search
+ * http://github.com/semantic-org/semantic-ui/
+ *
+ *
+ * Copyright 2014 Contributors
+ * Released under the MIT license
+ * http://opensource.org/licenses/MIT
+ *
+ */
+
+/*******************************
+             Search
+*******************************/
+
+.ui.search {
+  position: relative;
+}
+
+.ui.search > .prompt {
+  margin: 0em;
+  outline: none;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  text-shadow: none;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1.2;
+  padding: 0.68571em 1em;
+  font-size: .825rem;
+  background: #ffffff;
+  border: 1px solid rgba(39, 41, 43, 0.15);
+  color: rgba(0, 0, 0, 0.8);
+  box-shadow: 0em 0em 0em 0em transparent inset;
+  -webkit-transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.ui.search .prompt {
+  border-radius: 500rem;
+}
+
+/*--------------
+     Icon
+---------------*/
+
+.ui.search .prompt ~ .search.icon {
+  cursor: pointer;
+}
+
+/*--------------
+    Results
+---------------*/
+
+.ui.search > .results {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0%;
+  background: #ffffff;
+  margin-top: 0.5em;
+  width: 16em;
+  border-radius: 0.25em;
+  box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.2);
+  z-index: 998;
+}
+
+/*--------------
+    Result
+---------------*/
+
+.ui.search > .results .result {
+  cursor: pointer;
+  display: block;
+  overflow: hidden;
+  font-size: 1em;
+  padding: 0.5em 1em;
+  color: rgba(0, 0, 0, 0.8);
+  line-height: 1.33;
+  border-bottom: 1px solid rgba(39, 41, 43, 0.15);
+}
+
+.ui.search > .results .result:last-child {
+  border-bottom: none;
+}
+
+/* Image */
+
+.ui.search > .results .result .image {
+  float: right;
+  overflow: hidden;
+  background: none;
+  width: 5em;
+  height: 3em;
+  border-radius: 0.25em;
+}
+
+.ui.search > .results .result .image img {
+  display: block;
+  width: auto;
+  height: 100%;
+}
+
+/*--------------
+      Info
+---------------*/
+
+.ui.search > .results .result .image + .content {
+  margin: 0em 6em 0em 0em;
+}
+
+.ui.search > .results .result .title {
+  font-size: .75rem;
+}
+
+.ui.search > .results .result .description {
+  margin-top: 0em;
+  font-size: .755rem;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.ui.search > .results .result .price {
+  float: right;
+  color: #5bbd72;
+}
+
+/*--------------
+    Message
+---------------*/
+
+.ui.search > .results > .message {
+  padding: 1em 1em;
+}
+
+.ui.search > .results > .message .header {
+  font-size: .825rem;
+  color: #111111;
+}
+
+.ui.search > .results > .message .description {
+  margin-top: 15px;
+  font-size: 12px;
+  color: #5e6973;
+}
+
+/* View All Results */
+
+.ui.search > .results > .action {
+  display: block;
+  border-top: none;
+  background: #f0f0f0;
+  padding: 0.5em 1em;
+  color: rgba(0, 0, 0, 0.8);
+  font-weight: bold;
+  text-align: center;
+}
+
+/*******************************
+            States
+*******************************/
+
+/*--------------------
+       Loading
+---------------------*/
+
+.ui.loading.search .input > .icon:before {
+  position: absolute;
+  content: '';
+  top: 50%;
+  left: 50%;
+  margin: -0.64285em 0em 0em -0.64285em;
+  width: 1.2857em;
+  height: 1.2857em;
+  border-radius: 500rem;
+  border: 0.2em solid rgba(0, 0, 0, 0.1);
+}
+
+.ui.loading.search .input > .icon:after {
+  position: absolute;
+  content: '';
+  top: 50%;
+  left: 50%;
+  margin: -0.64285em 0em 0em -0.64285em;
+  width: 1.2857em;
+  height: 1.2857em;
+  -webkit-animation: button-spin 0.6s linear;
+  animation: button-spin 0.6s linear;
+  -webkit-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+  border-radius: 500rem;
+  border-color: #aaaaaa transparent transparent;
+  border-style: solid;
+  border-width: 0.2em;
+  box-shadow: 0px 0px 0px 1px transparent;
+}
+
+/*--------------
+      Hover
+---------------*/
+
+.ui.search > .results .result:hover,
+.ui.category.search > .results .category .result:hover {
+  background: #e5f0ff;
+}
+
+.ui.search .action:hover {
+  background: #e0e0e0;
+}
+
+/*--------------
+      Active
+---------------*/
+
+.ui.search > .results .category.active {
+  background: #f0f0f0;
+}
+
+.ui.search > .results .category.active > .name {
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.ui.search > .results .result.active,
+.ui.category.search > .results .category .result.active {
+  position: relative;
+  border-left-color: transparent;
+  background: #f0f0f0;
+  box-shadow: 3px 0px 3px 0px rgba(39, 41, 43, 0.15);
+}
+
+.ui.search > .results .result.active .title {
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.ui.search > .results .result.active .description {
+  color: rgba(0, 0, 0, 0.85);
+}
+
+/*******************************
+           Types
+*******************************/
+
+/*--------------
+    Categories
+---------------*/
+
+.ui.category.search .results {
+  width: 28em;
+}
+
+/* Category */
+
+.ui.category.search > .results .category {
+  background: #ebf4ff;
+  box-shadow: none;
+  border-bottom: 1px solid #efeff7;
+  -webkit-transition: background 0.2s ease, border-color 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.ui.category.search > .results .category:last-child {
+  border-bottom: none;
+}
+
+/* Category Result */
+
+.ui.category.search > .results .category .result {
+  background: #ffffff;
+  margin-left: 120px;
+  border-left: 1px solid #dedeef;
+  border-bottom: 1px solid #ffffff;
+  -webkit-transition: background 0.2s ease, border-color 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.ui.category.search > .results .category .result:last-child {
+  border-bottom: none;
+}
+
+/* Category Result Name */
+
+.ui.category.search > .results .category > .name {
+  width: 120px;
+  background: #ebf4ff;
+  font-size: .725rem;
+  float: left;
+  padding: 0.5em 1em;
+  font-weight: 600;
+  color: #1273eb;
+}
+
+/*******************************
+           Variations
+*******************************/
+
+/*-------------------
+     Left / Right
+--------------------*/
+
+.ui[class*="left aligned"].search > .results {
+  right: auto;
+  left: 0%;
+}
+
+.ui[class*="right aligned"].search > .results {
+  right: 0%;
+  left: auto;
+}
+
+/*--------------
+    Fluid
+---------------*/
+
+.ui.fluid.search .results {
+  width: 100%;
+}
+
+/*--------------
+      Sizes
+---------------*/
+
+.ui.search {
+  font-size: 1em;
+}
+
+.ui.large.search {
+  font-size: 1.1em;
+}
+
+/*******************************
+         Theme Overrides
+*******************************/
+
+/*******************************
+         Site Overrides
+*******************************/
+/*
+ * # Semantic UI - 1.12.3
+ * https://github.com/Semantic-Org/Semantic-UI
+ * http://www.semantic-ui.com/
+ *
+ * Copyright 2014 Contributors
+ * Released under the MIT license
+ * http://opensource.org/licenses/MIT
+ *
+ */
+
+
+/*!
+ * # Semantic UI - Transition
+ * http://github.com/semantic-org/semantic-ui/
+ *
+ *
+ * Copyright 2014 Contributorss
+ * Released under the MIT license
+ * http://opensource.org/licenses/MIT
+ *
+ */
+
+/*******************************
+          Transitions
+*******************************/
+
+.transition {
+  -webkit-animation-iteration-count: 1;
+  animation-iteration-count: 1;
+  -webkit-animation-duration: 300ms;
+  animation-duration: 300ms;
+  -webkit-animation-timing-function: ease;
+  animation-timing-function: ease;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+
+/*******************************
+            States
+*******************************/
+
+/* Animating */
+
+.animating.transition {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  visibility: visible !important;
+}
+
+/* Loading */
+
+.loading.transition {
+  position: absolute;
+  top: -99999px;
+  left: -99999px;
+}
+
+/* Hidden */
+
+.hidden.transition {
+  display: none;
+  visibility: hidden;
+}
+
+/* Visible */
+
+.visible.transition {
+  display: block !important;
+  visibility: visible !important;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Disabled */
+
+.disabled.transition {
+  -webkit-animation-play-state: paused;
+  animation-play-state: paused;
+}
+
+/*******************************
+          Variations
+*******************************/
+
+.looping.transition {
+  -webkit-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+}
+
+/*******************************
+          Transitions
+*******************************/
+
+/*
+  Some transitions adapted from Animate CSS
+  https://github.com/daneden/animate.css
+
+  Additional transitions adapted from Glide
+  by Nick Pettit - https://github.com/nickpettit/glide
+*/
+
+
+/*--------------
+      Scale
+---------------*/
+
+.scale.transition.in {
+  -webkit-animation-name: scaleIn;
+  animation-name: scaleIn;
+}
+
+.scale.transition.out {
+  -webkit-animation-name: scaleOut;
+  animation-name: scaleOut;
+}
+
+/* In */
+
+@-webkit-keyframes scaleIn {
+  0% {
+    opacity: 0;
+    -webkit-transform: scale(0.7);
+    transform: scale(0.7);
+  }
+
+  100% {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+@keyframes scaleIn {
+  0% {
+    opacity: 0;
+    -webkit-transform: scale(0.7);
+    transform: scale(0.7);
+  }
+
+  100% {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}

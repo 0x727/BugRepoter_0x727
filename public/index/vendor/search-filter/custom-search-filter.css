@@ -1,0 +1,122 @@
+/************** Semantic UI Custom Search **************/
+.ui.search {
+	margin: 0;
+	width: 100%;
+	position: relative;
+}
+.ui.input {
+	width: 100%;
+}
+.ui.icon.input ::-webkit-input-placeholder {
+	color: #16489F;
+}
+.ui.icon.input :-moz-placeholder {
+	color: #16489F;
+}
+.ui.icon.input ::-moz-placeholder {
+	color: #16489F;
+}
+.ui.icon.input :-ms-input-placeholder {
+	color: #16489F;
+}
+.ui.icon.input > input {
+	padding: 18px 15px;
+	font-size: .75rem;
+	font-weight: 400;
+	box-sizing: border-box;
+	color: #8a96a0;
+	-webkit-transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+	-ms-transition: all 0.5s ease;
+	-o-transition: all 0.5s ease;
+	transition: all 0.5s ease;
+	line-height: 20px;
+	width: 100%;
+	border: 2px solid #ffffff;
+	background: #ffffff;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+.ui.icon.input > input:focus {
+	outline: none;
+	background: #ffffff;
+	border: 2px solid #1ca2d9;
+}
+.ui.search > .results {
+	display: none;
+	position: absolute;
+	top: 100%;
+	left: 0;
+	-webkit-transform-origin: center top;
+	transform-origin: center top;
+	white-space: normal;
+	text-align: left;
+	text-transform: none;
+	background: #fff;
+	margin-top: .2em;
+	width: 18em;
+	border-radius: 2px;
+	border: 1px solid #d4d4d5;
+	z-index: 998;
+}
+.ui.category.search > .results.visible {
+	border: 1px solid #dedeef;
+}
+.ui.category.search .results {
+	width: 100%;
+	z-index: 12000;
+	border: 0;
+	box-shadow: none;
+}
+.ui.search > .results > .message .header {
+	position: relative;
+	background: #de3e3e;
+	color: #ffffff !important;
+	font-weight: 400 !important;
+	font-size: 12px !important;
+	padding: 3px 10px;
+	border-radius: 2px;
+}
+.search-btn {
+	height: 50px;
+	width: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	position: absolute;
+	right: 0px;
+	border-radius: 30px;
+	margin: 5px;
+	top: 0;
+	background: #1ca2d9;
+}
+.search-btn img {
+	height: 24px;
+}
+
+
+@media (max-width: 992px) {
+	.ui.search {
+		max-width: 500px;
+		margin: 0 auto 0 auto;
+	}
+	.ui.icon.input > input {
+		padding: 10px 25px;
+		font-size: .825rem;
+	}
+	.search-btn {
+		height: 34px;
+		width: 34px;
+		line-height: 14px;
+	}
+	.search-btn img {
+		height: 18px;
+	}
+}
+@media (max-width: 576px) {
+	.ui.search {
+		display: none;
+	}
+}

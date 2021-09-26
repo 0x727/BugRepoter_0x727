@@ -1,0 +1,173 @@
+div.dt-buttons {
+	padding: 0;
+}
+div.dataTables_wrapper div.dataTables_paginate {
+	margin: 10px 0 0 0;
+	padding: 0px;
+	float: right;
+}
+div.dataTables_wrapper div.dataTables_paginate .pagination-sm .page-link {
+	font-size: .75rem;
+}
+div.dataTables_wrapper div.dataTables_filter {
+	padding: 0 0 5px 0;
+}
+div.dataTables_wrapper div.dataTables_info {
+	padding: 0.425em 1.5em;
+	display: inline-block;
+	font-size: .725rem;
+	background: #f6f6fd;
+	margin-top: 10px;
+	border-radius: 2px;
+}
+div.dataTables_wrapper div.dataTables_filter input {
+	min-height: 31px;
+}
+div.dataTables_wrapper div.dataTables_filter input:focus {
+	outline: none !important;
+}
+div.dataTables_wrapper div.dataTables_length select {
+	min-height: 31px;
+}
+table.dataTable th {
+	background: #1173eb;
+	border-bottom: 0;
+	border-top: 0;
+	color: #ffffff;
+	font-weight: 600;
+}
+table.dataTable tr.odd {
+	background: #f6f6fd;
+}
+table.dataTable tr.even {
+	background: #ffffff;
+}
+table.v-middle td {
+	vertical-align: middle;
+}
+table.dataTable td {
+	border: 0;
+	padding: .75rem .75rem;
+	white-space: normal;
+}
+table.dataTable td .media-box {
+	display: flex;
+	align-items: center;
+}
+table.dataTable td img.img-flag {
+	width: 21px;
+	height: 21px;
+}
+table.dataTable td .actions {
+	display: flex;
+	align-items: center;
+}
+table.dataTable td .actions a {
+	width: 30px;
+	height: 30px;
+	font-size: 1rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+table.dataTable td .media-box img.media-avatar {
+	height: 40px;
+	width: 40px;
+	margin: 0 10px 0 0;
+}
+table.dataTable td .media-box img.media-avatar-lg {
+	height: 90px;
+	margin: 0 10px 0 0;
+}
+table.dataTable td .media-box .media-box-body {
+	flex: 1;
+}
+table.dataTable td .media-box .media-box-body a {
+	font-size: .75rem;
+	font-weight: 600;
+	margin: 0 0 5px 0;
+}
+table.dataTable td .media-box .media-box-body p {
+	font-size: .7rem;
+	color: #969ea5;
+	margin: 0;
+}
+
+button.dt-button, div.dt-button, a.dt-button {
+	border: 1px solid #dee2e6;
+}
+
+
+
+/* Fixed Header */
+table.dataTable.fixedHeader-floating,
+table.dataTable.fixedHeader-locked {
+	background-color: white;
+	margin-top: 0 !important;
+	margin-bottom: 0 !important
+}
+table.dataTable.fixedHeader-floating {
+	position: fixed !important
+}
+table.dataTable.fixedHeader-locked{
+	position: absolute !important
+}
+@media print{
+	table.fixedHeader-floating {
+		display: none;
+	}
+}
+
+
+table.dataTable thead .sorting:before, table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:before, table.dataTable thead .sorting_asc:after, table.dataTable thead .sorting_desc:before, table.dataTable thead .sorting_desc:after, table.dataTable thead .sorting_asc_disabled:before, table.dataTable thead .sorting_asc_disabled:after, table.dataTable thead .sorting_desc_disabled:before, table.dataTable thead .sorting_desc_disabled:after {
+	bottom: 1.3em;
+}
+div.dataTables_wrapper div.dataTables_length select {
+	width: 50px;
+}
+
+
+
+
+/*table.dataTable tbody tr.selected {
+	background-color: #89b5d7;
+}
+table.dataTable.order-column tbody tr>.sorting_1, table.dataTable.order-column tbody tr>.sorting_2, table.dataTable.order-column tbody tr>.sorting_3, table.dataTable.display tbody tr>.sorting_1, table.dataTable.display tbody tr>.sorting_2, table.dataTable.display tbody tr>.sorting_3 {
+	background-color: #89b5d7;
+}
+table.dataTable.row-border tbody th, table.dataTable.row-border tbody td, table.dataTable.display tbody th, table.dataTable.display tbody td {
+	border-top: 1px solid #ddd;
+}
+td.highlight {
+	background-color: #fff2d2 !important;
+}*/
+
+
+
+/*div.dataTables_wrapper div.dataTables_info {
+	color: #8b9398;
+	font-size: .775rem;
+	margin: 10px 0 0 0;
+	padding: 0 0 15px 0;
+}
+
+table.dataTable thead .sorting:before, table.dataTable thead .sorting_asc:before, table.dataTable thead .sorting_desc:before, table.dataTable thead .sorting_asc_disabled:before, table.dataTable thead .sorting_desc_disabled:before {
+	color: #229e45;
+}
+table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:after, table.dataTable thead .sorting_desc:after, table.dataTable thead .sorting_asc_disabled:after, table.dataTable thead .sorting_desc_disabled:after {
+	color: #ff4f57;
+}
+
+.dataTable .btn-group-sm > .btn, .btn-sm {
+	padding: .1rem .3rem;
+	font-size: .75rem;
+}
+.dataTables_length {
+	padding: 10px 0 0 0;
+}
+div.dataTables_wrapper div.dataTables_filter {
+	padding: 10px 0 5px 0;
+}
+div.dt-buttons {
+	padding: 10px 0 0 0;
+}*/

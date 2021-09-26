@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="395" height="407" viewBox="0 0 395 407">
+  <g id="Group_1" data-name="Group 1" transform="translate(-647 -167)">
+    <rect id="Rectangle_1" data-name="Rectangle 1" width="395" height="407" transform="translate(647 167)" fill="#5a4e9a"/>
+    <rect id="Rectangle_2" data-name="Rectangle 2" width="79" height="79" transform="translate(647 337)" fill="#e95a8a"/>
+    <rect id="Rectangle_12" data-name="Rectangle 12" width="79" height="79" transform="translate(647 495)" fill="#f7cd41"/>
+    <rect id="Rectangle_3" data-name="Rectangle 3" width="79" height="79" transform="translate(726 337)" fill="#41bcd6"/>
+    <rect id="Rectangle_8" data-name="Rectangle 8" width="79" height="79" transform="translate(726 416)" fill="#5a4e9a"/>
+    <rect id="Rectangle_19" data-name="Rectangle 19" width="79" height="79" transform="translate(726 495)" fill="#e95a8a"/>
+    <rect id="Rectangle_22" data-name="Rectangle 22" width="79" height="79" transform="translate(963 416)" fill="#41bcd6"/>
+    <path id="Path_1" data-name="Path 1" d="M79,79H0V0Z" transform="translate(726 495)" fill="#5a4e9a"/>
+    <path id="Path_2" data-name="Path 2" d="M79,79H0V0Z" transform="translate(963 416)" fill="#5a4e9a"/>
+    <rect id="Rectangle_4" data-name="Rectangle 4" width="79" height="79" transform="translate(805 337)" fill="#e95a8a"/>
+    <rect id="Rectangle_26" data-name="Rectangle 26" width="36.819" height="36.819" transform="translate(765.035 429) rotate(45)" fill="#e95a8a"/>
+    <rect id="Rectangle_9" data-name="Rectangle 9" width="79" height="79" transform="translate(805 416)" fill="#f7cd41"/>
+    <rect id="Rectangle_14" data-name="Rectangle 14" width="79" height="79" transform="translate(805 495)" fill="#e95a8a"/>
+    <rect id="Rectangle_5" data-name="Rectangle 5" width="79" height="79" transform="translate(884 337)" fill="#5a4e9a"/>
+    <rect id="Rectangle_17" data-name="Rectangle 17" width="79" height="79" transform="translate(884 258)" fill="#41bcd6"/>
+    <rect id="Rectangle_10" data-name="Rectangle 10" width="79" height="79" transform="translate(884 416)" fill="#41bcd6"/>
+    <rect id="Rectangle_15" data-name="Rectangle 15" width="79" height="79" transform="translate(884 495)" fill="#5a4e9a"/>
+    <rect id="Rectangle_6" data-name="Rectangle 6" width="79" height="79" transform="translate(963 337)" fill="#f7cd41"/>
+    <rect id="Rectangle_18" data-name="Rectangle 18" width="79" height="79" transform="translate(963 258)" fill="#f7cd41"/>
+    <rect id="Rectangle_24" data-name="Rectangle 24" width="79" height="79" transform="translate(647 416)" fill="#f7cd41"/>
+    <rect id="Rectangle_16" data-name="Rectangle 16" width="79" height="79" transform="translate(963 495)" fill="#e95a8a"/>
+    <rect id="Rectangle_20" data-name="Rectangle 20" width="79" height="26" transform="translate(963 311)" fill="#e95a8a"/>
+    <rect id="Rectangle_25" data-name="Rectangle 25" width="79" height="26" transform="translate(647 469)" fill="#e95a8a"/>
+    <rect id="Rectangle_21" data-name="Rectangle 21" width="79" height="27" transform="translate(963 284)" fill="#5a4e9a"/>
+    <rect id="Rectangle_23" data-name="Rectangle 23" width="79" height="27" transform="translate(647 442)" fill="#5a4e9a"/>
+    <circle id="Ellipse_1" data-name="Ellipse 1" cx="27" cy="27" r="27" transform="translate(660 508)" fill="#41bcd6"/>
+    <circle id="Ellipse_2" data-name="Ellipse 2" cx="27" cy="27" r="27" transform="translate(976 350)" fill="#41bcd6"/>
+    <circle id="Ellipse_8" data-name="Ellipse 8" cx="19" cy="19" r="19" transform="translate(905 279)" fill="#f7cd41"/>
+    <path id="Intersection_1" data-name="Intersection 1" d="M19,52A33,33,0,0,1,52,19,33,33,0,0,1,19,52Z" transform="translate(888 341)" fill="#41bcd6"/>
+    <circle id="Ellipse_3" data-name="Ellipse 3" cx="27" cy="27" r="27" transform="translate(817 429)" fill="#41bcd6"/>
+    <path id="Union_1" data-name="Union 1" d="M20,33a13.936,13.936,0,0,1,2.344-7.757,13.991,13.991,0,1,1,3.313-3.486A14,14,0,1,1,20,33Z" transform="translate(663 353)" fill="#41bcd6"/>
+    <rect id="Rectangle_27" data-name="Rectangle 27" width="48" height="48" transform="translate(979 511)" fill="#5a4e9a"/>
+    <rect id="Rectangle_30" data-name="Rectangle 30" width="36" height="36" transform="translate(844.456 351) rotate(45)" fill="#5a4e9a"/>
+    <path id="Union_2" data-name="Union 2" d="M0,34.021l11-11-11-11L12.02,0,24.042,12.02l-11,11,11,11L12.02,46.041Z" transform="translate(911 432)" fill="#5a4e9a"/>
+    <rect id="Rectangle_28" data-name="Rectangle 28" width="40" height="40" transform="translate(805 495)" fill="#5a4e9a"/>
+    <rect id="Rectangle_31" data-name="Rectangle 31" width="40" height="40" transform="translate(805 534)" fill="#f7cd41"/>
+    <rect id="Rectangle_29" data-name="Rectangle 29" width="39" height="40" transform="translate(845 534)" fill="#41bcd6"/>
+    <path id="Exclusion_1" data-name="Exclusion 1" d="M48.976,69.465H0l16-16H0l15-15H0L13.976,24.488H35L24.488,13.976,13.976,24.488H0L24.488,0,48.976,24.488H35L48.976,38.464h-15l15,15h-16l16,16ZM16,53.465H32.976l-8.488-8.488Zm-1-15H33.976l-9.488-9.488L15,38.464Z" transform="translate(741 346)" fill="#f7cd41"/>
+    <path id="Path_4" data-name="Path 4" d="M24.025,24.025H0V0Z" transform="translate(940.488 550.988) rotate(135)" fill="#f7cd41"/>
+    <path id="Path_5" data-name="Path 5" d="M28.623,27.945H0V0Z" transform="translate(943.26 541.76) rotate(135)" fill="#f7cd41"/>
+    <path id="Path_6" data-name="Path 6" d="M34.632,34.632H0V0Z" transform="translate(947.988 532.512) rotate(135)" fill="#f7cd41"/>
+  </g>
+</svg>

@@ -1,0 +1,351 @@
+﻿/*
+	Common 
+*/
+
+.wizard,
+.tabcontrol {
+	display: block;
+	width: 100%;
+	overflow: hidden;
+	border: 1px solid #edecf5;
+	margin-bottom: 0;
+}
+
+.wizard a,
+.tabcontrol a {
+	outline: 0;
+}
+
+.wizard ul,
+.tabcontrol ul {
+	list-style: none !important;
+	padding: 0;
+	margin: 0;
+}
+
+.wizard ul > li,
+.tabcontrol ul > li {
+	display: block;
+	padding: 0;
+}
+
+
+/* Accessibility */
+
+.wizard > .steps .current-info,
+.tabcontrol > .steps .current-info {
+	position: absolute;
+	left: -999em;
+}
+
+.wizard > .content>.title,
+.tabcontrol > .content>.title {
+	position: absolute;
+	left: -999em;
+}
+
+
+/*
+	Wizard
+*/
+
+.wizard > .steps {
+	position: relative;
+	display: block;
+	width: 100%;
+	padding: 0 1.25rem;
+	border-bottom: 1px solid #edecf5;
+}
+
+.wizard.vertical > .steps {
+	display: inline;
+	float: left;
+	width: 30%;
+	border-right: 1px solid #edecf5;
+	border-bottom: 0;
+}
+
+.wizard > .steps .number {
+	font-size: 1rem;
+}
+
+.wizard > .steps > ul > li   {
+	width: auto;
+}
+
+.wizard > .steps > ul > li , 
+.wizard > .actions > ul > li {
+	float: left;
+}
+
+.wizard.vertical > .steps > ul > li   {
+	float: none;
+	width: 100%;
+}
+
+.wizard > .steps a,
+.wizard > .steps a:hover,
+.wizard > .steps a:active {
+	display: block;
+	width: auto;
+	margin: 0 15px 0 0;
+	padding: 10px 0;
+}
+
+.wizard > .steps .disabled a,
+.wizard > .steps .disabled a:hover,
+.wizard > .steps .disabled a:active {
+	color: #7d8194;
+}
+
+.wizard > .steps .current a,
+.wizard > .steps .current a:hover,
+.wizard > .steps .current a:active {
+	color: #2e343c;
+}
+
+.wizard > .steps .done a,
+.wizard > .steps .done a:hover,
+.wizard > .steps .done a:active {
+	color: #1273eb;
+}
+
+.wizard > .steps .error a,
+.wizard > .steps .error a:hover,
+.wizard > .steps .error a:active {
+	background: #ff3111;
+	color: #fff;
+}
+
+.wizard > .content {
+	background: #ffffff;
+	display: block;
+	margin: 0;
+	min-height: 380px;
+	overflow: hidden;
+	position: relative;
+	width: auto;
+	border-bottom: 1px solid #edecf5;
+}
+
+.wizard.vertical > .content {
+	display: inline;
+	float: left;
+	margin: 0;
+	width: 70%;
+	border-left: 0;
+}
+
+.wizard > .content > .body {
+	position: absolute;
+	padding: 1.25rem;
+	width: 100%;
+	height: 100%;
+}
+
+.wizard > .content > .body ul {
+	list-style: disc !important;
+}
+
+.wizard > .content > .body ul>li {
+	display: list-item;
+}
+
+.wizard > .content > .body>iframe {
+	border: 0 none;
+	width: 100%;
+	height: 100%;
+}
+
+.wizard > .content > .body input {
+	display: block;
+	border: 1px solid #dbdaea;
+}
+
+.wizard > .content > .body input[type="checkbox"] {
+	display: inline-block;
+}
+
+.wizard > .content > .body input.error {
+	background: rgb(251, 227, 228);
+	border: 1px solid #fbc2c4;
+	color: #8a1f11;
+}
+
+.wizard > .content > .body label {
+	display: inline-block;
+	margin-bottom: 0.5em;
+}
+
+.wizard > .content > .body label.error {
+	color: #8a1f11;
+	display: inline-block;
+	margin-left: 1.5em;
+}
+
+.wizard > .actions {
+	position: relative;
+	display: block;
+	text-align: right;
+	width: 100%;
+	border: 0;
+	border-top: 0;
+	padding: 10px 1.25rem;
+}
+
+.wizard.vertical > .actions {
+	display: inline;
+	float: right;
+	margin: 0;
+	width: 70%;
+	border-left: 0;
+}
+
+.wizard > .actions > ul {
+	float: right;
+	text-align: right;
+}
+
+.wizard > .actions > ul > li {
+	margin: 0 0 0 7px;
+}
+
+.wizard.vertical > .actions > ul > li {
+	margin: 0 0 0 7px;
+}
+
+.wizard > .actions a,
+.wizard > .actions a:hover,
+.wizard > .actions a:active {
+	background: #1273eb;
+	color: #fff;
+	display: block;
+	padding: .375rem .75rem;
+	font-weight: 600;
+	text-decoration: none;
+	-webkit-border-radius: 30px;
+	-moz-border-radius: 30px;
+	border-radius: 30px;
+	font-size: .8rem;
+	line-height: 1.5;
+}
+
+.wizard > .actions .disabled a,
+.wizard > .actions .disabled a:hover,
+.wizard > .actions .disabled a:active {
+	background: #ef503f;
+	color: #ffffff;
+}
+
+.wizard > .steps > ul > li a .number {
+	width: 36px;
+	height: 36px;
+	background: #ffffff;
+	color: #7d8194;
+	border: 2px solid #edecf5;
+	display: inline-block;
+	line-height: 32px;
+	font-weight: 600;
+	text-align: center;
+	border-radius: 50px;
+	margin-right: 5px;
+}
+.wizard > .steps > ul > li.current a .number {
+	background: #2e343c;
+	border: 2px solid #2e343c;
+	color: #ffffff;
+}
+.wizard > .steps > ul > li.done a .number {
+	background: #1273eb;
+	border: 2px solid #1273eb;
+	color: #ffffff;
+}
+.wizard > .actions > ul > li:last-child a {
+	background: #1273eb;
+}
+
+/*
+	Tabcontrol
+*/
+
+.tabcontrol > .steps {
+	position: relative;
+	display: block;
+	width: 100%;
+}
+
+.tabcontrol > .steps > ul {
+	position: relative;
+	margin: 6px 0 0 0;
+	top: 1px;
+	z-index: 1;
+}
+
+.tabcontrol > .steps > ul > li   {
+	float: left;
+	margin: 5px 2px 0 0;
+	padding: 1px;
+	-webkit-border-top-left-radius: 5px;
+	-webkit-border-top-right-radius: 5px;
+	-moz-border-radius-topleft: 5px;
+	-moz-border-radius-topright: 5px;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+}
+
+.tabcontrol > .steps > ul > li : hover {
+	background: #edecec;
+	border: 1px solid #bbb;
+	padding: 0;
+}
+
+.tabcontrol > .steps > ul > li . current {
+	background: #fff;
+	border: 1px solid #bbb;
+	border-bottom: 0 none;
+	padding: 0 0 1px 0;
+	margin-top: 0;
+}
+
+.tabcontrol > .steps > ul > li > a {
+	color: #5f5f5f;
+	display: inline-block;
+	border: 0 none;
+	margin: 0;
+	padding: 10px 30px;
+	text-decoration: none;
+}
+
+.tabcontrol > .steps > ul > li > a:hover {
+	text-decoration: none;
+}
+
+.tabcontrol > .steps > ul > li . current>a {
+	padding: 15px 30px 10px 30px;
+}
+
+.tabcontrol > .content {
+	position: relative;
+	display: inline-block;
+	width: 100%;
+	height: 35em;
+	overflow: hidden;
+	border-top: 1px solid #bbb;
+	padding-top: 20px;
+}
+
+.tabcontrol > .content > .body {
+	float: left;
+	position: absolute;
+	width: 95%;
+	height: 95%;
+	padding: 2.5%;
+}
+
+.tabcontrol > .content > .body ul {
+	list-style: disc !important;
+}
+
+.tabcontrol > .content > .body ul > li {
+	display: list-item;
+}
