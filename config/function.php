@@ -72,7 +72,7 @@ function xss_clean($data){
 function filterWords($str)
 {
     $farr = array(
-            "/<(\\/?)(script|i?frame|html|body|title|link|meta|object|svg|onabort|onactivate|onafterprint|onafterupdate|onanimationend|onanimationiteration|onanimationstart|onautocomplete|onautocompleteerror|onbeforeactivate|onbeforecopy|onbeforecut|onbeforedeactivate|onbeforeeditfocus|onbeforepaste|onbeforeprint|onbeforeunload|onbeforeupdate|onbegin|onblur|onbounce|oncancel|oncanplay|oncanplaythrough|oncellchange|onchange|onclick|onclose|oncompassneedscalibration|oncontextmenu|oncontrolselect|oncopy|oncuechange|oncut|ondataavailable|ondatasetchanged|ondatasetcomplete|ondblclick|ondeactivate|ondevicelight|ondevicemotion|ondeviceorientation|ondeviceproximity|ondrag|ondragdrop|ondragend|ondragenter|ondragexit|ondragleave|ondragover|ondragstart|ondrop|ondurationchange|onemptied|onend|onended|onerror|onerrorupdate|onexit|onfilterchange|onfinish|onfocus|onfocusin|onfocusout|onformchange |onforminput |ongesturechange|ongestureend|ongesturestart|onhashchange|onhelp|oninput|oninvalid|onkeydown|onkeypress|onkeyup|onlanguagechange|onlayoutcomplete|onload|onloadeddata|onloadedmetadata|onloadstart|onlosecapture|onmediacomplete|onmediaerror|onmessage|onmousedown|onmouseenter|onmouseleave|onmousemove|onmouseout|onmouseover|onmouseup|onmousewheel|onmove|onmoveend|onmovestart|onmozfullscreenchange|onmozfullscreenerror|onmozpointerlockchange|onmozpointerlockerror|onmsgesturechange|onmsgesturedoubletap|onmsgesturehold|onmsgesturerestart|onmsinertiastart|onmspointercancel|onmspointerdown|onmspointerenter|onmspointerhover|onmspointerleave|onmspointermove|onmspointerout|onmspointerover|onmspointerup|onoffline|ononline|onorientationchange|onoutofsync|onpagehide|onpageshow|onpaste|onpause|onplay|onplaying|onpopstate|onprogress|onpropertychange|onratechange|onreadystatechange|onreceived|onrepeat|onreset|onresize|onresizeend|onresizestart|onresume|onreverse|onrowdelete|onrowenter|onrowexit|onrowinserted|onrowsdelete|onrowsinserted|onscroll|onsearch|onseek|onseeked|onseeking|onselect|onselectionchange|onselectstart|onshow|onstalled|onstart|onstop|onstorage|onsubmit|onsuspend|onsynchrestored|ontimeerror|ontimeupdate|ontoggle|ontouchcancel|ontouchend|ontouchmove|ontouchstart|ontrackchange|ontransitionend|onunload|eval|onurlflip|onuserproximity|onvolumechange|onwaiting|onwebkitanimationend|onwebkitanimationiteration|onwebkitanimationstart|onwebkitmouseforcechanged|onwebkitmouseforcedown|onwebkitmouseforceup|onwebkitmouseforcewillbegin|onwebkittransitionend|onwebkitwillrevealbottom|onwheel|onzoom\\?|\\%)([^>]*?)>/isU",
+            "/<(\\/?)(script|i?frame|html|body|title|link|meta|object|svg|onabort|onactivate|onafterprint|onafterupdate|onanimationend|onanimationiteration|onanimationstart|onautocomplete|onautocompleteerror|onbeforeactivate|onbeforecopy|onbeforecut|onbeforedeactivate|onbeforeeditfocus|onbeforepaste|onbeforeprint|onbeforeunload|onbeforeupdate|onbegin|onblur|onbounce|oncancel|oncanplay|oncanplaythrough|oncellchange|onchange|onclick|onclose|oncompassneedscalibration|oncontextmenu|oncontrolselect|oncopy|oncuechange|oncut|ondataavailable|ondatasetchanged|ondatasetcomplete|ondblclick|ondeactivate|ondevicelight|ondevicemotion|ondeviceorientation|ondeviceproximity|ondrag|ondragdrop|ondragend|ondragenter|ondragexit|ondragleave|ondragover|ondragstart|ondrop|ondurationchange|onemptied|onend|onended|onerror|onerrorupdate|onexit|onfilterchange|onfinish|onfocus|onfocusin|onfocusout|onformchange |onforminput |ongesturechange|ongestureend|ongesturestart|onhashchange|onhelp|oninput|oninvalid|onkeydown|onkeypress|onkeyup|onlanguagechange|onlayoutcomplete|onload|onloadeddata|onloadedmetadata|onloadstart|onlosecapture|onmediacomplete|onmediaerror|onmessage|onmousedown|onmouseenter|onmouseleave|onmousemove|onmouseout|onmouseover|onmouseup|onmousewheel|onmove|onmoveend|onmovestart|onmozfullscreenchange|onmozfullscreenerror|onmozpointerlockchange|onmozpointerlockerror|onmsgesturechange|onmsgesturedoubletap|onmsgesturehold|onmsgesturerestart|onmsinertiastart|onmspointercancel|onmspointerdown|onmspointerenter|onmspointerhover|onmspointerleave|onmspointermove|onmspointerout|onmspointerover|onmspointerup|onoffline|ononline|onorientationchange|onoutofsync|onpagehide|onpageshow|onpaste|onpause|onplay|onplaying|onpopstate|onprogress|onpropertychange|onratechange|onreadystatechange|onreceived|onrepeat|onreset|onresize|onresizeend|onresizestart|onresume|onreverse|onrowdelete|onrowenter|onrowexit|onrowinserted|onrowsdelete|onrowsinserted|onscroll|onsearch|onseek|onseeked|onseeking|onselect|onselectionchange|onselectstart|onshow|onstalled|onstart|onstop|onstorage|onsubmit|onsuspend|onsynchrestored|ontimeerror|ontimeupdate|ontoggle|ontouchcancel|ontouchend|ontouchmove|ontouchstart|ontrackchange|ontransitionend|onunload|onurlflip|onuserproximity|onvolumechange|onwaiting|onwebkitanimationend|onwebkitanimationiteration|onwebkitanimationstart|onwebkitmouseforcechanged|onwebkitmouseforcedown|onwebkitmouseforceup|onwebkitmouseforcewillbegin|onwebkittransitionend|onwebkitwillrevealbottom|onwheel|onzoom\\?|\\%)([^>]*?)>/isU",
             "/(<[^>]*)on[a-zA-Z]+\s*=([^>]*>)/isU",
             "/select|insert|update|delete|join|union|into|load_file|outfile|dump|and|count|asc|create|where/is"
     );
@@ -549,5 +549,84 @@ function try_mysql($host,$db,$db_user,$db_pwd){
     return true;
   } else {
     return false;
+  }
+}
+
+/**
+  * 文件加密
+  * @param type $data 内容
+  * @param type $key 秘钥
+  * @param type $name 文件头
+  * @return string
+  */
+function binary_encode($data,$key='xzkaa11111diosdixcqwiozohxi1239',$name='')
+{
+  if(empty($name)) $name='default_1234567890abcdefg.jpgifbmne';
+  $data=$name.'!'.$key .'@'.$data;
+  return gzcompress(RC4($data,$key));
+}
+
+/**
+  * 文件解密
+  * @param type $data 内容
+  * @param type $key 秘钥
+  * @return string
+  */
+function binary_decode($data,$key='xzkaa11111diosdixcqwiozohxi1239')
+{
+  $data=RC4(gzuncompress($data),$key);
+  $reg = "#^(.+)!(".$key.")@#im";
+  preg_match_all($reg,$data,$res);
+  if(!isset($res[0][0])||!isset($res[1][0])){return;}
+  $isfile=$res[1][0]!=='default_1234567890abcdefg.jpgifbmne';
+  $data=str_replace($res[0][0],'',$data);
+  return $isfile?[$data,$res[1][0]]:$data;
+}
+
+/**
+  * rc4加密/解密
+  * @param type $data 内容
+  * @param type $pwd 密码
+  * @return string
+  */
+function RC4($data,$pwd){
+  $cipher='';
+  $key[]="";
+  $box[]="";
+  $pwd_length=strlen($pwd);
+  $data_length=strlen($data);
+  for($i=0;$i<256;$i++){
+    $key[$i]=ord($pwd[$i%$pwd_length]);
+    $box[$i]=$i;
+  }
+  for($j=$i=0;$i<256;$i++) {
+    $j=($j+$box[$i]+$key[$i])%256;
+    $tmp=$box[$i];
+    $box[$i]=$box[$j];
+    $box[$j]=$tmp;
+  }
+  for($a=$j=$i=0;$i<$data_length;$i++) {
+    $a=($a+1)%256;
+    $j=($j+$box[$a])%256;
+    $tmp=$box[$a];
+    $box[$a]=$box[$j];
+    $box[$j]=$tmp;
+    $k=$box[(($box[$a]+$box[$j])%256)];
+    $cipher.=chr(ord($data[$i]) ^ $k);
+  }
+  return $cipher;
+}
+
+/**
+  * 循环删除文件
+  * @param type $url 内容
+  * @return bool
+  */
+function img_unlik($url = [])
+{
+  foreach ($url as $k => $v) {
+    if(file_exists($v)){
+      @unlink($v);
+    }
   }
 }

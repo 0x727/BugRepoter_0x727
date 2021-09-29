@@ -110,11 +110,80 @@
 
 ![index_nine](./public/img/index_nine.png)
 
-## 0x04 环境运行
+## 0x04 Python安装与环境运行
 
-![environment_operation](./public/img/environment_operation.png)
+```
+yum -y groupinstall "Development tools"
+yum -y install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gdbm-devel db4-devel libpcap-devel xz-devel
+yum -y install libffi-devel
+wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tar.xz
+tar -xvJf  Python-3.7.0.tar.xz
+mkdir /usr/local/python3
+cd Python-3.7.0
+./configure --prefix=/usr/local/python3
+make && make install
+ln -s /usr/local/python3/bin/python3 /usr/local/bin/python3
+ln -s /usr/local/python3/bin/pip3 /usr/local/bin/pip3
+python3 -m pip install docxtpl==0.12.0
+```
 
-## 0x04 反馈
+进入项目目录并且执行
+
+```
+nohup ./python_web/run.sh 2>&1 &
+```
+
+## 0x05 nginx安全配置
+
+在当前nginx项目中配置以下：
+
+```
+# 禁止访问目录列
+autoindex off;
+
+# 禁止访问核心目录
+location ^~ /index/ {
+  deny all;
+}
+# 禁止访问类模块
+location ^~ /classes {
+  deny all;
+}
+# 禁止访问config配置模块
+location ^~ /config {
+  deny all;
+}
+# 禁止访问扩展模块
+location ^~ /lib {
+  deny all;
+}
+# 禁止访问生成报告模块
+location ^~ /python_web {
+  deny all;
+}
+# 禁止访问缓存模块
+location ^~ /runtime {
+  deny all;
+}
+# 禁止访问auto目录图片
+location ^~ /public/auto/ {
+  deny all;
+}
+# 禁止访问img目录图片
+location ^~ /public/img/ {
+  deny all;
+}
+```
+![nginx_config](./public/img/nginx_config.png)
+
+## 0x06 版本更新
+
+V1.0 项目支持项目批量提交，批量按项目分类进行导出，快速生成并且统计年度汇总报告。
+
+V1.1 防截图功能，避免项目成员私自截图分享到互联网。报告上传的图片采用RC4加密算法进行加密图片，更好的防止图片泄露。
+
+
+## 0x07 反馈
 
 BugRepoter_0x727（自动化编写报告平台） 是一个免费且开源的项目，我们欢迎任何人为其开发和进步贡献力量。
 

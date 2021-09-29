@@ -18,34 +18,11 @@
         <script src="./public/index/js/modernizr.js"></script>
         <script src="./public/index/js/moment.js"></script>
         <script src="./public/layer/layer.js"></script>
-        <style>
-            /*美化滚动条*/
-            ::-webkit-scrollbar{
-                width: 7px;
-                height: 7px;
-                background-color: #F5F5F5;
-            }
-
-            ::-webkit-scrollbar-track {
-                box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-                -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-                border-radius: 10px;
-                background-color: #F5F5F5;
-            }
-
-            ::-webkit-scrollbar-thumb{
-                border-radius: 10px;
-                box-shadow: inset 0 0 6px rgba(0, 0, 0, .1);
-                -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .1);
-                background-color: #c8c8c8;
-            }
-        </style>
+        <script>
+            var watermark_username = "账户：{$session_username}"
+        </script>
     </head>
     <body>
-       <!--  <div id="loading-wrapper">
-            <div class="spinner-border"></div>
-            加载中...
-        </div> -->
         <div class="page-wrapper">
             <nav class="sidebar-wrapper">
                 <div class="sidebar-tabs">

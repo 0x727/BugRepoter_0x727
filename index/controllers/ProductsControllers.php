@@ -19,7 +19,7 @@ class ProductsControllers extends AuthControllers
 	      	if($length < 0 || $length > 10) $length = 10;
 
 	      	$value = isset($_POST['value']) ? $_POST['value'] : "";
-			$sql = "SELECT a.id,a.session,a.title,a.creation_time,c.title as user_id,b.title as cate_id,a.bugLevel,a.repair_time FROM domain_post as a LEFT JOIN domain_classification as b on a.cate_id = b.id LEFT JOIN domain_project_classification as c on a.company = c.id";
+			$sql = "SELECT a.id,a.session,a.title,a.creation_time,c.title as user_id,b.title as cate_id,a.bugLevel,a.repair_time FROM domain_post as a LEFT JOIN domain_classification as b on a.cate_id = b.id LEFT JOIN domain_project_classification as c on a.company = c.id ORDER BY a.id desc";
 			$count = "SELECT count(*) as num FROM domain_post";
 			if($_SESSION['userid'] != '1'){
 			    $db->bind("user_id", $_SESSION['userid']);
@@ -27,7 +27,7 @@ class ProductsControllers extends AuthControllers
 			}
 			$sql .= " limit ".$start.",".$length;
 			if($value){
-				$sql = "SELECT a.id,a.session,a.title,a.creation_time,c.title as user_id,b.title as cate_id,a.bugLevel,a.repair_time FROM domain_post as a LEFT JOIN domain_classification as b on a.cate_id = b.id LEFT JOIN domain_project_classification as c on a.company = c.id WHERE a.title LIKE :title limit ".$start.",".$length;
+				$sql = "SELECT a.id,a.session,a.title,a.creation_time,c.title as user_id,b.title as cate_id,a.bugLevel,a.repair_time FROM domain_post as a LEFT JOIN domain_classification as b on a.cate_id = b.id LEFT JOIN domain_project_classification as c on a.company = c.id WHERE a.title LIKE :title limit ".$start.",".$length." ORDER BY a.id desc";
 			  	$db->bind("title", "%".$value."%");
 			}
 			$list = $db->query($sql);
@@ -35,7 +35,6 @@ class ProductsControllers extends AuthControllers
 				$type = ['1'=>'无影响','2'=>'低危','3'=>'中危','4'=>'高危','5'=>'严重'];
 	        	foreach ($list as $k => $v) {
 	          		$list[$k]['creation_time'] = $v['creation_time'] == 0 ? '-' : date("Y-m-d H:i:s",$v['creation_time']);
-	          		$list[$k]['time'] = $v['time'] == 0 ? '-' : date("Y-m-d H:i:s",$v['time']);
 	          		$list[$k]['repair_time'] = $v['repair_time'] == 0 ? '-' : date("Y-m-d H:i:s",$v['repair_time']);
 	          		$list[$k]['bugLevel'] = $type[ $v['bugLevel'] ];
 	          		if(empty($v['repair_time'])){
@@ -91,8 +90,6 @@ class ProductsControllers extends AuthControllers
 			if($data_length != $num) $this->json(['status'=>0,'msg'=>'报告数量异常！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
 			if(empty($token)) $this->json(['status'=>0,'msg'=>'输入token！']);
 	        $session_code = isset($_SESSION['token']) ? $_SESSION['token'] : '';
-	        if(empty($session_code)) $this->json(['status'=>0,'msg'=>'token异常！']);
-	        
 	        $success = 0;
 			#循环判断
 	        foreach ($data as $k => $v) {
@@ -116,7 +113,8 @@ class ProductsControllers extends AuthControllers
 		        if(empty($suggestions)) $this->json(['status'=>0,'msg'=>'第'.$k.'份报告，输入修复建议！']);
 		        if(empty($content)) $this->json(['status'=>0,'msg'=>'第'.$k.'份报告，请输入漏洞内容！']);
 	        }
-	        if($session_code != $token) $this->json(['status'=>0,'msg'=>'token验证失败！']);
+	        if(empty($session_code)) $this->json(['status'=>2,'msg'=>'token异常！']);
+	        if($session_code != $token) $this->json(['status'=>2,'msg'=>'token验证失败！']);
 	        unset($_SESSION['token']);
 
 	        // 循环插入数据库
@@ -199,8 +197,8 @@ class ProductsControllers extends AuthControllers
 	        if(empty($content)) $this->json(['status'=>0,'msg'=>'请输入漏洞内容！']);
 	        if(empty($token)) $this->json(['status'=>0,'msg'=>'输入token！']);
 	        $session_code = isset($_SESSION['token']) ? $_SESSION['token'] : '';
-	        if(empty($session_code)) $this->json(['status'=>0,'msg'=>'token异常！']);
-	        if($session_code != $token) $this->json(['status'=>0,'msg'=>'token验证失败！']);
+	        if(empty($session_code)) $this->json(['status'=>2,'msg'=>'token异常！']);
+	        if($session_code != $token) $this->json(['status'=>2,'msg'=>'token验证失败！']);
 	        unset($_SESSION['token']);
 
 	      	$db->bind("id", $id);
@@ -377,6 +375,10 @@ class ProductsControllers extends AuthControllers
 						$medium = 0;
 						$low = 0;
 						$serious = 0;
+
+						// 临时图片存储
+						$tmp_img = [];
+
 						// 初始默认设置 漏洞等级
 						foreach ($post as $k => $v) {
 							$zong_shu[$v['realname']] = ['serious'=>0,'high'=>0,'medium'=>0,'low'=>0];
@@ -391,8 +393,13 @@ class ProductsControllers extends AuthControllers
 						    	preg_match_all("/<\s*img\s+[^>]*?src\s*=\s*(\'|\")(.*?)\\1[^>]*?\/?\s*>/i",$vs,$match);
 						    	if($match[0]){
 						    		foreach (end($match) as $key) {
-						    			if($key && file_exists(str_replace("./", "/", ROOT_PATH.$key))){
-						    				$array[] = ['text'=>str_replace("./", "/", ROOT_PATH.$key),'type'=>1];
+						    			$path = ROOT_PATH."/public/auto/".str_replace("/index.php?m=Public&a=enup_img&id=", "", $key);
+						    			if(file_exists($path)){
+						    				@file_put_contents(ROOT_PATH."/python_web/tmp/".str_replace("/index.php?m=Public&a=enup_img&id=", "", $key).".png",@binary_decode(@file_get_contents($path),str_replace("/index.php?m=Public&a=enup_img&id=", "", $key)));
+						    				$tmp_img[] = ROOT_PATH."/python_web/tmp/".str_replace("/index.php?m=Public&a=enup_img&id=", "", $key).".png";
+						    				$array[] = ['text'=>ROOT_PATH."/python_web/tmp/".str_replace("/index.php?m=Public&a=enup_img&id=", "", $key).".png",'type'=>1];
+						    			} else {
+						    				$array[] = ['text'=>"111",'type'=>1];
 						    			}
 						    		}
 						    	} else {
@@ -474,7 +481,7 @@ class ProductsControllers extends AuthControllers
 						    @file_put_contents(ROOT_PATH."/python_web/tmp/".$code.".json", json_encode($zong_data));
 						    try {
 								$sw = new stockConnector("127.0.0.1","5678");
-								$aa = ["path"=>ROOT_PATH."/python_web/tmp/".$code.".json","name"=>$k."安全测试报告".date("Ymd"),'template_path'=>ROOT_PATH."/python_web/template/".$file_path_name];
+								$aa = ["path"=>ROOT_PATH."/python_web/tmp/".$code.".json","name"=>$k."安全测试报告".date("Y-m-d"),'template_path'=>ROOT_PATH."/python_web/template/".$file_path_name];
 								$con = $sw->sendMsg(json_encode($aa));
 				
 								$ret = $sw->getMsg();
@@ -483,12 +490,15 @@ class ProductsControllers extends AuthControllers
 									$file_path[] = $file_dir;
 								}
 							} catch (Exception $e) {
+								img_unlik($tmp_img);
 			      				$this->json(["status"=>0,"msg"=>"系统异常：".$e->getMessage(),"data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
 							}
 							@unlink(ROOT_PATH."/python_web/tmp/".$code.".json");
 						}
 
-						if(count($file_path) <= 0) $this->json(["status"=>0,"msg"=>"系统异常：导出报告服务错误！","data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
+						if(count($file_path) <= 0){
+							img_unlik($tmp_img);$this->json(["status"=>0,"msg"=>"系统异常：导出报告服务错误！","data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
+						}
 
 					    // 文件下载
 						if(count($file_path) <= 1){
@@ -496,17 +506,18 @@ class ProductsControllers extends AuthControllers
 							downloadFile($file_path,basename($file_path));
 							@unlink($file_path);
 						} else {
-							$name = '共'.count($file_path).'报告'.date("Ymd").'.zip';
+							$name = '共'.count($file_path).'报告'.date("Y-m-d").'.zip';
 							$filename = ROOT_PATH."/python_web/tmp/".$name; //最终生成的文件名
 							if(!is_dir(dirname($filename))){
 							　　mkdir(dirname($filename), 0777, true);
 							}
 							$zip = new \ZipArchive();
 							if($zip->open($filename,\ZIPARCHIVE::CREATE)!==TRUE){
+								img_unlik($tmp_img);
 			      				$this->json(["status"=>0,"msg"=>"无法打开文件，或者文件创建失败","data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
 							}
 							foreach ($file_path as $value) {
-							    $fileData = file_get_contents($value);
+							    $fileData = @file_get_contents($value);
 							    if ($fileData) {
 							        $zip->addFromString(basename($value), $fileData);
 							    }
@@ -517,6 +528,7 @@ class ProductsControllers extends AuthControllers
 								@unlink($value);
 							}
 							@unlink($filename);
+							img_unlik($tmp_img);
 						}
 					} else {
 	      				$this->json(["status"=>0,"msg"=>"漏洞不存在！","data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
@@ -562,7 +574,10 @@ class ProductsControllers extends AuthControllers
 	        	foreach ($list as $k => $v) {
 	          		$list[$k]['creation_time'] = $v['creation_time'] == 0 ? '-' : date("Y-m-d H:i:s",$v['creation_time']);
 	          		$list[$k]['update_time'] = $v['update_time'] == 0 ? '-' : date("Y-m-d H:i:s",$v['update_time']);
-	          		$list[$k]['num'] = 0;
+	          		$db->bind("company", $v['id']);
+					$post_count = "SELECT count(*) as num FROM domain_post WHERE company = :company";
+					$post_count = $db->find_one($post_count);
+	          		$list[$k]['num'] = isset($post_count['num']) ? $post_count['num'] : 0;;
 	        	}
 	      	}
 

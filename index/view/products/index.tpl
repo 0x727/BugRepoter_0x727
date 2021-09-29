@@ -33,7 +33,7 @@
                                         </th>
                                         <th>漏洞编号</th>
                                         <th>漏洞名称</th>
-                                        <th>漏洞分类</th>                                                   
+                                        <th>漏洞类型</th>                                                   
                                         <th>漏洞等级</th>                                                     
                                         <th>是否修复</th>
                                         <th>提交时间</th>
@@ -79,7 +79,7 @@
         // 批量下载
         function download_all_export(token){
             var data = ""
-            $("#copy-print-csv td :checkbox").each(function(){
+            $("#index td :checkbox").each(function(){
                 if($(this).prop("checked")){
                     data+=$(this).val()+","
                 }
@@ -134,7 +134,7 @@
         // 全选反选
         $("#quanxuan").on("click",function(){
             var checked = $(this).prop("checked")?"checked":"";
-            $("#copy-print-csv td :checkbox").each(function(){
+            $("#index td :checkbox").each(function(){
                 $(this).prop("checked", checked);
             })
         });

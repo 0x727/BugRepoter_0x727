@@ -9,6 +9,9 @@
         <title>{$system_config['name']}</title>
         <link rel="stylesheet" href="./public/index/css/bootstrap.min.css">
         <link rel="stylesheet" href="./public/index/css/main.css">
+        <script>
+            var watermark_username = "";
+        </script>
     </head>
     <body class="authentication">
         <div id="loading-wrapper">

@@ -180,7 +180,7 @@
                             var formData = new FormData();
                             formData.append("file", files[0]);
                             $.ajax({
-                                url: "./index.php?m=Public&a=up_img",
+                                url: "./index.php?m=Public&a=deup_img",
                                 data: formData,
                                 cache: false,
                                 dataType: "json",
@@ -188,7 +188,7 @@
                                 processData: false,
                                 type: 'POST',
                                 success: function (data) {
-                                    if(data.status){
+                                    if(data.status == '1'){
                                         $summernote_{$foo}.summernote('insertImage', data.data, function ($image) {
                                             $image.attr('src', data.data);
                                         });
@@ -312,6 +312,11 @@
                         icon: 1
                     }, function(){
                         window.location.href = "./index.php?m=Products&a=index"
+                    });
+                } else if(data.status == '2') {
+                    layer.msg(data.msg, {
+                        icon: 2
+                    }, function(){
                     });
                 } else {
                     layer.msg(data.msg, {

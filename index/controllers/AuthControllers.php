@@ -38,7 +38,9 @@ class AuthControllers
 		
 		$userid = isset($_SESSION['userid']) ? $_SESSION['userid'] : '';
 		$user_info = isset($_SESSION['user_info']) ? $_SESSION['user_info'] : '';
-        
+		$session_username = isset($user_info['username']) ? $user_info['username'] : '';
+		$this->smarty->assign('session_username', $session_username);
+
 		if($userid){
 			$this->smarty->assign('nickname', $user_info['email']);
 			$this->smarty->assign('user_info', $user_info);
