@@ -16,7 +16,7 @@
 			<div class="contents">
 				<h1>404</h1>
 				<h5>很抱歉 ，<br>该页面似乎已不存在。</h5>
-				<a href="./index.php?m=Index&a=index" class="btn stripes-btn">返回首页</a>
+				<a href="{$menu['home']}" class="btn stripes-btn">返回首页</a>
 			</div>
 			<div class="astronaut-container">
                 <img class="astronaut" src="./public/index/img/error-screen/astronaut.png" alt="Uni Pro Admin">

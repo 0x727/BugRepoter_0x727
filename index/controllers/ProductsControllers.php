@@ -12,49 +12,60 @@ class ProductsControllers extends AuthControllers
 	{
 		$this->log_db("用户访问漏洞列表","7");
 		$db = $this->Db();
+	    
 		if ($_POST) {
-			$draw = isset($_POST['draw']) ? intval($_POST['draw']) : "1";
-	      	$start = isset($_POST['start']) ? intval($_POST['start']) : "1";
-	      	$length = isset($_POST['length']) ? intval($_POST['length']) : "10";
-	      	if($length < 0 || $length > 10) $length = 10;
+			$num = isset($_POST['num']) ? intval($_POST['num']) : '';
+			if($num){
+		      	if($num <= 0) $num = 1;
+	    		if($num > 10) $this->json(['status'=>0,'msg'=>'批量添加报告数量已超出，最大限制10份！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+				 $this->json(['status'=>1,'msg'=>'操作成功',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=add_index&num=".$num,"ENCODE",$_SESSION['domain_key'])]]);
+			} else {
+				$draw = isset($_POST['draw']) ? intval($_POST['draw']) : "1";
+		      	$start = isset($_POST['start']) ? intval($_POST['start']) : "1";
+		      	$length = isset($_POST['length']) ? intval($_POST['length']) : "10";
+		      	if($length < 0 || $length > 10) $length = 10;
 
-	      	$value = isset($_POST['value']) ? $_POST['value'] : "";
-			$sql = "SELECT a.id,a.session,a.title,a.creation_time,c.title as user_id,b.title as cate_id,a.bugLevel,a.repair_time FROM domain_post as a LEFT JOIN domain_classification as b on a.cate_id = b.id LEFT JOIN domain_project_classification as c on a.company = c.id ORDER BY a.id desc";
-			$count = "SELECT count(*) as num FROM domain_post";
-			if($_SESSION['userid'] != '1'){
-			    $db->bind("user_id", $_SESSION['userid']);
-				$sql .= " WHERE a.user_id = :user_id";
-			}
-			$sql .= " limit ".$start.",".$length;
-			if($value){
-				$sql = "SELECT a.id,a.session,a.title,a.creation_time,c.title as user_id,b.title as cate_id,a.bugLevel,a.repair_time FROM domain_post as a LEFT JOIN domain_classification as b on a.cate_id = b.id LEFT JOIN domain_project_classification as c on a.company = c.id WHERE a.title LIKE :title limit ".$start.",".$length." ORDER BY a.id desc";
-			  	$db->bind("title", "%".$value."%");
-			}
-			$list = $db->query($sql);
-			if($list){
-				$type = ['1'=>'无影响','2'=>'低危','3'=>'中危','4'=>'高危','5'=>'严重'];
-	        	foreach ($list as $k => $v) {
-	          		$list[$k]['creation_time'] = $v['creation_time'] == 0 ? '-' : date("Y-m-d H:i:s",$v['creation_time']);
-	          		$list[$k]['repair_time'] = $v['repair_time'] == 0 ? '-' : date("Y-m-d H:i:s",$v['repair_time']);
-	          		$list[$k]['bugLevel'] = $type[ $v['bugLevel'] ];
-	          		if(empty($v['repair_time'])){
-		        		$list[$k]['repair_time'] = "否";
-		        	} else {
-		        		$list[$k]['repair_time'] = "是";
-		        	}
-	        	}
-	      	}
-	      	if($value){
-			  	$db->bind("title", "%".$value."%");
-	      		if($_SESSION['userid'] != '1'){
+		      	$value = isset($_POST['value']) ? $_POST['value'] : "";
+				$sql = "SELECT a.id,a.session,a.title,a.creation_time,c.title as user_id,b.title as cate_id,a.bugLevel,a.repair_time FROM domain_post as a LEFT JOIN domain_classification as b on a.cate_id = b.id LEFT JOIN domain_project_classification as c on a.company = c.id ORDER BY a.id desc";
+				$count = "SELECT count(*) as num FROM domain_post";
+				if($_SESSION['userid'] != '1'){
 				    $db->bind("user_id", $_SESSION['userid']);
-					$count .= " WHERE user_id = :user_id AND title LIKE :title";
+					$sql .= " WHERE a.user_id = :user_id";
 				}
-				$count .= " WHERE title LIKE :title";
+				$sql .= " limit ".$start.",".$length;
+				if($value){
+					$sql = "SELECT a.id,a.session,a.title,a.creation_time,c.title as user_id,b.title as cate_id,a.bugLevel,a.repair_time FROM domain_post as a LEFT JOIN domain_classification as b on a.cate_id = b.id LEFT JOIN domain_project_classification as c on a.company = c.id WHERE a.title LIKE :title limit ".$start.",".$length." ORDER BY a.id desc";
+				  	$db->bind("title", "%".$value."%");
+				}
+				$list = $db->query($sql);
+				if($list){
+					$type = ['1'=>'无影响','2'=>'低危','3'=>'中危','4'=>'高危','5'=>'严重'];
+		        	foreach ($list as $k => $v) {
+		          		$list[$k]['creation_time'] = $v['creation_time'] == 0 ? '-' : date("Y-m-d H:i:s",$v['creation_time']);
+		          		$list[$k]['repair_time'] = $v['repair_time'] == 0 ? '-' : date("Y-m-d H:i:s",$v['repair_time']);
+		          		$list[$k]['bugLevel'] = $type[ $v['bugLevel'] ];
+		          		if(empty($v['repair_time'])){
+			        		$list[$k]['repair_time'] = "否";
+			        	} else {
+			        		$list[$k]['repair_time'] = "是";
+			        	}
+			        	$list[$k]['edit_index_id'] = "./".root_filename.".php?".AuthCode("m=Products&a=edit_index&id=".$v['id'],"ENCODE",$_SESSION['domain_key']);
+			        	$list[$k]['del_index_id'] = "./".root_filename.".php?".AuthCode("m=Products&a=del_index&id=".$v['id']."&token=".$_SESSION['token'],"ENCODE",$_SESSION['domain_key']);
+		        	}
+		      	}
+		      	if($value){
+				  	$db->bind("title", "%".$value."%");
+		      		if($_SESSION['userid'] != '1'){
+					    $db->bind("user_id", $_SESSION['userid']);
+						$count .= " WHERE user_id = :user_id AND title LIKE :title";
+					}
+					$count .= " WHERE title LIKE :title";
+				}
+	      		$classification_count = $db->find_one($count);
+	      		$classification_num = isset($classification_count['num']) ? $classification_count['num'] : 0;
+		      	$this->json(["draw"=>$draw,"recordsTotal"=>$classification_num,"recordsFiltered"=>$classification_num,"data"=>$list]);
 			}
-      		$classification_count = $db->find_one($count);
-      		$classification_num = isset($classification_count['num']) ? $classification_count['num'] : 0;
-	      	$this->json(["draw"=>$draw,"recordsTotal"=>$classification_num,"recordsFiltered"=>$classification_num,"data"=>$list]);
+
 		} else {
 			$template_list = $db->query("select uuid,name from domain_template");
 			$template = "";
@@ -63,10 +74,13 @@ class ProductsControllers extends AuthControllers
 					$template .= '<option value="'.$v['uuid'].'">'.$v['name'].'</option>';
 				}
 			}
+			$token = md5(code().time().code());
+	    	$_SESSION['token'] = $token;
+	    	$this->smarty->assign('token',$token);
 	      	$this->smarty->assign('template',$template);
-	      	$token = md5(code().time().code());
-	      	$_SESSION['token'] = $token;
-	      	$this->smarty->assign('token',$token);
+	      	$this->smarty->assign('products_add_index',"/".root_filename.".php?".AuthCode("m=Products&a=add_index&num=1","ENCODE",$_SESSION['domain_key']));
+	      	$this->smarty->assign('products_download_index',"/".root_filename.".php?".AuthCode("m=Products&a=download_index","ENCODE",$_SESSION['domain_key']));
+	      	$this->smarty->assign('add_index',"/".root_filename.".php?".AuthCode("m=Products&a=add_index","ENCODE",$_SESSION['domain_key']));
 	    	$this->smarty->display('products/index.tpl');
 		}
 	}
@@ -86,8 +100,8 @@ class ProductsControllers extends AuthControllers
 	        $token = isset($_POST['token']) ? strtolower($_POST['token']) : "";
 	        $data_length = count($data);
 	        #IF判断区域
-			if($num > 10) $this->json(['status'=>0,'msg'=>'批量添加报告数量已超出，最大限制10份！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
-			if($data_length != $num) $this->json(['status'=>0,'msg'=>'报告数量异常！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
+			if($num > 10) $this->json(['status'=>0,'msg'=>'批量添加报告数量已超出，最大限制10份！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+			if($data_length != $num) $this->json(['status'=>0,'msg'=>'报告数量异常！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
 			if(empty($token)) $this->json(['status'=>0,'msg'=>'输入token！']);
 	        $session_code = isset($_SESSION['token']) ? $_SESSION['token'] : '';
 	        $success = 0;
@@ -151,7 +165,7 @@ class ProductsControllers extends AuthControllers
 		} else {
 	      	$num = isset($_GET['num']) ? intval($_GET['num']) : '1';
 	      	if($num <= 0) $num = 1;
-    		if($num > 10) $this->json(['status'=>0,'msg'=>'批量添加报告数量已超出，最大限制10份！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
+    		if($num > 10) $this->json(['status'=>0,'msg'=>'批量添加报告数量已超出，最大限制10份！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
 	      	$this->smarty->assign('num',$num);
 			$classification = $db->query("select * from domain_classification");
 	      	$this->smarty->assign('classification',$classification);
@@ -252,7 +266,7 @@ class ProductsControllers extends AuthControllers
 		        		$post['repair_time'] = "是";
 		        	}
 			    } else {
-	        		$this->json(['data'=>['url'=>"./".root_filename.".php?m=Products&a=index"],'msg'=>'未找到此漏洞！']);
+	        		$this->json(['data'=>['url'=>"./".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])],'msg'=>'未找到此漏洞！']);
 			    }
 		      	$this->smarty->assign('post',$post);
 
@@ -275,7 +289,7 @@ class ProductsControllers extends AuthControllers
 		      	$this->smarty->assign('token',$token);
 	        	$this->smarty->display('products/edit_index.tpl');
 	      	} else {
-	        	$this->json(['data'=>['url'=>"./".root_filename.".php?m=Products&a=index"],'msg'=>'程序异常']);
+	        	$this->json(['data'=>['url'=>"./".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])],'msg'=>'程序异常']);
 	      	}
 		}
 	}
@@ -294,10 +308,10 @@ class ProductsControllers extends AuthControllers
 	      	$token = isset($_GET['token']) ? $_GET['token'] : '';
 	      	$session_token = isset($_SESSION['token']) ? $_SESSION['token'] : '';
 	      	#IF判断区域
-	      	if(empty($id)) $this->json(['status'=>0,'msg'=>'输入ID！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
-	      	if(empty($token)) $this->json(['status'=>0,'msg'=>'输入token！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
-	      	if(empty($session_token)) $this->json(['status'=>0,'msg'=>'token异常！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
-	      	if($token != $session_token) $this->json(['status'=>0,'msg'=>'token验证失败！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
+	      	if(empty($id)) $this->json(['status'=>0,'msg'=>'输入ID！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+	      	if(empty($token)) $this->json(['status'=>0,'msg'=>'输入token！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+	      	if(empty($session_token)) $this->json(['status'=>0,'msg'=>'token异常！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+	      	if($token != $session_token) $this->json(['status'=>0,'msg'=>'token验证失败！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
 	      	unset($_SESSION['token']);
 
 	      	$sql = "DELETE from domain_post where `id` = :id";
@@ -308,12 +322,12 @@ class ProductsControllers extends AuthControllers
 			}
 	      	$info = $db->query($sql);
 	      	if($info){
-	        	$this->json(["status"=>1,"msg"=>"删除成功！","data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
+	        	$this->json(["status"=>1,"msg"=>"删除成功！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
 	      	} else {
-	        	$this->json(["status"=>0,"msg"=>"删除失败！","data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
+	        	$this->json(["status"=>0,"msg"=>"删除失败！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
 	      	}
 	    } else {
-	      	$this->json(["status"=>0,"msg"=>"错误异常！","data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
+	      	$this->json(["status"=>0,"msg"=>"错误异常！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
 	    }
 	}
 
@@ -324,20 +338,39 @@ class ProductsControllers extends AuthControllers
 	 */
   	public function download_index()
   	{
-  		$this->jurisdiction("非法访问下载漏洞报告");
-		$this->log_db("用户访问下载漏洞报告","7");
+  // 		$this->jurisdiction("非法访问下载漏洞报告");
+		// $this->log_db("用户访问下载漏洞报告","7");
 	    $db = $this->Db();
+	    if($_POST){
+    		$id = isset($_POST['id']) ? explode(",", $_POST['id']) : '';
+		    $path = isset($_POST['path']) ? $_POST['path'] : '';
+			$token = isset($_POST['token']) ? $_POST['token'] : '';
+	      	$session_token = isset($_SESSION['token']) ? $_SESSION['token'] : '';
+	      	#IF判断区域
+     	 	if(empty($id)) $this->json(['status'=>0,'msg'=>'输入ID！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+	      	if(empty($path)) $this->json(['status'=>0,'msg'=>'输入模板ID！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+	      	if(empty($token)) $this->json(['status'=>0,'msg'=>'输入token！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+	      	if(empty($session_token)) $this->json(['status'=>0,'msg'=>'token异常！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+	      	if($token != $session_token) $this->json(['status'=>0,'msg'=>'token验证失败！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+	      	unset($_SESSION['token']);
+
+	      	$token = md5(code().time().code());
+	      	$_SESSION['token'] = $token;
+
+      		$this->json(['status'=>1,'msg'=>'正在导出！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=download_index&id=".implode(",", $id)."&token=".$token."&path=".$path,"ENCODE",$_SESSION['domain_key'])]]);
+
+    	}
 	    if($_GET){
 	      	$path = isset($_GET['path']) ? $_GET['path'] : '';
 	      	$id = isset($_GET['id']) ? explode(",", $_GET['id']) : '';
 	      	$token = isset($_GET['token']) ? $_GET['token'] : '';
 	      	$session_token = isset($_SESSION['token']) ? $_SESSION['token'] : '';
 	      	#IF判断区域
-	      	if(empty($id)) $this->json(['status'=>0,'msg'=>'输入ID！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
-	      	if(empty($path)) $this->json(['status'=>0,'msg'=>'输入模板ID！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
-	      	if(empty($token)) $this->json(['status'=>0,'msg'=>'输入token！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
-	      	if(empty($session_token)) $this->json(['status'=>0,'msg'=>'token异常！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
-	      	if($token != $session_token) $this->json(['status'=>0,'msg'=>'token验证失败！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
+	      	if(empty($id)) $this->json(['status'=>0,'msg'=>'输入ID！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+	      	if(empty($path)) $this->json(['status'=>0,'msg'=>'输入模板ID！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+	      	if(empty($token)) $this->json(['status'=>0,'msg'=>'输入token！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+	      	if(empty($session_token)) $this->json(['status'=>0,'msg'=>'token异常！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+	      	if($token != $session_token) $this->json(['status'=>0,'msg'=>'token验证失败！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
 	      	unset($_SESSION['token']);
 
 	      	$db = $this->Db();
@@ -346,7 +379,7 @@ class ProductsControllers extends AuthControllers
 			if($list){
 				$file_path_name = basename($list['file_path']);
 				if(file_exists(ROOT_PATH."/python_web/template/".$file_path_name)){
-					if(!is_array($id)) $this->json(['status'=>0,'msg'=>'程序异常！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
+					if(!is_array($id)) $this->json(['status'=>0,'msg'=>'程序异常！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
 					$sql_where = "";
 		    		foreach ($id as $k => $v) {
 		    			$sql_where .= ":session".$k.",";
@@ -388,18 +421,18 @@ class ProductsControllers extends AuthControllers
 						    $v['content'] = htmlspecialchars_decode(str_replace(["《","》","截图、本地图片可直接复制粘贴进编辑器中"], ['<','>',''], $v['content']));
 						    preg_match_all("/<p[^>]*>\s*.*\s*<\/p>/isU",$v['content'],$match);
 						    $array = [];
-				
 						    foreach ($match[0] as $ks => $vs) {
 						    	preg_match_all("/<\s*img\s+[^>]*?src\s*=\s*(\'|\")(.*?)\\1[^>]*?\/?\s*>/i",$vs,$match);
 						    	if($match[0]){
 						    		foreach (end($match) as $key) {
-						    			$path = ROOT_PATH."/public/auto/".str_replace("/index.php?m=Public&a=enup_img&id=", "", $key);
-						    			if(file_exists($path)){
-						    				@file_put_contents(ROOT_PATH."/python_web/tmp/".str_replace("/index.php?m=Public&a=enup_img&id=", "", $key).".png",@binary_decode(@file_get_contents($path),str_replace("/index.php?m=Public&a=enup_img&id=", "", $key)));
-						    				$tmp_img[] = ROOT_PATH."/python_web/tmp/".str_replace("/index.php?m=Public&a=enup_img&id=", "", $key).".png";
-						    				$array[] = ['text'=>ROOT_PATH."/python_web/tmp/".str_replace("/index.php?m=Public&a=enup_img&id=", "", $key).".png",'type'=>1];
-						    			} else {
-						    				$array[] = ['text'=>"111",'type'=>1];
+						    			$img = @AuthCode(explode("/".root_filename.".php?", $key)[1],"DECODE",$_SESSION['domain_key']);
+						    			if($img){
+							    			$path = ROOT_PATH."/public/auto/".str_replace("m=Public&a=enup_img&id=", "", $img);
+							    			if(file_exists($path)){
+							    				@file_put_contents(ROOT_PATH."/python_web/tmp/".str_replace("m=Public&a=enup_img&id=", "", $img).".png",@binary_decode(@file_get_contents($path),str_replace("m=Public&a=enup_img&id=", "", $img)));
+							    				$tmp_img[] = ROOT_PATH."/python_web/tmp/".str_replace("m=Public&a=enup_img&id=", "", $img).".png";
+							    				$array[] = ['text'=>ROOT_PATH."/python_web/tmp/".str_replace("m=Public&a=enup_img&id=", "", $img).".png",'type'=>1];
+							    			}
 						    			}
 						    		}
 						    	} else {
@@ -420,7 +453,7 @@ class ProductsControllers extends AuthControllers
 						    	$serious += 1;
 						    }
 						    $post[$k]['content'] = $v['content'] = $array;
-						    $company[$v['realname']][] = [
+						    @$company[$v['realname']][] = [
 						    	'id'=>count($company[$v['realname']])+1,
 						    	'pathname'=>$v['title'],
 						    	'name'=>$v['title'],
@@ -430,9 +463,9 @@ class ProductsControllers extends AuthControllers
 						    	'verification'=>$array,
 						    	'suggestions'=>$v['suggestions'],
 						    ];
-						    $hostlist[$v['realname']][] = ['id'=>count($hostlist[$v['realname']])+1,'url'=>$v['bugDetail'],'name'=>$v['title'],'type'=>$v['cate_id'],'bugLevel'=>$v['bugLevel']];
-						    $vulnerability_types[$v['realname']][] = $v['cate_id'];
-						    $url[] = getTopHost($v['bugDetail']);
+						    @$hostlist[$v['realname']][] = ['id'=>count($hostlist[$v['realname']])+1,'url'=>$v['bugDetail'],'name'=>$v['title'],'type'=>$v['cate_id'],'bugLevel'=>$v['bugLevel']];
+						    @$vulnerability_types[$v['realname']][] = $v['cate_id'];
+						    $url[] = @getTopHost($v['bugDetail']);
 				   		}
 				   		if($serious>=1 || $high >= 3){
 				   			$risk_level = "极度风险";
@@ -482,30 +515,32 @@ class ProductsControllers extends AuthControllers
 						    try {
 								$sw = new stockConnector("127.0.0.1","5678");
 								$aa = ["path"=>ROOT_PATH."/python_web/tmp/".$code.".json","name"=>$k."安全测试报告".date("Y-m-d"),'template_path'=>ROOT_PATH."/python_web/template/".$file_path_name];
-								$con = $sw->sendMsg(json_encode($aa));
+								$con = @$sw->sendMsg(json_encode($aa));
 				
-								$ret = $sw->getMsg();
+								$ret = @$sw->getMsg();
 								if($ret){
 									$file_dir = ROOT_PATH."/python_web/tmp/".json_decode($ret,true)['path'];
 									$file_path[] = $file_dir;
 								}
 							} catch (Exception $e) {
 								img_unlik($tmp_img);
-			      				$this->json(["status"=>0,"msg"=>"系统异常：".$e->getMessage(),"data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
+			      				$this->json(["status"=>0,"msg"=>"系统异常：".$e->getMessage(),"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
 							}
 							@unlink(ROOT_PATH."/python_web/tmp/".$code.".json");
 						}
 
 						if(count($file_path) <= 0){
-							img_unlik($tmp_img);$this->json(["status"=>0,"msg"=>"系统异常：导出报告服务错误！","data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
+							img_unlik($tmp_img);$this->json(["status"=>0,"msg"=>"系统异常：导出报告服务错误！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
 						}
 
 					    // 文件下载
 						if(count($file_path) <= 1){
 							$file_path = array_shift($file_path);
 							downloadFile($file_path,basename($file_path));
+							$this->log_db("用户成功下载漏洞报告：".filterWords(basename($file_path)),"9");
 							@unlink($file_path);
 						} else {
+							$this->log_db("用户成功下载漏洞报告：".filterWords('共'.count($file_path).'报告'.date("Y-m-d").'.zip'),"9");
 							$name = '共'.count($file_path).'报告'.date("Y-m-d").'.zip';
 							$filename = ROOT_PATH."/python_web/tmp/".$name; //最终生成的文件名
 							if(!is_dir(dirname($filename))){
@@ -514,7 +549,7 @@ class ProductsControllers extends AuthControllers
 							$zip = new \ZipArchive();
 							if($zip->open($filename,\ZIPARCHIVE::CREATE)!==TRUE){
 								img_unlik($tmp_img);
-			      				$this->json(["status"=>0,"msg"=>"无法打开文件，或者文件创建失败","data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
+			      				$this->json(["status"=>0,"msg"=>"无法打开文件，或者文件创建失败","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
 							}
 							foreach ($file_path as $value) {
 							    $fileData = @file_get_contents($value);
@@ -531,16 +566,16 @@ class ProductsControllers extends AuthControllers
 							img_unlik($tmp_img);
 						}
 					} else {
-	      				$this->json(["status"=>0,"msg"=>"漏洞不存在！","data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
+	      				$this->json(["status"=>0,"msg"=>"漏洞不存在！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
 					}
 				} else {
-	      			$this->json(["status"=>0,"msg"=>"模板文件不存在！","data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
+	      			$this->json(["status"=>0,"msg"=>"模板文件不存在！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
 				}
 			} else {
-	      		$this->json(["status"=>0,"msg"=>"模板id不存在！","data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
+	      		$this->json(["status"=>0,"msg"=>"模板id不存在！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
 			}
 	    } else {
-	      	$this->json(["status"=>0,"msg"=>"错误异常！","data"=>["url"=>"/".root_filename.".php?m=Products&a=index"]]);
+	      	$this->json(["status"=>0,"msg"=>"错误异常！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
 	    }
 	}
 
@@ -554,6 +589,9 @@ class ProductsControllers extends AuthControllers
 	{
 		$this->jurisdiction("非法访问项目分类");
 		$this->log_db("用户访问项目分类","7");
+      	$token = md5(code().time().code());
+      	$_SESSION['token'] = $token;
+      	$this->smarty->assign('token',$token);
 
 		if($_POST){
 	      	$draw = isset($_POST['draw']) ? intval($_POST['draw']) : "1";
@@ -578,6 +616,8 @@ class ProductsControllers extends AuthControllers
 					$post_count = "SELECT count(*) as num FROM domain_post WHERE company = :company";
 					$post_count = $db->find_one($post_count);
 	          		$list[$k]['num'] = isset($post_count['num']) ? $post_count['num'] : 0;;
+	          		$list[$k]['edit_index_id'] = "./".root_filename.".php?".AuthCode("m=Products&a=edit_classification&id=".$v['id'],"ENCODE",$_SESSION['domain_key']);
+		        	$list[$k]['del_index_id'] = "./".root_filename.".php?".AuthCode("m=Products&a=del_classification&id=".$v['id']."&token=".$token,"ENCODE",$_SESSION['domain_key']);
 	        	}
 	      	}
 
@@ -589,9 +629,6 @@ class ProductsControllers extends AuthControllers
       		$classification_num = isset($classification_count['num']) ? $classification_count['num'] : 0;
 	      	$this->json(["draw"=>$draw,"recordsTotal"=>$classification_num,"recordsFiltered"=>$classification_num,"data"=>$list]);
 	    } else {
-	      	$token = md5(code().time().code());
-	      	$_SESSION['token'] = $token;
-	      	$this->smarty->assign('token',$token);
 	    	$this->smarty->display('products/classification.tpl');
 	    }
 	}
@@ -694,8 +731,7 @@ class ProductsControllers extends AuthControllers
 				$set[] = "`pid` = :pid";
 			  	$db->bind("pid", $pid);
 			}
-			$set[] = "update_time";
-			$set_val[] = ":update_time";
+			$set[] = "`update_time` = :update_time";
 			$db->bind("update_time", time());
 
 			$set = implode(", ",$set);
@@ -720,7 +756,7 @@ class ProductsControllers extends AuthControllers
 	        	$this->smarty->assign('classification',$classification);
 	        	$this->smarty->display('products/edit_classification.tpl');
 	      	} else {
-	        	$this->json(['data'=>['url'=>"./".root_filename.".php?m=Products&a=classification"],'msg'=>'程序异常']);
+	        	$this->json(['data'=>['url'=>"./".root_filename.".php?".AuthCode("m=Products&a=classification","ENCODE",$_SESSION['domain_key'])],'msg'=>'程序异常']);
 	      	}
     	}
 	}
@@ -741,21 +777,21 @@ class ProductsControllers extends AuthControllers
 	      	$token = isset($_GET['token']) ? $_GET['token'] : '';
 	      	$session_token = isset($_SESSION['token']) ? $_SESSION['token'] : '';
 	      	#IF判断区域
-	      	if(empty($id)) $this->json(['status'=>0,'msg'=>'输入ID！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=classification"]]);
-	      	if(empty($token)) $this->json(['status'=>0,'msg'=>'输入token！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=classification"]]);
-	      	if(empty($session_token)) $this->json(['status'=>0,'msg'=>'token异常！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=classification"]]);
-	      	if($token != $session_token) $this->json(['status'=>0,'msg'=>'token验证失败！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=classification"]]);
+	      	if(empty($id)) $this->json(['status'=>0,'msg'=>'输入ID！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=classification","ENCODE",$_SESSION['domain_key'])]]);
+	      	if(empty($token)) $this->json(['status'=>0,'msg'=>'输入token！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=classification","ENCODE",$_SESSION['domain_key'])]]);
+	      	if(empty($session_token)) $this->json(['status'=>0,'msg'=>'token异常！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=classification","ENCODE",$_SESSION['domain_key'])]]);
+	      	if($token != $session_token) $this->json(['status'=>0,'msg'=>'token验证失败！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=classification","ENCODE",$_SESSION['domain_key'])]]);
 	      	unset($_SESSION['token']);
 
 	      	$db->bind("id", $id);
 	      	$info = $db->query("DELETE from domain_project_classification where `id` = :id");
 	      	if($info){
-	        	$this->json(["status"=>1,"msg"=>"删除成功！","data"=>["url"=>"/".root_filename.".php?m=Products&a=classification"]]);
+	        	$this->json(["status"=>1,"msg"=>"删除成功！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=classification","ENCODE",$_SESSION['domain_key'])]]);
 	      	} else {
-	        	$this->json(["status"=>0,"msg"=>"删除失败！","data"=>["url"=>"/".root_filename.".php?m=Products&a=classification"]]);
+	        	$this->json(["status"=>0,"msg"=>"删除失败！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=classification","ENCODE",$_SESSION['domain_key'])]]);
 	      	}
 	    } else {
-	      	$this->json(["status"=>0,"msg"=>"错误异常！","data"=>["url"=>"/".root_filename.".php?m=Products&a=classification"]]);
+	      	$this->json(["status"=>0,"msg"=>"错误异常！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=classification","ENCODE",$_SESSION['domain_key'])]]);
 	    }
 	}
 
@@ -767,6 +803,9 @@ class ProductsControllers extends AuthControllers
 	public function loophole_classification()
 	{
 		$this->log_db("用户访问漏洞分类","7");
+		$token = md5(code().time().code());
+      	$_SESSION['token'] = $token;
+      	$this->smarty->assign('token',$token);
 		if ($_POST) {
 			$draw = isset($_POST['draw']) ? intval($_POST['draw']) : "1";
 	      	$start = isset($_POST['start']) ? intval($_POST['start']) : "1";
@@ -786,6 +825,8 @@ class ProductsControllers extends AuthControllers
 	        	foreach ($list as $k => $v) {
 	          		$list[$k]['creation_time'] = $v['creation_time'] == 0 ? '-' : date("Y-m-d H:i:s",$v['creation_time']);
 	          		$list[$k]['update_time'] = $v['update_time'] == 0 ? '-' : date("Y-m-d H:i:s",$v['update_time']);
+	          		$list[$k]['edit_loophole_classification_id'] = "./".root_filename.".php?".AuthCode("m=Products&a=edit_loophole_classification&id=".$v['id'],"ENCODE",$_SESSION['domain_key']);
+		        	$list[$k]['del_loophole_classification_id'] = "./".root_filename.".php?".AuthCode("m=Products&a=del_loophole_classification&id=".$v['id']."&token=".$token,"ENCODE",$_SESSION['domain_key']);
 	        	}
 	      	}
 
@@ -797,9 +838,7 @@ class ProductsControllers extends AuthControllers
       		$classification_num = isset($classification_count['num']) ? $classification_count['num'] : 0;
 	      	$this->json(["draw"=>$draw,"recordsTotal"=>$classification_num,"recordsFiltered"=>$classification_num,"data"=>$list]);
 		} else {
-	      	$token = md5(code().time().code());
-	      	$_SESSION['token'] = $token;
-	      	$this->smarty->assign('token',$token);
+	      	
 	    	$this->smarty->display('products/loophole_classification.tpl');
 		}
 	}
@@ -917,8 +956,7 @@ class ProductsControllers extends AuthControllers
 			$db->bind("suggestions", $suggestions);
 			$set[] = " `description` = :description";
 			$db->bind("description", $description);
-			$set[] = "update_time";
-			$set_val[] = ":update_time";
+			$set[] = " `update_time` = :update_time";
 			$db->bind("update_time", time());
 
 			$set = implode(", ",$set);
@@ -943,7 +981,7 @@ class ProductsControllers extends AuthControllers
 	        	$this->smarty->assign('classification',$classification);
 	        	$this->smarty->display('products/edit_loophole_classification.tpl');
 	      	} else {
-	        	$this->json(['data'=>['url'=>"./".root_filename.".php?m=Products&a=loophole_classification"],'msg'=>'程序异常']);
+	        	$this->json(['data'=>['url'=>"./".root_filename.".php?".AuthCode("m=Products&a=loophole_classification","ENCODE",$_SESSION['domain_key'])],'msg'=>'程序异常']);
 	      	}
     	}
 	}
@@ -964,21 +1002,21 @@ class ProductsControllers extends AuthControllers
 	      	$token = isset($_GET['token']) ? $_GET['token'] : '';
 	      	$session_token = isset($_SESSION['token']) ? $_SESSION['token'] : '';
 	      	#IF判断区域
-	      	if(empty($id)) $this->json(['status'=>0,'msg'=>'输入ID！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=loophole_classification"]]);
-	      	if(empty($token)) $this->json(['status'=>0,'msg'=>'输入token！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=loophole_classification"]]);
-	      	if(empty($session_token)) $this->json(['status'=>0,'msg'=>'token异常！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=loophole_classification"]]);
-	      	if($token != $session_token) $this->json(['status'=>0,'msg'=>'token验证失败！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=loophole_classification"]]);
+	      	if(empty($id)) $this->json(['status'=>0,'msg'=>'输入ID！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=loophole_classification","ENCODE",$_SESSION['domain_key'])]]);
+	      	if(empty($token)) $this->json(['status'=>0,'msg'=>'输入token！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=loophole_classification","ENCODE",$_SESSION['domain_key'])]]);
+	      	if(empty($session_token)) $this->json(['status'=>0,'msg'=>'token异常！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=loophole_classification","ENCODE",$_SESSION['domain_key'])]]);
+	      	if($token != $session_token) $this->json(['status'=>0,'msg'=>'token验证失败！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=loophole_classification","ENCODE",$_SESSION['domain_key'])]]);
 	      	unset($_SESSION['token']);
 
 	      	$db->bind("id", $id);
 	      	$info = $db->query("DELETE from domain_classification where `id` = :id");
 	      	if($info){
-	        	$this->json(["status"=>1,"msg"=>"删除成功！","data"=>["url"=>"/".root_filename.".php?m=Products&a=loophole_classification"]]);
+	        	$this->json(["status"=>1,"msg"=>"删除成功！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=loophole_classification","ENCODE",$_SESSION['domain_key'])]]);
 	      	} else {
-	        	$this->json(["status"=>0,"msg"=>"删除失败！","data"=>["url"=>"/".root_filename.".php?m=Products&a=loophole_classification"]]);
+	        	$this->json(["status"=>0,"msg"=>"删除失败！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=loophole_classification","ENCODE",$_SESSION['domain_key'])]]);
 	      	}
 	    } else {
-	      	$this->json(["status"=>0,"msg"=>"错误异常！","data"=>["url"=>"/".root_filename.".php?m=Products&a=loophole_classification"]]);
+	      	$this->json(["status"=>0,"msg"=>"错误异常！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=loophole_classification","ENCODE",$_SESSION['domain_key'])]]);
 	    }
 	}
 
@@ -991,7 +1029,9 @@ class ProductsControllers extends AuthControllers
 	{
 		$this->jurisdiction("非法访问模板列表");
 		$this->log_db("用户访问模板列表","7");
-
+		$token = md5(code().time().code());
+      	$_SESSION['token'] = $token;
+      	$this->smarty->assign('token',$token);
     	if ($_POST) {
 			$draw = isset($_POST['draw']) ? intval($_POST['draw']) : "1";
 	      	$start = isset($_POST['start']) ? intval($_POST['start']) : "1";
@@ -1010,6 +1050,8 @@ class ProductsControllers extends AuthControllers
 			if($list){
 	        	foreach ($list as $k => $v) {
 	          		$list[$k]['add_time'] = $v['add_time'] == 0 ? '-' : date("Y-m-d H:i:s",$v['add_time']);
+	          		$list[$k]['download_template_id'] = "./".root_filename.".php?".AuthCode("m=Products&a=download_template&id=".$v['uuid']."&token=".$token,"ENCODE",$_SESSION['domain_key']);
+		        	$list[$k]['del_template_id'] = "./".root_filename.".php?".AuthCode("m=Products&a=del_template&id=".$v['uuid']."&token=".$token,"ENCODE",$_SESSION['domain_key']);
 	        	}
 	      	}
 
@@ -1021,9 +1063,6 @@ class ProductsControllers extends AuthControllers
       		$classification_num = isset($classification_count['num']) ? $classification_count['num'] : 0;
 	      	$this->json(["draw"=>$draw,"recordsTotal"=>$classification_num,"recordsFiltered"=>$classification_num,"data"=>$list]);
 		} else {
-	      	$token = md5(code().time().code());
-	      	$_SESSION['token'] = $token;
-	      	$this->smarty->assign('token',$token);
 	    	$this->smarty->display('products/template.tpl');
 		}
 	}
@@ -1091,23 +1130,23 @@ class ProductsControllers extends AuthControllers
 	      	$token = isset($_GET['token']) ? $_GET['token'] : '';
 	      	$session_token = isset($_SESSION['token']) ? $_SESSION['token'] : '';
 	      	#IF判断区域
-	      	if(empty($id)) $this->json(['status'=>0,'msg'=>'输入ID！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=template"]]);
-	      	if(empty($token)) $this->json(['status'=>0,'msg'=>'输入token！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=template"]]);
-	      	if(empty($session_token)) $this->json(['status'=>0,'msg'=>'token异常！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=template"]]);
-	      	if($token != $session_token) $this->json(['status'=>0,'msg'=>'token验证失败！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=template"]]);
+	      	if(empty($id)) $this->json(['status'=>0,'msg'=>'输入ID！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=template","ENCODE",$_SESSION['domain_key'])]]);
+	      	if(empty($token)) $this->json(['status'=>0,'msg'=>'输入token！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=template","ENCODE",$_SESSION['domain_key'])]]);
+	      	if(empty($session_token)) $this->json(['status'=>0,'msg'=>'token异常！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=template","ENCODE",$_SESSION['domain_key'])]]);
+	      	if($token != $session_token) $this->json(['status'=>0,'msg'=>'token验证失败！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=template","ENCODE",$_SESSION['domain_key'])]]);
 	      	unset($_SESSION['token']);
 
-	      	if($id == "656b721dee262140946d1120f35f84e3") $this->json(['status'=>0,'msg'=>'默认模板禁止删除！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=template"]]);
+	      	if($id == "656b721dee262140946d1120f35f84e3") $this->json(['status'=>0,'msg'=>'默认模板禁止删除！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=template","ENCODE",$_SESSION['domain_key'])]]);
 
 	      	$db->bind("uuid", $id);
 	      	$info = $db->query("DELETE from domain_template where `uuid` = :uuid");
 	      	if($info){
-	        	$this->json(["status"=>1,"msg"=>"删除成功！","data"=>["url"=>"/".root_filename.".php?m=Products&a=template"]]);
+	        	$this->json(["status"=>1,"msg"=>"删除成功！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=template","ENCODE",$_SESSION['domain_key'])]]);
 	      	} else {
-	        	$this->json(["status"=>0,"msg"=>"删除失败！","data"=>["url"=>"/".root_filename.".php?m=Products&a=template"]]);
+	        	$this->json(["status"=>0,"msg"=>"删除失败！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=template","ENCODE",$_SESSION['domain_key'])]]);
 	      	}
 	    } else {
-	      	$this->json(["status"=>0,"msg"=>"错误异常！","data"=>["url"=>"/".root_filename.".php?m=Products&a=template"]]);
+	      	$this->json(["status"=>0,"msg"=>"错误异常！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=template","ENCODE",$_SESSION['domain_key'])]]);
 	    }
 	}
 }

@@ -52,7 +52,7 @@
                                     <div class="field-wrapper mb-3">
                                         <div style="position: absolute;right: 0px;">
                                             <a href="javascript:void(0);">
-                                                <img id="verify_img" src="./index.php?m=Login&a=code" alt="点击刷新" />
+                                                <img id="verify_img" src="{$verify_img}" alt="点击刷新" />
                                             </a>
                                         </div>
                                         <input type="text" name="verify" maxlength="4">
@@ -79,9 +79,8 @@
         <script>
             $(function() {
                 $("#verify_img").click(function() {
-                    var src = "./index.php?m=Login&a=code";
-                    var random = Math.floor(Math.random() * (1000 + 1));
-                    $(this).attr("src", src + "&random=" + random);
+                    var src = "{$verify_img}";
+                    $(this).attr("src", src);
                 });
                 $("#go_login").click(function() {
                     var name = $("input[name='name']").val();
@@ -112,7 +111,7 @@
                         });
                         return false
                     }
-                    $.post("./index.php?m=Login&a=index",{
+                    $.post("{$ajax_from}",{
                         name:name,
                         password:password,
                         verify:verify,
@@ -121,7 +120,7 @@
                             layer.msg(data.msg, {
                                 icon: 1
                             }, function(){
-                                window.location.href = "./index.php?m=Index&a=index"
+                                window.location.href = "{$home_index}"
                             });
                         } else {
                             layer.msg(data.msg, {

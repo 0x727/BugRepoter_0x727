@@ -173,6 +173,10 @@ location ^~ /public/auto/ {
 location ^~ /public/img/ {
   deny all;
 }
+# 把.php 隐藏起来
+if (!-e $request_filename){
+	rewrite  ^(.*)$ $1.php last;
+}
 ```
 ![nginx_config](./public/img/nginx_config.png)
 
@@ -181,6 +185,8 @@ location ^~ /public/img/ {
 V1.0 项目支持项目批量提交，批量按项目分类进行导出，快速生成并且统计年度汇总报告。
 
 V1.1 防截图功能，避免项目成员私自截图分享到互联网。报告上传的图片采用RC4加密算法进行加密图片，更好的防止图片泄露。
+
+V1.2 URL防止篡改，更好提高网站安全性。防止恶意获取URL请求。
 
 
 ## 0x07 反馈

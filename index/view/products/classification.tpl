@@ -9,7 +9,7 @@
                     <div class="card-body">
                         <div class="table-responsive">
                             <div class="dt-buttons">
-                                <a href="./index.php?m=Products&a=add_classification">
+                                <a href="{$menu['add_classification']}">
                                     <button class="dt-button buttons-copy buttons-html5" tabindex="0" aria-controls="copy-print-scroll" type="button">
                                         <span>添加</span>
                                     </button>
@@ -56,7 +56,7 @@
             "serverSide": true,
             "deferRender": true,
             "ajax": {
-                "url": "./index.php?m=Products&a=classification",
+                "url": "{$menu['products_classification']}",
                 "type":"POST"
             },
             "pagingType": "full_numbers",
@@ -80,9 +80,9 @@
                     "data": function (row, type, val, meta) {
                         text = ""
                         text += '<div class="actions">'
-                        text += '<a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title="" data-original-title="查看漏洞"><i class="icon-visibility text-info"></i>&nbsp;</a>'
-                        text += '<a href="./index.php?m=Products&a=edit_classification&id='+row.id+'" data-toggle="tooltip" data-placement="top" title="" data-original-title="编辑"><i class="icon-edit1 text-info"></i>&nbsp;</a>'
-                        text += '<a href="./index.php?m=Products&a=del_classification&id='+row.id+'&token={$token}" data-toggle="tooltip" data-placement="top" title="" data-original-title="删除"><i class="icon-x-circle text-danger"></i>&nbsp;</a>'
+                        // text += '<a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title="" data-original-title="查看漏洞"><i class="icon-visibility text-info"></i>&nbsp;</a>'
+                        text += '<a href="'+row.edit_index_id+'" data-toggle="tooltip" data-placement="top" title="" data-original-title="编辑"><i class="icon-edit1 text-info"></i>&nbsp;</a>'
+                        text += '<a href="'+row.del_index_id+'" data-toggle="tooltip" data-placement="top" title="" data-original-title="删除"><i class="icon-x-circle text-danger"></i>&nbsp;</a>'
                         text += '</div>'
                         return text
                     }

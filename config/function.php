@@ -76,28 +76,34 @@ function filterWords($str)
             "/(<[^>]*)on[a-zA-Z]+\s*=([^>]*>)/isU",
             "/select|insert|update|delete|join|union|into|load_file|outfile|dump|and|count|asc|create|where/is"
     );
-    $array = [];
-    foreach ($str as $k => $v) {
-      if(is_array($v)){
-        $array[] = $v;
-        unset($str[$k]);
+    if(is_string($str)){
+      $str = @preg_replace($farr,'',$str);
+      $str = strFilter($str);
+      return $str;
+    } else {
+      $array = [];
+      foreach ($str as $k => $v) {
+        if(is_array($v)){
+          $array[] = $v;
+          unset($str[$k]);
+        }
       }
-    }
-    $bb = [];
-    foreach ($array as $k) {
-      foreach ($k as $key => $value) {
-        $bb[$key] = $value;
+      $bb = [];
+      foreach ($array as $k) {
+        foreach ($k as $key => $value) {
+          $bb[$key] = $value;
+        }
       }
+      $str = @preg_replace($farr,'',$str);
+      foreach ($str as $k => $v) {
+        $str[$k] = strFilter($v);
+      }
+      $bb = @preg_replace($farr,'',$bb);
+      foreach ($bb as $k => $v) {
+        $str[$k] = strFilter($v);
+      }
+      return $str;
     }
-    $str = @preg_replace($farr,'',$str);
-    foreach ($str as $k => $v) {
-      $str[$k] = strFilter($v);
-    }
-    $bb = @preg_replace($farr,'',$bb);
-    foreach ($bb as $k => $v) {
-      $str[$k] = strFilter($v);
-    }
-    return $str;
 }
 
 /**

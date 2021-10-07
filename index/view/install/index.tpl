@@ -152,7 +152,7 @@
 			var username = $("input[name='username']").val();
 			var password = $("input[name='password']").val();
 			var token = "{$token}"
-			$.post("./index.php?m=Install&a=index",{
+			$.post("{$menu['install_index']}",{
 				ip:ip,
 				library_name:library_name,
 				username:username,
@@ -180,7 +180,7 @@
         function install_sql(data)
         {
             for (var i = 0; i < data.length; i++) {
-                $.post("./index.php?m=Install&a=index",{
+                $.post("{$menu['install_index']}",{
                     md5:data[i],
                     type:'four',
                 },function(data){
@@ -191,7 +191,7 @@
                     }
                 },"json");
             }
-            $.post("./index.php?m=Install&a=index",{
+            $.post("{$menu['install_index']}",{
                 type:'yes',
             });
         }
@@ -206,7 +206,7 @@
 			layer.msg("正在为您跳转后台~", {
                 icon: 1
             }, function(){
-                window.location.href = "./index.php?m=Login&a=index"
+                window.location.href = "{$menu['login_index']}"
             });
 		}
 	</script>

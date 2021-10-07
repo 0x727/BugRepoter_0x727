@@ -16,7 +16,7 @@
 	                            </div>
 	                            <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-12">
 	                                <div id="dropzone-sm" class="mb-4">
-	                                    <form action="./index.php?m=User&a=img" class="dropzone needsclick" id="upload">
+	                                    <form action="{$menu['user_img']}" class="dropzone needsclick" id="upload">
 	                                        <div class="dz-message needsclick">
 	                                            <button type="button" class="dz-button">修改头像</button>
 	                                        </div>
@@ -66,7 +66,7 @@
 		var email = $("#email").val();
 		var phone = $("#phone").val();
 		var token = "{$token}";
-		$.post("./index.php?m=User&a=index",{
+		$.post("{$menu['user_index']}",{
 			password:password,
 			email:email,
 			phone:phone,
@@ -83,7 +83,7 @@
 					icon: 1
 				}, function(){
 					if(password){
-						window.location.href = "./index.php?m=Login&a=logout"
+						window.location.href = "{$menu['login_logout']}"
 					} else {
 						window.location.reload();
 					}

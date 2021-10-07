@@ -11,7 +11,7 @@ class stockConnector
 		  {
 				return "socket_create() 失败的原因是:".socket_strerror($this->conn)."\n";
 		  }
-		  $result = socket_connect($this->conn, $ip, $port);
+		  $result = @socket_connect($this->conn, $ip, $port);
 		  if (!$result) 
 		  {
 				return "socket_connect() failed.\nReason: ($result) " . socket_strerror($result) . "\n";

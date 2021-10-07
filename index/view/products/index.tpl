@@ -14,7 +14,7 @@
                                         <span>批量添加</span>
                                     </button>
                                 </a>
-                                <a href="./index.php?m=Products&a=add_index&num=1">
+                                <a href="{$products_add_index}">
                                     <button class="dt-button buttons-copy buttons-html5" tabindex="0" aria-controls="copy-print-scroll" type="button">
                                         <span>添加</span>
                                     </button>
@@ -63,12 +63,25 @@
                 '<div class="field-wrapper"><div class="field-wrapper"><select class="select-single js-states" title="" data-live-search="true" id="range">'+'{$template}'+'</select></div></div>',
                 yes: function (index,layero) {
                     if($('#range').val()){
-                        window.location.href = "./index.php?m=Products&a=download_index&id="+id+"&token="+token+"&path="+$('#range').val();
-                        layer.msg('正在为您下载！', {
-                            icon: 1
-                        }, function(){
-                            window.location.reload();
-                        });
+                        $.post("{$products_download_index}",{
+                            id:id,
+                            token:token,
+                            path:$('#range').val(),
+                        },function(data){
+                            if(data.status == '1'){
+                                layer.msg('正在为您下载！', {
+                                    icon: 1
+                                }, function(){
+                                   window.location.href = "."+data.data.url
+                                });
+                            } else {
+                                layer.msg(data.msg, {
+                                    icon: 2
+                                }, function(){
+                                   window.location.reload();
+                                });
+                            }
+                        },"json");
                     } else {
                         layer.msg("请选择导出模板！");
                     }
@@ -92,12 +105,25 @@
                 '<div class="field-wrapper"><div class="field-wrapper"><select class="select-single js-states" title="" data-live-search="true" id="range">'+'{$template}'+'</select></div></div>',
                 yes: function (index,layero) {
                     if($('#range').val()){
-                        window.location.href = "./index.php?m=Products&a=download_index&id="+data+"&token="+token+"&path="+$('#range').val();
-                        layer.msg('正在为您下载！', {
-                            icon: 1
-                        }, function(){
-                            window.location.reload();
-                        });
+                        $.post("{$products_download_index}",{
+                            id:data,
+                            token:token,
+                            path:$('#range').val(),
+                        },function(data){
+                            if(data.status == '1'){
+                                layer.msg('正在为您下载！', {
+                                    icon: 1
+                                }, function(){
+                                   window.location.href = "."+data.data.url
+                                });
+                            } else {
+                                layer.msg(data.msg, {
+                                    icon: 2
+                                }, function(){
+                                   window.location.reload();
+                                });
+                            }
+                        },"json");
                     } else {
                         layer.msg("请选择导出模板！");
                     }
@@ -119,7 +145,20 @@
                         }, function(){
                         });
                     } else {
-                        window.location.href = "./index.php?m=Products&a=add_index&num="+value;
+                        console.dir(value)
+                        $.post("{$menu['products_index']}",{
+                            num:value,
+                        },function(data){
+                            if(data.status == '1'){
+                                window.location.href = "."+data.data.url
+                            } else {
+                                layer.msg(data.msg, {
+                                    icon: 2
+                                }, function(){
+                                   window.location.reload();
+                                });
+                            }
+                        },"json");
                         layer.close(index);
                     }
                 } else {
@@ -155,7 +194,7 @@
             "serverSide": true,
             "deferRender": true,
             "ajax": {
-                "url": "./index.php?m=Products&a=index",
+                "url": "{$menu['products_index']}",
                 "type":"POST"
             },
             "pagingType": "full_numbers",
@@ -188,8 +227,8 @@
                         text = ""
                         text += '<div class="actions">'
                         text += '<a href="javascript:void(0);" onclick="download_export(\''+row.session+'\',\'{$token}\')" data-toggle="tooltip" data-placement="top" title="" data-original-title="导出"><i class="icon-download1 text-info"></i>&nbsp;</a>'
-                        text += '<a href="./index.php?m=Products&a=edit_index&id='+row.id+'" data-toggle="tooltip" data-placement="top" title="" data-original-title="编辑"><i class="icon-edit1 text-info"></i>&nbsp;</a>'
-                        text += '<a href="./index.php?m=Products&a=del_index&id='+row.id+'&token={$token}" data-toggle="tooltip" data-placement="top" title="" data-original-title="删除"><i class="icon-x-circle text-danger"></i>&nbsp;</a>'
+                        text += '<a href="'+row.edit_index_id+'" data-toggle="tooltip" data-placement="top" title="" data-original-title="编辑"><i class="icon-edit1 text-info"></i>&nbsp;</a>'
+                        text += '<a href="'+row.del_index_id+'" data-toggle="tooltip" data-placement="top" title="" data-original-title="删除"><i class="icon-x-circle text-danger"></i>&nbsp;</a>'
                         text += '</div>'
                         return text
                     }

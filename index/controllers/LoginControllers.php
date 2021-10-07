@@ -51,6 +51,9 @@ class LoginControllers extends AuthControllers
                 $this->json(["status"=>0,"msg"=>"登陆失败！"]);
             }
         } else {
+            $this->smarty->assign('verify_img',"./".root_filename.".php?".AuthCode("m=Login&a=code","ENCODE",$_SESSION['domain_key']));
+            $this->smarty->assign('ajax_from',"./".root_filename.".php?".AuthCode("m=Login&a=index","ENCODE",$_SESSION['domain_key']));
+            $this->smarty->assign('home_index',"./".root_filename.".php?".AuthCode("m=Index&a=index","ENCODE",$_SESSION['domain_key']));
             $this->smarty->display('login/index.tpl');
         }
 	}

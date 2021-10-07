@@ -72,7 +72,7 @@
                     return false
                 }
                 
-                $.post("./index.php?m=Products&a=edit_classification",{
+                $.post("{$menu['edit_classification']}",{
                     id:id,
                     pid:pid,
                     name:name,
@@ -82,7 +82,7 @@
                         layer.msg(data.msg, {
                             icon: 1
                         }, function(){
-                            window.location.href = "./index.php?m=Products&a=classification"
+                            window.location.href = "{$menu['products_classification']}"
                         });
                     } else {
                         layer.msg(data.msg, {

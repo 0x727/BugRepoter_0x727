@@ -178,7 +178,7 @@
 
         $("#project_id").change(function(){
             var selected = $(this).children('option:selected').val();
-            $.post("./index.php?m=Index&a=index",{
+            $.post("{$menu['home']}",{
                 project_id:selected, 
             },function(data){
                 $("#loophole_num").html(data.loophole_num)

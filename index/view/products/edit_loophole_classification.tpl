@@ -95,7 +95,7 @@
                         return false
                     }
                     
-                    $.post("./index.php?m=Products&a=edit_loophole_classification",{
+                    $.post("{$menu['edit_loophole_classification_index']}",{
                         id:id,
                         name:name,
                         pid:pid,
@@ -107,7 +107,7 @@
                             layer.msg(data.msg, {
                                 icon: 1
                             }, function(){
-                                window.location.href = "./index.php?m=Products&a=loophole_classification"
+                                window.location.href = "{$menu['products_loophole_classification']}"
                             });
                         } else {
                             layer.msg(data.msg, {

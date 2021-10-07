@@ -103,7 +103,9 @@ class UserControllers extends AuthControllers
 	{
 		$this->jurisdiction("非法访问用户管理");
 		$this->log_db("用户访问用户管理页面","7");
-
+		$token = md5(code().time().code());
+      	$_SESSION['token'] = $token;
+      	$this->smarty->assign('token',$token);
 		if($_POST){
 	      	$draw = isset($_POST['draw']) ? intval($_POST['draw']) : "1";
 	      	$start = isset($_POST['start']) ? intval($_POST['start']) : "1";
@@ -125,6 +127,8 @@ class UserControllers extends AuthControllers
 			if($list){
 	        	foreach ($list as $k => $v) {
 	          		$list[$k]['update_at'] = $v['update_at'] == 0 ? '-' : date("Y-m-d H:i:s",$v['update_at']);
+	          		$list[$k]['edit_member'] = "./".root_filename.".php?".AuthCode("m=User&a=edit_member&id=".$v['id'],"ENCODE",$_SESSION['domain_key']);
+		        	$list[$k]['del_member'] = "./".root_filename.".php?".AuthCode("m=User&a=del_member&id=".$v['id']."&token=".$token,"ENCODE",$_SESSION['domain_key']);
 	        	}
 	      	}
 	      	if($value){
@@ -137,9 +141,6 @@ class UserControllers extends AuthControllers
       		$classification_num = isset($classification_count['num']) ? $classification_count['num'] : 0;
 	      	$this->json(["draw"=>$draw,"recordsTotal"=>$classification_num,"recordsFiltered"=>$classification_num,"data"=>$list]);
 	    } else {
-	      	$token = md5(code().time().code());
-	      	$_SESSION['token'] = $token;
-	      	$this->smarty->assign('token',$token);
 	    	$this->smarty->display('user/member.tpl');
 	    }
 	}
@@ -331,22 +332,22 @@ class UserControllers extends AuthControllers
 	      	$token = isset($_GET['token']) ? $_GET['token'] : '';
 	      	$session_token = isset($_SESSION['token']) ? $_SESSION['token'] : '';
 	      	#IF判断区域
-	      	if(empty($id)) $this->json(['status'=>0,'msg'=>'输入ID！',"data"=>["url"=>"/".root_filename.".php?m=User&a=member"]]);
-	      	if($id == "1") $this->json(['status'=>0,'msg'=>'不能删除超级管理员！',"data"=>["url"=>"/".root_filename.".php?m=User&a=member"]]);
-	      	if(empty($token)) $this->json(['status'=>0,'msg'=>'输入token！',"data"=>["url"=>"/".root_filename.".php?m=User&a=member"]]);
-	      	if(empty($session_token)) $this->json(['status'=>0,'msg'=>'token异常！',"data"=>["url"=>"/".root_filename.".php?m=User&a=member"]]);
-	      	if($token != $session_token) $this->json(['status'=>0,'msg'=>'token验证失败！',"data"=>["url"=>"/".root_filename.".php?m=User&a=member"]]);
+	      	if(empty($id)) $this->json(['status'=>0,'msg'=>'输入ID！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=User&a=member","ENCODE",$_SESSION['domain_key'])]]);
+	      	if($id == "1") $this->json(['status'=>0,'msg'=>'不能删除超级管理员！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=User&a=member","ENCODE",$_SESSION['domain_key'])]]);
+	      	if(empty($token)) $this->json(['status'=>0,'msg'=>'输入token！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=User&a=member","ENCODE",$_SESSION['domain_key'])]]);
+	      	if(empty($session_token)) $this->json(['status'=>0,'msg'=>'token异常！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=User&a=member","ENCODE",$_SESSION['domain_key'])]]);
+	      	if($token != $session_token) $this->json(['status'=>0,'msg'=>'token验证失败！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=User&a=member","ENCODE",$_SESSION['domain_key'])]]);
 	      	unset($_SESSION['token']);
 
 	      	$db->bind("id", $id);
 	      	$info = $db->query("DELETE from domain_member where `id` = :id");
 	      	if($info){
-	        	$this->json(["status"=>1,"msg"=>"删除成功！","data"=>["url"=>"/".root_filename.".php?m=User&a=member"]]);
+	        	$this->json(["status"=>1,"msg"=>"删除成功！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=User&a=member","ENCODE",$_SESSION['domain_key'])]]);
 	      	} else {
-	        	$this->json(["status"=>0,"msg"=>"删除失败！","data"=>["url"=>"/".root_filename.".php?m=User&a=member"]]);
+	        	$this->json(["status"=>0,"msg"=>"删除失败！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=User&a=member","ENCODE",$_SESSION['domain_key'])]]);
 	      	}
 	    } else {
-	      	$this->json(["status"=>0,"msg"=>"错误异常！","data"=>["url"=>"/".root_filename.".php?m=User&a=member"]]);
+	      	$this->json(["status"=>0,"msg"=>"错误异常！","data"=>["url"=>"./".root_filename.".php?".AuthCode("m=User&a=member","ENCODE",$_SESSION['domain_key'])]]);
 	    }
 	}
 }

@@ -69,7 +69,7 @@
 		var repair_time = $("input[name='repair_time']:checked").val();
 		var name = $("input[name='name']").val();
 		var token = "{$token}";
-		$.post("./index.php?m=Setup&a=index",{
+		$.post("{$menu['setup_index']}",{
 			legitimate_ip:legitimate_ip,
 			name:name,
 			repair_time:repair_time,

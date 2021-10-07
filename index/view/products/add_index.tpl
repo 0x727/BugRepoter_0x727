@@ -180,7 +180,7 @@
                             var formData = new FormData();
                             formData.append("file", files[0]);
                             $.ajax({
-                                url: "./index.php?m=Public&a=deup_img",
+                                url: "{$menu['public_deup_img']}",
                                 data: formData,
                                 cache: false,
                                 dataType: "json",
@@ -249,6 +249,13 @@
                     });
                     return false
                 }
+                if(!fIsUrL(bugDetail)){
+                    layer.msg("第"+i+"份报告，漏洞URL格式错误", {
+                        icon: 2
+                    }, function(){
+                    });
+                    return false
+                }
                 if(company==""){
                     layer.msg("第"+i+"份报告，项目不能为空", {
                         icon: 2
@@ -302,7 +309,7 @@
                     suggestions:suggestions,
                 });
             }
-            $.post("./index.php?m=Products&a=add_index",{
+            $.post("{$menu['add_index']}",{
                 data:JSON.stringify(data),
                 num:num,
                 token:token,
@@ -311,7 +318,7 @@
                     layer.msg(data.msg, {
                         icon: 1
                     }, function(){
-                        window.location.href = "./index.php?m=Products&a=index"
+                        window.location.href = "{$menu['products_index']}"
                     });
                 } else if(data.status == '2') {
                     layer.msg(data.msg, {

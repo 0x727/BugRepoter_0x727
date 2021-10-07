@@ -81,7 +81,7 @@
                     return false
                 }
                 
-                $.post("./index.php?m=User&a=edit_member",{
+                $.post("{$menu['edit_member']}",{
                     id:id,
                     username:username,
                     password:password,
@@ -93,7 +93,7 @@
                         layer.msg(data.msg, {
                             icon: 1
                         }, function(){
-                            window.location.href = "./index.php?m=User&a=member"
+                            window.location.href = "{$menu['user_member']}"
                         });
                     } else {
                         layer.msg(data.msg, {

@@ -23,7 +23,7 @@ class SetupControllers extends AuthControllers
 	      	if(empty($session_token)) $this->json(['status'=>0,'msg'=>'token异常！']);
 	      	if($token != $session_token) $this->json(['status'=>0,'msg'=>'token验证失败！']);
 	      	unset($_SESSION['token']);
-
+	      	$data['domain_key'] = $system_config['domain_key'];
 			$list = array_merge($system_config,$data);
             $string = "<?php return [\n";
             foreach ($list as $key => $value) {

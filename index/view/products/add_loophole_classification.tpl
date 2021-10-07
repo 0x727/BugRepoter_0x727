@@ -90,7 +90,7 @@
                     return false
                 }
                 
-                $.post("./index.php?m=Products&a=add_loophole_classification",{
+                $.post("{$menu['add_loophole_classification_index']}",{
                     name:name,
                     pid:pid,
                     description:description,
@@ -101,7 +101,7 @@
                         layer.msg(data.msg, {
                             icon: 1
                         }, function(){
-                            window.location.href = "./index.php?m=Products&a=loophole_classification"
+                            window.location.href = "{$menu['products_loophole_classification']}"
                         });
                     } else {
                         layer.msg(data.msg, {

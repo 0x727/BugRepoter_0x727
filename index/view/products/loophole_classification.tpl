@@ -9,7 +9,7 @@
                     <div class="card-body">
                         <div class="table-responsive">
                             <div class="dt-buttons">
-                                <a href="./index.php?m=Products&a=add_loophole_classification">
+                                <a href="{$menu['add_loophole_classification_index']}">
                                     <button class="dt-button buttons-copy buttons-html5" tabindex="0" aria-controls="copy-print-scroll" type="button">
                                         <span>添加</span>
                                     </button>
@@ -56,7 +56,7 @@
             "serverSide": true,
             "deferRender": true,
             "ajax": {
-                "url": "./index.php?m=Products&a=loophole_classification",
+                "url": "{$menu['products_loophole_classification']}",
                 "type":"POST"
             },
             "pagingType": "full_numbers",
@@ -81,9 +81,9 @@
                     "data": function (row, type, val, meta) {
                         text = ""
                         text += '<div class="actions">'
-                        text += '<a href="./index.php?m=Products&a=edit_loophole_classification&id='+row.id+'" data-toggle="tooltip" data-placement="top" title="" data-original-title="编辑"><i class="icon-edit1 text-info"></i>&nbsp;</a>'
+                        text += '<a href="'+row.edit_loophole_classification_id+'" data-toggle="tooltip" data-placement="top" title="" data-original-title="编辑"><i class="icon-edit1 text-info"></i>&nbsp;</a>'
                         {if $user_info['id'] == "1"}
-                            text += '<a href="./index.php?m=Products&a=del_loophole_classification&id='+row.id+'&token={$token}" data-toggle="tooltip" data-placement="top" title="" data-original-title="删除"><i class="icon-x-circle text-danger"></i>&nbsp;</a>'
+                            text += '<a href="'+row.del_loophole_classification_id+'" data-toggle="tooltip" data-placement="top" title="" data-original-title="删除"><i class="icon-x-circle text-danger"></i>&nbsp;</a>'
                         {/if}
                         text += '</div>'
                         return text

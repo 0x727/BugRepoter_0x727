@@ -70,7 +70,7 @@
                     return false
                 }
                 
-                $.post("./index.php?m=Products&a=add_classification",{
+                $.post("{$menu['add_classification']}",{
                     pid:pid,
                     name:name,
                     token:token,
@@ -79,7 +79,7 @@
                         layer.msg(data.msg, {
                             icon: 1
                         }, function(){
-                            window.location.href = "./index.php?m=Products&a=classification"
+                            window.location.href = "{$menu['products_classification']}"
                         });
                     } else {
                         layer.msg(data.msg, {

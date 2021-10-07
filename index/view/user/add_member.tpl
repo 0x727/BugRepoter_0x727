@@ -80,7 +80,7 @@
                     return false
                 }
                 
-                $.post("./index.php?m=User&a=add_member",{
+                $.post("{$menu['user_add_member']}",{
                     username:username,
                     password:password,
                     email:email,
@@ -91,7 +91,7 @@
                         layer.msg(data.msg, {
                             icon: 1
                         }, function(){
-                            window.location.href = "./index.php?m=User&a=member"
+                            window.location.href = "{$menu['user_member']}"
                         });
                     } else {
                         layer.msg(data.msg, {

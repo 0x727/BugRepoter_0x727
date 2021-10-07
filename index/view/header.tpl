@@ -30,27 +30,27 @@
                         <a href="#" class="logo">
                             <img src="./public/index/img/logo.jpg" alt="Uni Pro Admin">
                         </a>
-                        <a class="nav-link {if $url_path == "IndexControllers"}active{/if}" id="home-tab" data-bs-toggle="tab" href="#tab-home" role="tab" aria-controls="tab-home" aria-selected="true" onclick="javascript:window.location.href='./index.php?m=Index&a=index'">
+                        <a class="nav-link {if $url_path == "IndexControllers"}active{/if}" id="home-tab" data-bs-toggle="tab" href="#tab-home" role="tab" aria-controls="tab-home" aria-selected="true" onclick="javascript:window.location.href='{$menu['home']}'">
                             <i class="icon-home2"></i>
                             <span class="nav-link-text">首页</span>
                         </a>
-                        <a class="nav-link {if $url_path == "ProductsControllers"}active{/if}" id="product-tab" data-bs-toggle="tab" href="#tab-product" role="tab" aria-controls="tab-product" aria-selected="false"  onclick="javascript:window.location.href='./index.php?m=Products&a=index'">
+                        <a class="nav-link {if $url_path == "ProductsControllers"}active{/if}" id="product-tab" data-bs-toggle="tab" href="#tab-product" role="tab" aria-controls="tab-product" aria-selected="false"  onclick="javascript:window.location.href='{$menu['products_index']}'">
                             <i class="icon-layers2"></i>
                             <span class="nav-link-text">项目</span>
                         </a>
                         {if $user_info['id'] == "1"}
-                            <a class="nav-link {if $url_path == "UserControllers"}active{/if}" id="authentication-tab" data-bs-toggle="tab" href="#tab-authentication" role="tab" aria-controls="tab-authentication" aria-selected="false"  onclick="javascript:window.location.href='./index.php?m=User&a=member'">
+                            <a class="nav-link {if $url_path == "UserControllers"}active{/if}" id="authentication-tab" data-bs-toggle="tab" href="#tab-authentication" role="tab" aria-controls="tab-authentication" aria-selected="false"  onclick="javascript:window.location.href='{$menu['user_member']}'">
                                 <i class="icon-users"></i>
                                 <span class="nav-link-text">用户管理</span>
                             </a>
                         {else}
-                            <a class="nav-link {if $url_path == "UserControllers"}active{/if}" id="authentication-tab" data-bs-toggle="tab" href="#tab-authentication" role="tab" aria-controls="tab-authentication" aria-selected="false"  onclick="javascript:window.location.href='./index.php?m=User&a=index'">
+                            <a class="nav-link {if $url_path == "UserControllers"}active{/if}" id="authentication-tab" data-bs-toggle="tab" href="#tab-authentication" role="tab" aria-controls="tab-authentication" aria-selected="false"  onclick="javascript:window.location.href='{$menu['user_index']}'">
                                 <i class="icon-user1"></i>
                                 <span class="nav-link-text">个人中心</span>
                             </a>
                         {/if}
                         {if $user_info['id'] == "1"}
-                            <a class="nav-link {if $url_path == "LogControllers" or $url_path == "SetupControllers"}active{/if}" id="log-tab" data-bs-toggle="tab" href="#tab-log" role="tab" aria-controls="tab-log" aria-selected="false" onclick="javascript:window.location.href='./index.php?m=Setup&a=index'">
+                            <a class="nav-link {if $url_path == "LogControllers" or $url_path == "SetupControllers"}active{/if}" id="log-tab" data-bs-toggle="tab" href="#tab-log" role="tab" aria-controls="tab-log" aria-selected="false" onclick="javascript:window.location.href='{$menu['setup_index']}'">
                                 <i class="icon-settings1"></i>
                                 <span class="nav-link-text">网站管理</span>
                             </a>
@@ -65,10 +65,10 @@
                                 <div class="sidebar-menu">
                                     <ul>
                                         <li>
-                                            <a href="./index.php?m=Index&a=index" {if $url_path == "IndexControllers" && $url_path_action == "index"} class="current-page" {/if}>首页</a>
+                                            <a href="{$menu['home']}" {if $url_path == "IndexControllers" && $url_path_action == "index"} class="current-page" {/if}>首页</a>
                                         </li>
                                         <li>
-                                            <a href="./index.php?m=Index&a=about_us" {if $url_path == "IndexControllers" && $url_path_action == "about_us"} class="current-page" {/if}>关于我们</a>
+                                            <a href="{$menu['index_about_us']}" {if $url_path == "IndexControllers" && $url_path_action == "about_us"} class="current-page" {/if}>关于我们</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -82,18 +82,18 @@
                                 <div class="sidebar-menu">
                                     <ul>
                                         <li>
-                                            <a href="./index.php?m=Products&a=index" {if $url_path == "ProductsControllers" && ($url_path_action == "index" || $url_path_action == "add_index" || $url_path_action == "edit_index")} class="current-page" {/if}>漏洞列表</a>
+                                            <a href="{$menu['products_index']}" {if $url_path == "ProductsControllers" && ($url_path_action == "index" || $url_path_action == "add_index" || $url_path_action == "edit_index")} class="current-page" {/if}>漏洞列表</a>
                                         </li>
                                         {if $user_info['id'] == "1"}
                                             <li>
-                                                <a href="./index.php?m=Products&a=classification" {if $url_path == "ProductsControllers" && ($url_path_action == "classification" || $url_path_action == "add_classification" || $url_path_action == "edit_classification")} class="current-page" {/if}>项目分类</a>
+                                                <a href="{$menu['products_classification']}" {if $url_path == "ProductsControllers" && ($url_path_action == "classification" || $url_path_action == "add_classification" || $url_path_action == "edit_classification")} class="current-page" {/if}>项目分类</a>
                                             </li>
                                             <li>
-                                                <a href="./index.php?m=Products&a=template" {if $url_path == "ProductsControllers" && $url_path_action == "template"} class="current-page" {/if}>模板列表</a>
+                                                <a href="{$menu['products_template']}" {if $url_path == "ProductsControllers" && $url_path_action == "template"} class="current-page" {/if}>模板列表</a>
                                             </li>
                                         {/if}
                                         <li>
-                                            <a href="./index.php?m=Products&a=loophole_classification" {if $url_path == "ProductsControllers" && ($url_path_action == "loophole_classification" || $url_path_action == "add_loophole_classification" || $url_path_action == "edit_loophole_classification")} class="current-page" {/if}>漏洞分类</a>
+                                            <a href="{$menu['products_loophole_classification']}" {if $url_path == "ProductsControllers" && ($url_path_action == "loophole_classification" || $url_path_action == "add_loophole_classification" || $url_path_action == "edit_loophole_classification")} class="current-page" {/if}>漏洞分类</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -108,11 +108,11 @@
                                     <ul>
                                         {if $user_info['id'] == "1"}
                                             <li>
-                                                <a href="./index.php?m=User&a=member" {if $url_path == "UserControllers" && $url_path_action == "member"} class="current-page" {/if}>用户管理</a>
+                                                <a href="{$menu['user_member']}" {if $url_path == "UserControllers" && $url_path_action == "member"} class="current-page" {/if}>用户管理</a>
                                             </li>
                                         {/if}
                                         <li>
-                                            <a href="./index.php?m=User&a=index" {if $url_path == "UserControllers" && $url_path_action == "index"} class="current-page" {/if}>个人中心</a>
+                                            <a href="{$menu['user_index']}" {if $url_path == "UserControllers" && $url_path_action == "index"} class="current-page" {/if}>个人中心</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -127,10 +127,10 @@
                                     <div class="sidebar-menu">
                                         <ul>
                                             <li>
-                                                <a href="./index.php?m=Setup&a=index" {if $url_path == "SetupControllers" && $url_path_action == "index"} class="current-page" {/if}>网站设置</a>
+                                                <a href="{$menu['setup_index']}" {if $url_path == "SetupControllers" && $url_path_action == "index"} class="current-page" {/if}>网站设置</a>
                                             </li>
                                             <li>
-                                                <a href="./index.php?m=Log&a=index" {if $url_path == "LogControllers" && $url_path_action == "index"} class="current-page" {/if}>网站日志</a>
+                                                <a href="{$menu['log_index']}" {if $url_path == "LogControllers" && $url_path_action == "index"} class="current-page" {/if}>网站日志</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -170,8 +170,8 @@
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-end md" aria-labelledby="userSettings">
                                         <div class="header-profile-actions">
-                                            <a href="./index.php?m=User&a=index"><i class="icon-settings1"></i>个人中心</a>
-                                            <a href="./index.php?m=Login&a=logout"><i class="icon-log-out1"></i>退出</a>
+                                            <a href="{$menu['user_index']}"><i class="icon-settings1"></i>个人中心</a>
+                                            <a href="{$menu['login_logout']}"><i class="icon-log-out1"></i>退出</a>
                                         </div>
                                     </div>
                                 </li>

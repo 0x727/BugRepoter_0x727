@@ -49,7 +49,7 @@
             "serverSide": true,
             "deferRender": true,
             "ajax": {
-                "url": "./index.php?m=Products&a=template",
+                "url": "{$menu['products_template']}",
                 "type":"POST"
             },
             "pagingType": "full_numbers",
@@ -67,8 +67,8 @@
                     "data": function (row, type, val, meta) {
                         text = ""
                         text += '<div class="actions">'
-                        text += '<a href="./index.php?m=Products&a=download_template&id='+row.uuid+'&token={$token}" data-toggle="tooltip" data-placement="top" title="" data-original-title="下载模板"><i class="icon-download1 text-info"></i>&nbsp;</a>'
-                        text += '<a href="./index.php?m=Products&a=del_template&id='+row.uuid+'&token={$token}" data-toggle="tooltip" data-placement="top" title="" data-original-title="删除"><i class="icon-x-circle text-danger"></i>&nbsp;</a>'
+                        text += '<a href="'+row.download_template_id+'" data-toggle="tooltip" data-placement="top" title="" data-original-title="下载模板"><i class="icon-download1 text-info"></i>&nbsp;</a>'
+                        text += '<a href="'+row.del_template_id+'" data-toggle="tooltip" data-placement="top" title="" data-original-title="删除"><i class="icon-x-circle text-danger"></i>&nbsp;</a>'
                         text += '</div>'
                         return text
                     }

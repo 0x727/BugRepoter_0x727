@@ -50,7 +50,7 @@
             "serverSide": true,
             "deferRender": true,
             "ajax": {
-                "url": "./index.php?m=Log&a=index",
+                "url": "{$menu['log_index']}",
                 "type":"POST"
             },
             "pagingType": "full_numbers",
