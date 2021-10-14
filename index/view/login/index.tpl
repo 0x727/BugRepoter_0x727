@@ -24,10 +24,10 @@
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
                     <div class="login-about">
                         <div class="slogan">
-                            <span>欢迎登陆0x727自动化编写报告平台</span>
+                            <span>欢迎登陆自动化编写报告平台</span>
                         </div>
                         <div class="about-desc">
-                            Welcome to the 0x727 automated report writing platform to create the troubles and troubles of security service personnel in writing reports. Let me help you。
+                            Welcome to the  automated report writing platform to create the troubles and troubles of security service personnel in writing reports. Let me help you。
                         </div>
 
                     </div>

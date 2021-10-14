@@ -149,6 +149,7 @@ class AuthControllers
 			'add_classification'=>"./".root_filename.".php?".AuthCode("m=Products&a=add_classification","ENCODE",$_SESSION['domain_key']),
 			'edit_member'=>"./".root_filename.".php?".AuthCode("m=User&a=edit_member","ENCODE",$_SESSION['domain_key']),
 			'add_index'=>"./".root_filename.".php?".AuthCode("m=Products&a=add_index","ENCODE",$_SESSION['domain_key']),
+			'repair_index'=>"./".root_filename.".php?".AuthCode("m=Products&a=repair_index","ENCODE",$_SESSION['domain_key']),
 			'user_img'=>"./".root_filename.".php?".AuthCode("m=User&a=img","ENCODE",$_SESSION['domain_key']),
 			'install_index'=>"./".root_filename.".php?".AuthCode("m=Install&a=index","ENCODE",$_SESSION['domain_key']),
 			'login_index'=>"./".root_filename.".php?".AuthCode("m=Login&a=index","ENCODE",$_SESSION['domain_key']),

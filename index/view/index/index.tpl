@@ -1,10 +1,11 @@
 {include file="../header.tpl"}
+    <link rel="stylesheet" href="./public/index/vendor/bs-select/bs-select.css" />
     <div class="content-wrapper">
         <div class="row gutters">
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                 <div class="field-wrapper">
                     <div class="field-wrapper">
-                        <select class="select-single" title="项目分类" data-live-search="true" name="project_id" id="project_id">
+                        <select class="select-single js-states" title="项目分类" data-live-search="true" name="project_id" id="project_id">
                             <option value="0">全部项目</option>
                             {foreach from=$project_classification item=vo}
                                 <option value="{$vo.id}">{$vo.title}</option>
@@ -65,51 +66,11 @@
                     </div>
                 </div>
             </div> 
-        </div>  
-        <!-- <div class="row gutters">
-            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 cool-12">
-
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row gutters">                                           
-                            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-4 col-12">
-                                <div class="reports-summary">
-                                    <div class="reports-summary-block">
-                                        <h5>提交漏洞数</h5>
-                                        <h6>本月总漏洞数</h6>
-                                    </div>
-                                    <div class="reports-summary-block">
-                                        <h5>35 个</h5>
-                                        <h6>提交漏洞数</h6>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-xl-9 col-lg-9 col-md-8 col-sm-8 col-12">
-                                <div class="row gutters">
-                                    <div class="col-12">
-                                        <div class="graph-day-selection mt-2" role="group">
-                                            <button type="button" class="btn active">今天</button>
-                                            <button type="button" class="btn">昨天</button>
-                                            <button type="button" class="btn">7 天</button>
-                                            <button type="button" class="btn">15 天</button>
-                                            <button type="button" class="btn">30 天</button>
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <div id="salesGraph" class="chart-height-xl"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div> -->
+        </div>
     </div>
     <script src="./public/index/vendor/apex/apexcharts.min.js"></script>
-    <!-- <script src="./public/index/vendor/apex/custom/home/salesGraph.js"></script> -->
+    <script src="./public/index/vendor/bs-select/bs-select.min.js"></script>
+    <script src="./public/index/vendor/bs-select/bs-select-custom.js"></script>
     <script>
         var byUser,byTop;
         // 安全人员提交漏洞统计图

@@ -1,5 +1,4 @@
 <?php
-
 header("Conten-type:text/html;charset=utf-8");
 
 include_once dirname(__FILE__)."/config/function.php";
@@ -67,7 +66,9 @@ if(empty($_SESSION['domain_key'])){
 		$string .= "]; ?>";
 		@file_put_contents(ROOT_PATH."/config/system.php", $string);
 		$_SESSION['domain_key'] = $system_config['domain_key'].getip();
+		$_SESSION['domain_content_key'] = $system_config['domain_key'];
 	} else {
+		$_SESSION['domain_content_key'] = $system_config['domain_key'];
 		$_SESSION['domain_key'] = $system_config['domain_key'].getip();
 	}
 }
@@ -81,11 +82,14 @@ if(empty($_SERVER['QUERY_STRING'])){
 }
 $_GET = AuthCode($_SERVER['QUERY_STRING'],"DECODE",$_SESSION['domain_key']);
 if(!$_GET){
-	if(isset($_SERVER["HTTP_X_REQUESTED_WITH"]) && strtolower($_SERVER["HTTP_X_REQUESTED_WITH"])=="xmlhttprequest"){
-		echo json_encode(["status"=>0,"msg"=>"Url参数错误！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Error&a=index","ENCODE",$_SESSION['domain_key'])]]);
-	} else {
-		echo "<script>alert('Url参数错误！')</script>";
-		header("refresh:1;url=/".root_filename.".php?".AuthCode("m=Error&a=index","ENCODE",$_SESSION['domain_key']));
+	$_GET = AuthCode($_SERVER['QUERY_STRING'],"DECODE",$_SESSION['domain_content_key']);
+	if(!$_GET){
+		if(isset($_SERVER["HTTP_X_REQUESTED_WITH"]) && strtolower($_SERVER["HTTP_X_REQUESTED_WITH"])=="xmlhttprequest"){
+			echo json_encode(["status"=>0,"msg"=>"Url参数错误！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Error&a=index","ENCODE",$_SESSION['domain_key'])]]);
+		} else {
+			echo "<script>alert('Url参数错误！')</script>";
+			header("refresh:1;url=/".root_filename.".php?".AuthCode("m=Error&a=index","ENCODE",$_SESSION['domain_key']));
+		}
 	}
 }
 // 把url转换成数组

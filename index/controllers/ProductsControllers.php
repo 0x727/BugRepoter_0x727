@@ -12,9 +12,9 @@ class ProductsControllers extends AuthControllers
 	{
 		$this->log_db("用户访问漏洞列表","7");
 		$db = $this->Db();
-	    
 		if ($_POST) {
 			$num = isset($_POST['num']) ? intval($_POST['num']) : '';
+			$company = isset($_POST['company']) ? intval($_POST['company']) : '';
 			if($num){
 		      	if($num <= 0) $num = 1;
 	    		if($num > 10) $this->json(['status'=>0,'msg'=>'批量添加报告数量已超出，最大限制10份！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
@@ -23,26 +23,45 @@ class ProductsControllers extends AuthControllers
 				$draw = isset($_POST['draw']) ? intval($_POST['draw']) : "1";
 		      	$start = isset($_POST['start']) ? intval($_POST['start']) : "1";
 		      	$length = isset($_POST['length']) ? intval($_POST['length']) : "10";
-		      	if($length < 0 || $length > 10) $length = 10;
+		      	if($length < 0 || $length > 50) $length = 10;
 
 		      	$value = isset($_POST['value']) ? $_POST['value'] : "";
-				$sql = "SELECT a.id,a.session,a.title,a.creation_time,c.title as user_id,b.title as cate_id,a.bugLevel,a.repair_time FROM domain_post as a LEFT JOIN domain_classification as b on a.cate_id = b.id LEFT JOIN domain_project_classification as c on a.company = c.id ORDER BY a.id desc";
+				$sql = "SELECT a.id,a.session,a.title,a.creation_time,c.title as user_id,b.title as cate_id,a.bugLevel,a.repair_time,c.title as company,a.company as company_id,a.export_time FROM domain_post as a LEFT JOIN domain_classification as b on a.cate_id = b.id LEFT JOIN domain_project_classification as c on a.company = c.id";
 				$count = "SELECT count(*) as num FROM domain_post";
 				if($_SESSION['userid'] != '1'){
 				    $db->bind("user_id", $_SESSION['userid']);
 					$sql .= " WHERE a.user_id = :user_id";
+					if($company){
+				    	$db->bind("company", $company);
+						$sql .= " AND a.company = :company";
+					}
+					if($value){
+						$db->bind("title", "%".$value."%");
+						$sql .= " AND a.title LIKE :title";
+					}
+				} else {
+					if($company){
+				    	$db->bind("company", $company);
+						$sql .= " WHERE a.company = :company";
+						if($value){
+					    	$db->bind("title", "%".$value."%");
+							$sql .= " AND a.title LIKE :title";
+						}
+					} else {
+						if($value){
+					    	$db->bind("title", "%".$value."%");
+							$sql .= " WHERE a.title LIKE :title";
+						}
+					}
 				}
-				$sql .= " limit ".$start.",".$length;
-				if($value){
-					$sql = "SELECT a.id,a.session,a.title,a.creation_time,c.title as user_id,b.title as cate_id,a.bugLevel,a.repair_time FROM domain_post as a LEFT JOIN domain_classification as b on a.cate_id = b.id LEFT JOIN domain_project_classification as c on a.company = c.id WHERE a.title LIKE :title limit ".$start.",".$length." ORDER BY a.id desc";
-				  	$db->bind("title", "%".$value."%");
-				}
+				$sql .= " ORDER BY a.id desc limit ".$start.",".$length;
 				$list = $db->query($sql);
 				if($list){
 					$type = ['1'=>'无影响','2'=>'低危','3'=>'中危','4'=>'高危','5'=>'严重'];
 		        	foreach ($list as $k => $v) {
 		          		$list[$k]['creation_time'] = $v['creation_time'] == 0 ? '-' : date("Y-m-d H:i:s",$v['creation_time']);
 		          		$list[$k]['repair_time'] = $v['repair_time'] == 0 ? '-' : date("Y-m-d H:i:s",$v['repair_time']);
+		          		$list[$k]['export_time'] = $v['export_time'] == 0 ? '-' : date("Y-m-d H:i:s",$v['export_time']);
 		          		$list[$k]['bugLevel'] = $type[ $v['bugLevel'] ];
 		          		if(empty($v['repair_time'])){
 			        		$list[$k]['repair_time'] = "否";
@@ -51,21 +70,41 @@ class ProductsControllers extends AuthControllers
 			        	}
 			        	$list[$k]['edit_index_id'] = "./".root_filename.".php?".AuthCode("m=Products&a=edit_index&id=".$v['id'],"ENCODE",$_SESSION['domain_key']);
 			        	$list[$k]['del_index_id'] = "./".root_filename.".php?".AuthCode("m=Products&a=del_index&id=".$v['id']."&token=".$_SESSION['token'],"ENCODE",$_SESSION['domain_key']);
+			        	$list[$k]['repair_id'] = "./".root_filename.".php?".AuthCode("m=Products&a=repair_index&id=".$v['id'],"ENCODE",$_SESSION['domain_key']);
+			        	$list[$k]['repair_view_index'] = "./".root_filename.".php?".AuthCode("m=Products&a=repair_view_index&id=".$v['id'],"ENCODE",$_SESSION['domain_key']);
 		        	}
 		      	}
-		      	if($value){
-				  	$db->bind("title", "%".$value."%");
-		      		if($_SESSION['userid'] != '1'){
-					    $db->bind("user_id", $_SESSION['userid']);
-						$count .= " WHERE user_id = :user_id AND title LIKE :title";
+				if($_SESSION['userid'] != '1'){
+				    $db->bind("user_id", $_SESSION['userid']);
+					$count .= " WHERE user_id = :user_id";
+					if($company){
+				    	$db->bind("company", $company);
+						$count .= " AND company = :company";
 					}
-					$count .= " WHERE title LIKE :title";
+					if($value){
+						$db->bind("title", "%".$value."%");
+						$count .= " AND title LIKE :title";
+					}
+				} else {
+					if($company){
+				    	$db->bind("company", $company);
+						$count .= " WHERE company = :company";
+						if($value){
+					    	$db->bind("title", "%".$value."%");
+							$count .= " AND title LIKE :title";
+						}
+					} else {
+						if($value){
+					    	$db->bind("title", "%".$value."%");
+							$count .= " WHERE title LIKE :title";
+						}
+					}
 				}
+
 	      		$classification_count = $db->find_one($count);
 	      		$classification_num = isset($classification_count['num']) ? $classification_count['num'] : 0;
 		      	$this->json(["draw"=>$draw,"recordsTotal"=>$classification_num,"recordsFiltered"=>$classification_num,"data"=>$list]);
 			}
-
 		} else {
 			$template_list = $db->query("select uuid,name from domain_template");
 			$template = "";
@@ -77,9 +116,13 @@ class ProductsControllers extends AuthControllers
 			$token = md5(code().time().code());
 	    	$_SESSION['token'] = $token;
 	    	$this->smarty->assign('token',$token);
+	    	$project_classification = $db->query("select id,title from domain_project_classification");
+		    $this->smarty->assign('project_classification',$project_classification);
+
 	      	$this->smarty->assign('template',$template);
 	      	$this->smarty->assign('products_add_index',"/".root_filename.".php?".AuthCode("m=Products&a=add_index&num=1","ENCODE",$_SESSION['domain_key']));
 	      	$this->smarty->assign('products_download_index',"/".root_filename.".php?".AuthCode("m=Products&a=download_index","ENCODE",$_SESSION['domain_key']));
+	      	$this->smarty->assign('products_repair_download_index',"/".root_filename.".php?".AuthCode("m=Products&a=repair_download_index","ENCODE",$_SESSION['domain_key']));
 	      	$this->smarty->assign('add_index',"/".root_filename.".php?".AuthCode("m=Products&a=add_index","ENCODE",$_SESSION['domain_key']));
 	    	$this->smarty->display('products/index.tpl');
 		}
@@ -137,12 +180,12 @@ class ProductsControllers extends AuthControllers
 		        $bugDetail = isset($v['bugDetail']) ? $v['bugDetail'] : "";
 		        $cate_id = isset($v['cate_id']) ? intval($v['cate_id']) : "";
 		        $bugLevel = isset($v['bugLevel']) ? intval($v['bugLevel']) : "0";
-		        $company = isset($v['company']) ? $v['company'] : "";
+		        $company = isset($v['company']) ? intval($v['company']) : "";
 		        $content = isset($v['content']) ? $v['content'] : "";
 		        $description = isset($v['description']) ? $v['description'] : "";
 		        $suggestions = isset($v['suggestions']) ? $v['suggestions'] : "";
 		        $db->bind("title", $name);
-		        $db->bind("content", str_replace("截图、本地图片可直接复制粘贴进编辑器中", "", $content));
+		        $db->bind("content", AuthCode(str_replace("截图、本地图片可直接复制粘贴进编辑器中", "", $content),"ENCODE",$_SESSION['domain_content_key']));
 		        $db->bind("bugDetail", $bugDetail);
 		        $db->bind("company", $company);
 		        $db->bind("creation_time", time());
@@ -153,9 +196,19 @@ class ProductsControllers extends AuthControllers
 		        $db->bind("user_id", $_SESSION['userid']);
 		        $db->bind("bugLevel", $bugLevel);
 		        $db->bind("session", md5(code()));
-
 		        $info = $db->query("INSERT INTO domain_post(title,session,content,bugDetail,creation_time,update_time,cate_id,user_id,bugLevel,company,description,suggestions) VALUES (:title,:session,:content,:bugDetail,:creation_time,:update_time,:cate_id,:user_id,:bugLevel,:company,:description,:suggestions)");
 		        if($info){
+		        	$host = isset(parse_url($bugDetail)['host']) ? parse_url($bugDetail)['host'] : '';
+		        	if($host){
+		        		$db->bind("pid",$company);
+		        		$db->bind("url",$host);
+		        		if(!$db->find_one("select * from domain_project_domain where pid = :pid and url = :url")){
+			        		$db->bind("url",$host);
+			        		$db->bind("pid",$company);
+			        		$db->bind("creation_time",time());
+		        			$db->query("INSERT INTO domain_project_domain(url,pid,creation_time) VALUES (:url,:pid,:creation_time)");
+		        		}
+		        	}
 		          	$success += 1;
 		        } else {
 		          	$success -= 1;
@@ -198,7 +251,6 @@ class ProductsControllers extends AuthControllers
 	        $content = isset($_POST['content']) ? $_POST['content'] : "";
 	        $description = isset($_POST['description']) ? $_POST['description'] : "";
 	        $suggestions = isset($_POST['suggestions']) ? $_POST['suggestions'] : "";
-	        $repair_time = isset($_POST['repair_time']) ? $_POST['repair_time'] : "";
 	        $token = isset($_POST['token']) ? strtolower($_POST['token']) : "";
 	        #IF判断区域
 	      	if(empty($id)) $this->json(['status'=>0,'msg'=>'输入ID！']);
@@ -214,10 +266,9 @@ class ProductsControllers extends AuthControllers
 	        if(empty($session_code)) $this->json(['status'=>2,'msg'=>'token异常！']);
 	        if($session_code != $token) $this->json(['status'=>2,'msg'=>'token验证失败！']);
 	        unset($_SESSION['token']);
-
 	      	$db->bind("id", $id);
 	        $db->bind("title", $name);
-	        $db->bind("content", $content);
+	        $db->bind("content", AuthCode($content,"ENCODE",$_SESSION['domain_content_key']));
 	        $db->bind("bugDetail", $bugDetail);
 	        $db->bind("company", $company);
 	        $db->bind("update_time", time());
@@ -225,22 +276,13 @@ class ProductsControllers extends AuthControllers
 	        $db->bind("description", $description);
 	        $db->bind("suggestions", $suggestions);
 	        $db->bind("bugLevel", $bugLevel);
-	        if($repair_time == '1'){
-	      		$db->bind("repair_time", time());
-	      		$sql = "UPDATE domain_post SET `title` = :title,`content` = :content,`bugDetail` = :bugDetail,`update_time` = :update_time,`cate_id` = :cate_id,`bugLevel` = :bugLevel,`company` = :company,`description` = :description,`suggestions` = :suggestions,`repair_time` = :repair_time WHERE `id` = :id";
-		        if($_SESSION['userid'] != '1'){
-				    $db->bind("user_id", $_SESSION['userid']);
-					$sql .= " AND user_id = :user_id";
-				}
-	      		$info = $db->query($sql);
-	        } else {
-	        	$sql = "UPDATE domain_post SET `title` = :title,`content` = :content,`bugDetail` = :bugDetail,`update_time` = :update_time,`cate_id` = :cate_id,`bugLevel` = :bugLevel,`company` = :company,`description` = :description,`suggestions` = :suggestions WHERE `id` = :id";
-		        if($_SESSION['userid'] != '1'){
-				    $db->bind("user_id", $_SESSION['userid']);
-					$sql .= " AND user_id = :user_id";
-				}
-	      		$info = $db->query($sql);
-	        }
+	        
+        	$sql = "UPDATE domain_post SET `title` = :title,`content` = :content,`bugDetail` = :bugDetail,`update_time` = :update_time,`cate_id` = :cate_id,`bugLevel` = :bugLevel,`company` = :company,`description` = :description,`suggestions` = :suggestions WHERE `id` = :id";
+	        if($_SESSION['userid'] != '1'){
+			    $db->bind("user_id", $_SESSION['userid']);
+				$sql .= " AND user_id = :user_id";
+			}
+      		$info = $db->query($sql);
 
 	        if($info){
 	          	$this->json(["status"=>1,"msg"=>"修改成功！"]);
@@ -258,7 +300,15 @@ class ProductsControllers extends AuthControllers
 	        	$db->bind("id", $id);
 	        	$post = $db->find_one($sql);
 	        	if($post){
-			     	$post['content'] = htmlspecialchars_decode(str_replace(["《","》"], ['<','>'], $post['content']));
+			     	$post['content'] = htmlspecialchars_decode(str_replace(["《","》"], ['<','>'], AuthCode($post['content'],"DECODE",$_SESSION['domain_content_key'])));
+			     	preg_match_all("/<\s*img\s+[^>]*?src\s*=\s*(\'|\")(.*?)\\1[^>]*?\/?\s*>/i",$post['content'],$match);
+			     	if($match[0]){
+			     		foreach (end($match) as $key) {
+			     			if(!AuthCode(str_replace("/".root_filename.".php?","",$key),"DECODE",$_SESSION['domain_content_key'])){
+			     				$post['content'] = str_replace(str_replace("/".root_filename.".php?","",$key),AuthCode(str_replace("/".root_filename.".php?","",$key),"ENCODE",$_SESSION['domain_content_key']),$post['content']);
+			     			}
+			     		}
+			     	}
 			      	$post['cate_pid'] = '';
 			      	if(empty($post['repair_time'])){
 		        		$post['repair_time'] = "否";
@@ -332,14 +382,135 @@ class ProductsControllers extends AuthControllers
 	}
 
 	/**
+	 * 修复漏洞
+	 * @access  public
+	 * @return html
+	 */
+	public function repair_index()
+	{
+		$this->log_db("用户访问修复漏洞","6");
+		$db = $this->Db();
+		if($_POST){
+			$id = isset($_POST['id']) ? intval($_POST['id']) : '';
+	      	$token = isset($_POST['token']) ? $_POST['token'] : '';
+	      	$content = isset($_POST['content']) ? $_POST['content'] : "";
+	      	$session_token = isset($_SESSION['token']) ? $_SESSION['token'] : '';
+	      	#IF判断区域
+	      	if(empty($id)) $this->json(['status'=>0,'msg'=>'输入ID！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+	      	if(empty($token)) $this->json(['status'=>0,'msg'=>'输入token！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+	      	if(empty($session_token)) $this->json(['status'=>0,'msg'=>'token异常！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+	      	if($token != $session_token) $this->json(['status'=>0,'msg'=>'token验证失败！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+	      	unset($_SESSION['token']);
+	      	if(empty($content)) $this->json(['status'=>0,'msg'=>'请输入修复结果！']);
+	      	
+	      	$db->bind("id", $id);
+	      	$db->bind("repair_content", AuthCode(str_replace("截图、本地图片可直接复制粘贴进编辑器中", "", $content),"ENCODE",$_SESSION['domain_content_key']));
+	        $db->bind("repair_time", time());
+	      	$sql = "UPDATE domain_post SET `repair_content` = :repair_content,`repair_time` = :repair_time WHERE `id` = :id";
+	        if($_SESSION['userid'] != '1'){
+			    $db->bind("user_id", $_SESSION['userid']);
+				$sql .= " AND user_id = :user_id";
+			}
+      		$info = $db->query($sql);
+	        if($info){
+	          	$this->json(["status"=>1,"msg"=>"修改成功！"]);
+	        } else {
+	          	$this->json(["status"=>0,"msg"=>"修改失败！"]);
+	        }
+		} else {
+			$id = isset($_GET['id']) ? intval($_GET['id']) : '';
+	      	if($id){
+	      		$sql = "select id,title,content,bugDetail,repair_time from domain_post where id = :id";
+	      		if($_SESSION['userid'] != '1'){
+				    $db->bind("user_id", $_SESSION['userid']);
+					$sql .= " AND user_id = :user_id";
+				}
+	        	$db->bind("id", $id);
+	        	$post = $db->find_one($sql);
+	        	if($post){
+			      	if(empty($post['repair_time'])){
+			      		$post['content'] = htmlspecialchars_decode(str_replace(["《","》"], ['<','>'], AuthCode($post['content'],"DECODE",$_SESSION['domain_content_key'])));
+				     	preg_match_all("/<\s*img\s+[^>]*?src\s*=\s*(\'|\")(.*?)\\1[^>]*?\/?\s*>/i",$post['content'],$match);
+				     	if($match[0]){
+				     		foreach (end($match) as $key) {
+				     			if(!AuthCode(str_replace("/".root_filename.".php?","",$key),"DECODE",$_SESSION['domain_content_key'])){
+				     				$post['content'] = str_replace(str_replace("/".root_filename.".php?","",$key),AuthCode(str_replace("/".root_filename.".php?","",$key),"ENCODE",$_SESSION['domain_content_key']),$post['content']);
+				     			}
+				     		}
+				     	}
+				      	$this->smarty->assign('post',$post);
+				      	$token = md5(code().time().code());
+				      	$_SESSION['token'] = $token;
+				      	$this->smarty->assign('token',$token);
+			        	$this->smarty->display('products/repair_index.tpl');
+		        	} else {
+		        		$this->json(['data'=>['url'=>"./".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])],'msg'=>'此漏洞已修复']);
+		        	}
+			    } else {
+	        		$this->json(['data'=>['url'=>"./".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])],'msg'=>'未找到此漏洞！']);
+			    }
+	      	} else {
+	        	$this->json(['data'=>['url'=>"./".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])],'msg'=>'程序异常']);
+	      	}
+		}
+	}
+
+	/**
+	 * 查看修复结果
+	 * @access  public
+	 * @return html
+	 */
+	public function repair_view_index()
+	{
+		$this->log_db("用户访问查看修复结果","6");
+		$db = $this->Db();
+		$id = isset($_GET['id']) ? intval($_GET['id']) : '';
+      	if($id){
+      		$sql = "select id,title,content,bugDetail,repair_content from domain_post where id = :id";
+      		if($_SESSION['userid'] != '1'){
+			    $db->bind("user_id", $_SESSION['userid']);
+				$sql .= " AND user_id = :user_id";
+			}
+        	$db->bind("id", $id);
+        	$post = $db->find_one($sql);
+        	if($post){
+		     	$post['repair_content'] = htmlspecialchars_decode(str_replace(["《","》"], ['<','>'], AuthCode($post['repair_content'],"DECODE",$_SESSION['domain_content_key'])));
+		     	preg_match_all("/<\s*img\s+[^>]*?src\s*=\s*(\'|\")(.*?)\\1[^>]*?\/?\s*>/i",$post['repair_content'],$match);
+		     	if($match[0]){
+		     		foreach (end($match) as $key) {
+		     			if(!AuthCode(str_replace("/".root_filename.".php?","",$key),"DECODE",$_SESSION['domain_content_key'])){
+		     				$post['repair_content'] = str_replace(str_replace("/".root_filename.".php?","",$key),AuthCode(str_replace("/".root_filename.".php?","",$key),"ENCODE",$_SESSION['domain_content_key']),$post['repair_content']);
+		     			}
+		     		}
+		     	}
+		     	$post['content'] = htmlspecialchars_decode(str_replace(["《","》"], ['<','>'], AuthCode($post['content'],"DECODE",$_SESSION['domain_content_key'])));
+		     	preg_match_all("/<\s*img\s+[^>]*?src\s*=\s*(\'|\")(.*?)\\1[^>]*?\/?\s*>/i",$post['content'],$match);
+		     	if($match[0]){
+		     		foreach (end($match) as $key) {
+		     			if(!AuthCode(str_replace("/".root_filename.".php?","",$key),"DECODE",$_SESSION['domain_content_key'])){
+		     				$post['content'] = str_replace(str_replace("/".root_filename.".php?","",$key),AuthCode(str_replace("/".root_filename.".php?","",$key),"ENCODE",$_SESSION['domain_content_key']),$post['content']);
+		     			}
+		     		}
+		     	}
+		      	$this->smarty->assign('post',$post);
+	        	$this->smarty->display('products/repair_view_index.tpl');
+		    } else {
+        		$this->json(['data'=>['url'=>"./".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])],'msg'=>'未找到此漏洞！']);
+		    }
+      	} else {
+        	$this->json(['data'=>['url'=>"./".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])],'msg'=>'程序异常']);
+      	}
+	}
+
+	/**
 	 * 下载漏洞报告
 	 * @access  public
 	 * @return html
 	 */
   	public function download_index()
   	{
-  // 		$this->jurisdiction("非法访问下载漏洞报告");
-		// $this->log_db("用户访问下载漏洞报告","7");
+  		$this->jurisdiction("非法访问下载漏洞报告");
+		$this->log_db("用户访问下载漏洞报告","7");
 	    $db = $this->Db();
 	    if($_POST){
     		$id = isset($_POST['id']) ? explode(",", $_POST['id']) : '';
@@ -358,7 +529,6 @@ class ProductsControllers extends AuthControllers
 	      	$_SESSION['token'] = $token;
 
       		$this->json(['status'=>1,'msg'=>'正在导出！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=download_index&id=".implode(",", $id)."&token=".$token."&path=".$path,"ENCODE",$_SESSION['domain_key'])]]);
-
     	}
 	    if($_GET){
 	      	$path = isset($_GET['path']) ? $_GET['path'] : '';
@@ -418,14 +588,23 @@ class ProductsControllers extends AuthControllers
 						} 
 
 						foreach ($post as $k => $v) {
-						    $v['content'] = htmlspecialchars_decode(str_replace(["《","》","截图、本地图片可直接复制粘贴进编辑器中"], ['<','>',''], $v['content']));
+						    $v['content'] = htmlspecialchars_decode(str_replace(["《","》","截图、本地图片可直接复制粘贴进编辑器中"], ['<','>',''], AuthCode($v['content'],"DECODE",$_SESSION['domain_content_key'])));
+
+						    preg_match_all("/<\s*img\s+[^>]*?src\s*=\s*(\'|\")(.*?)\\1[^>]*?\/?\s*>/i",$v['content'],$match);
+					     	if($match[0]){
+					     		foreach (end($match) as $key) {
+					     			if(!AuthCode(str_replace("/".root_filename.".php?","",$key),"DECODE",$_SESSION['domain_content_key'])){
+					     				$post['content'] = str_replace(str_replace("/".root_filename.".php?","",$key),AuthCode(str_replace("/".root_filename.".php?","",$key),"ENCODE",$_SESSION['domain_content_key']),$post['content']);
+					     			}
+					     		}
+					     	}
 						    preg_match_all("/<p[^>]*>\s*.*\s*<\/p>/isU",$v['content'],$match);
 						    $array = [];
 						    foreach ($match[0] as $ks => $vs) {
 						    	preg_match_all("/<\s*img\s+[^>]*?src\s*=\s*(\'|\")(.*?)\\1[^>]*?\/?\s*>/i",$vs,$match);
 						    	if($match[0]){
 						    		foreach (end($match) as $key) {
-						    			$img = @AuthCode(explode("/".root_filename.".php?", $key)[1],"DECODE",$_SESSION['domain_key']);
+						    			$img = @AuthCode(explode("/".root_filename.".php?", $key)[1],"DECODE",$_SESSION['domain_content_key']);
 						    			if($img){
 							    			$path = ROOT_PATH."/public/auto/".str_replace("m=Public&a=enup_img&id=", "", $img);
 							    			if(file_exists($path)){
@@ -516,7 +695,6 @@ class ProductsControllers extends AuthControllers
 								$sw = new stockConnector("127.0.0.1","5678");
 								$aa = ["path"=>ROOT_PATH."/python_web/tmp/".$code.".json","name"=>$k."安全测试报告".date("Y-m-d"),'template_path'=>ROOT_PATH."/python_web/template/".$file_path_name];
 								$con = @$sw->sendMsg(json_encode($aa));
-				
 								$ret = @$sw->getMsg();
 								if($ret){
 									$file_dir = ROOT_PATH."/python_web/tmp/".json_decode($ret,true)['path'];
@@ -533,8 +711,24 @@ class ProductsControllers extends AuthControllers
 							img_unlik($tmp_img);$this->json(["status"=>0,"msg"=>"系统异常：导出报告服务错误！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
 						}
 
+						// 记录导出时间
+						$sql_where = "";
+			    		foreach ($id as $k => $v) {
+			    			$sql_where .= ":session".$k.",";
+			    			$db->bind("session".$k, $v);
+			    		}
+						$db->bind("export_time", time());
+			    		$sql = "UPDATE domain_post SET `export_time` = :export_time WHERE session in ( ".trim($sql_where,",")." )";
+			    		if($_SESSION['userid'] != '1'){
+						    $db->bind("user_id", $_SESSION['userid']);
+							$sql .= " AND user_id = :user_id";
+						}
+						$db->query($sql);
+
+
 					    // 文件下载
 						if(count($file_path) <= 1){
+							img_unlik($tmp_img);
 							$file_path = array_shift($file_path);
 							downloadFile($file_path,basename($file_path));
 							$this->log_db("用户成功下载漏洞报告：".filterWords(basename($file_path)),"9");
@@ -579,7 +773,6 @@ class ProductsControllers extends AuthControllers
 	    }
 	}
 
-
 	/**
 	 * 项目分类
 	 * @access  public
@@ -616,8 +809,10 @@ class ProductsControllers extends AuthControllers
 					$post_count = "SELECT count(*) as num FROM domain_post WHERE company = :company";
 					$post_count = $db->find_one($post_count);
 	          		$list[$k]['num'] = isset($post_count['num']) ? $post_count['num'] : 0;;
-	          		$list[$k]['edit_index_id'] = "./".root_filename.".php?".AuthCode("m=Products&a=edit_classification&id=".$v['id'],"ENCODE",$_SESSION['domain_key']);
-		        	$list[$k]['del_index_id'] = "./".root_filename.".php?".AuthCode("m=Products&a=del_classification&id=".$v['id']."&token=".$token,"ENCODE",$_SESSION['domain_key']);
+	          		$list[$k]['edit_classification_id'] = "./".root_filename.".php?".AuthCode("m=Products&a=edit_classification&id=".$v['id'],"ENCODE",$_SESSION['domain_key']);
+		        	$list[$k]['del_classification_id'] = "./".root_filename.".php?".AuthCode("m=Products&a=del_classification&id=".$v['id']."&token=".$token,"ENCODE",$_SESSION['domain_key']);
+		        	$list[$k]['see_classification_id'] = "./".root_filename.".php?".AuthCode("m=Products&a=see_classification&id=".$v['id'],"ENCODE",$_SESSION['domain_key']);
+		        	$list[$k]['chart_classification_id'] = "./".root_filename.".php?".AuthCode("m=Products&a=chart_classification&id=".$v['id']."&token=".$token,"ENCODE",$_SESSION['domain_key']);
 	        	}
 	      	}
 
@@ -632,7 +827,6 @@ class ProductsControllers extends AuthControllers
 	    	$this->smarty->display('products/classification.tpl');
 	    }
 	}
-
 
 	/**
 	 * 添加项目分类
@@ -769,7 +963,7 @@ class ProductsControllers extends AuthControllers
 	public function del_classification()
 	{
 		$this->jurisdiction("非法访问删除项目分类");
-		$this->log_db("用户访问编辑项目分类","5");
+		$this->log_db("用户访问删除项目分类","5");
 
  		$db = $this->Db();
 	    if($_GET){
@@ -785,6 +979,149 @@ class ProductsControllers extends AuthControllers
 
 	      	$db->bind("id", $id);
 	      	$info = $db->query("DELETE from domain_project_classification where `id` = :id");
+	      	if($info){
+	        	$this->json(["status"=>1,"msg"=>"删除成功！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=classification","ENCODE",$_SESSION['domain_key'])]]);
+	      	} else {
+	        	$this->json(["status"=>0,"msg"=>"删除失败！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=classification","ENCODE",$_SESSION['domain_key'])]]);
+	      	}
+	    } else {
+	      	$this->json(["status"=>0,"msg"=>"错误异常！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=classification","ENCODE",$_SESSION['domain_key'])]]);
+	    }
+	}
+
+	/**
+	 * 查看项目资产
+	 * @access  public
+	 * @return html
+	 */
+	public function see_classification()
+	{
+		$this->jurisdiction("非法访问查看项目资产");
+		$this->log_db("用户访问查看项目资产","5");
+		$db = $this->Db();
+		$token = md5(code().time().code());
+      	$_SESSION['token'] = $token;
+      	$this->smarty->assign('token',$token);
+		if($_POST){
+	      	$id = isset($_GET['id']) ? intval($_GET['id']) : "";
+	      	$draw = isset($_POST['draw']) ? intval($_POST['draw']) : "1";
+	      	$start = isset($_POST['start']) ? intval($_POST['start']) : "1";
+	      	$length = isset($_POST['length']) ? intval($_POST['length']) : "10";
+
+	      	#IF判断区域
+	      	if(empty($id)) $this->json(['status'=>0,'msg'=>'输入ID！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=classification","ENCODE",$_SESSION['domain_key'])]]);
+
+			$db = $this->Db();
+			$db->bind("pid",$id);
+			$sql = "SELECT * FROM domain_project_domain WHERE pid = :pid";
+			$count = "SELECT count(*) as num FROM domain_project_domain WHERE pid = :pid";
+			$list = $db->query($sql);
+			if($list){
+	        	foreach ($list as $k => $v) {
+	          		$list[$k]['creation_time'] = $v['creation_time'] == 0 ? '-' : date("Y-m-d H:i:s",$v['creation_time']);
+		        	$list[$k]['del_see_classification_id'] = "./".root_filename.".php?".AuthCode("m=Products&a=del_see_classification_id&id=".$v['id']."&token=".$token,"ENCODE",$_SESSION['domain_key']);
+		        }
+	      	}
+			$db->bind("pid",$id);
+      		$classification_count = $db->find_one($count);
+      		$classification_num = isset($classification_count['num']) ? $classification_count['num'] : 0;
+	      	$this->json(["draw"=>$draw,"recordsTotal"=>$classification_num,"recordsFiltered"=>$classification_num,"data"=>$list]);
+	    } else {
+	      	$id = isset($_GET['id']) ? intval($_GET['id']) : '';
+	      	#IF判断区域
+	      	if(empty($id)) $this->json(['status'=>0,'msg'=>'输入ID！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=classification","ENCODE",$_SESSION['domain_key'])]]);
+	      	$this->smarty->assign('url',"./".root_filename.".php?".AuthCode("m=Products&a=see_classification&id=".$id,"ENCODE",$_SESSION['domain_key']));
+	      	$this->smarty->display('products/see_classification.tpl');
+	    }
+	}
+
+	/**
+	 * 查看项目分布
+	 * @access  public
+	 * @return html
+	 */
+	public function chart_classification()
+	{
+		$id = isset($_GET['id']) ? intval($_GET['id']) : "";
+		$db = $this->Db();
+		$db->bind("pid",$id);
+		$sql = "SELECT id,pid,url FROM domain_project_domain WHERE pid = :pid";
+		$list = $db->query($sql);
+		$db->bind("id",$id);
+		$sql = "SELECT id,title FROM domain_project_classification WHERE id = :id";
+		$classification_list = $db->find_one($sql);
+		if(!$classification_list) $this->json(['status'=>0,'msg'=>'项目不存在！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=classification","ENCODE",$_SESSION['domain_key'])]]);
+		$categories = [];
+		$data = [];
+		$lines = [];
+		$data[] = ["name"=>$classification_list['title'],"id"=>0,"draggable"=>true,];
+		$categories[] = ["name"=>$classification_list['title'],];
+		
+		if($list){
+			foreach ($list as $k => $v) {
+				// 关系筛选
+				$categories[] = ["name"=>$v['url'],];
+
+				// 数据组装
+				$data[] = [
+					"name"=>$v['url'],
+					"id"=>$v['id'],
+					"category"=>1,
+					"draggable"=>true,
+				];
+				$lines[] = ["source"=>'0',"target"=>(string)$v['id'],"value"=>"",];
+				$sql = "SELECT a.id,a.title,b.title as cate_id,a.bugLevel FROM domain_post as a LEFT JOIN domain_classification as b on a.cate_id = b.id WHERE a.company = :company and a.bugDetail like :bugDetail";
+				$db->bind("company",$v['pid']);
+			  	$db->bind("bugDetail", "%".$v['url']."%");
+				$post_list = $db->query($sql);
+				if($post_list){
+					$i = 1;
+					foreach ($post_list as $key => $value) {
+						$data[] = [
+							"name"=>$value['title'],
+							"id"=>$v['id']."-".$i,
+							"category"=>$v['id'],
+							"draggable"=>true,
+						];
+						$lines[] = ["source"=>$v['id']."-".$i,"target"=>(string)$v['id'],"value"=>"",];
+						$i++;
+					}
+				}
+
+			}
+		}
+	    $this->smarty->assign('lines',json_encode($lines));
+	    $this->smarty->assign('data',json_encode($data));
+	    $this->smarty->assign('categories',json_encode($categories));
+	    $this->smarty->assign('formatter',"{c}");
+	    $this->smarty->display('products/chart_classification.tpl');
+	}
+
+
+	/**
+	 * 删除项目资产
+	 * @access  public
+	 * @return html
+	 */
+	public function del_see_classification_id()
+	{
+		$this->jurisdiction("非法访问删除项目资产");
+		$this->log_db("用户访问删除项目资产","5");
+
+ 		$db = $this->Db();
+	    if($_GET){
+	      	$id = isset($_GET['id']) ? intval($_GET['id']) : '';
+	      	$token = isset($_GET['token']) ? $_GET['token'] : '';
+	      	$session_token = isset($_SESSION['token']) ? $_SESSION['token'] : '';
+	      	#IF判断区域
+	      	if(empty($id)) $this->json(['status'=>0,'msg'=>'输入ID！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=classification","ENCODE",$_SESSION['domain_key'])]]);
+	      	if(empty($token)) $this->json(['status'=>0,'msg'=>'输入token！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=classification","ENCODE",$_SESSION['domain_key'])]]);
+	      	if(empty($session_token)) $this->json(['status'=>0,'msg'=>'token异常！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=classification","ENCODE",$_SESSION['domain_key'])]]);
+	      	if($token != $session_token) $this->json(['status'=>0,'msg'=>'token验证失败！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=classification","ENCODE",$_SESSION['domain_key'])]]);
+	      	unset($_SESSION['token']);
+
+	      	$db->bind("id", $id);
+	      	$info = $db->query("DELETE from domain_project_domain where `id` = :id");
 	      	if($info){
 	        	$this->json(["status"=>1,"msg"=>"删除成功！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=classification","ENCODE",$_SESSION['domain_key'])]]);
 	      	} else {

@@ -139,24 +139,6 @@
                                 </div>
                             </div>
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                <div class="field-wrapper">
-                                    <div class="checkbox-container form-control">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="repair_time" value="2" {if $post['repair_time'] == '否'} checked="checked"  {/if}>
-                                            <label class="form-check-label" for="inlineRadio1">否</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="repair_time" value="1" {if $post['repair_time'] == '是'} checked="checked"  {/if}>
-                                            <label class="form-check-label" for="inlineRadio2">是</label>
-                                        </div>
-                                    </div>
-                                    <div class="field-placeholder">漏洞是否修复 <span class="text-danger">*</span></div>
-                                    <div class="form-text">
-                                        请选择漏洞是否修复
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                                 <input type="hidden" name="id" value="{$post.id}">
                                 <input type="hidden" name="token" value="{$token}">
                                 <button class="btn btn-primary" type="button" id="go_submit">提交</button>
@@ -175,7 +157,7 @@
         var classification_json = {{$classification_json}}
         $(document).ready(function() {
             var $summernote = $('.summernote').summernote({
-                height: 210,
+                height: 400,
                 tabsize: 2,
                 focus: true,
                 lang:'zh-CN',
@@ -222,6 +204,7 @@
                         if(data.status == '1'){
                             $summernote.summernote('insertImage', data.data, function ($image) {
                                 $image.attr('src', data.data);
+                                $image.attr('style', "width:50%");
                             });
                         } else {
                             layer.msg(data.msg, {
@@ -240,7 +223,6 @@
                 var bugDetail = $("input[name='bugDetail']").val();
                 var company = $("select[name='company']").find("option:selected").val();
                 var bugLevel = $("input[name='bugLevel']:checked").val();
-                var repair_time = $("input[name='repair_time']:checked").val();
                 var cate_id = $("select[name='cate_id']").find("option:selected").val();
                 var description = $("textarea[name='description']").val();
                 var suggestions = $("textarea[name='suggestions']").val();
@@ -321,7 +303,6 @@
                     description:description,
                     content:content,
                     suggestions:suggestions,
-                    repair_time:repair_time,
                     token:token,
                 },function(data){
                     if(data.status == '1'){

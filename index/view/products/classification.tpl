@@ -23,6 +23,8 @@
                                       <th>漏洞数量</th>
                                       <th>提交时间</th>
                                       <th>修改时间</th>
+                                      <th>项目资产</th>
+                                      <th>漏洞分布图</th>
                                       <th>操作</th>
                                     </tr>
                                 </thead>
@@ -78,11 +80,26 @@
                 },
                 {
                     "data": function (row, type, val, meta) {
+                        text = "<div>"
+                        text += "<a href=\"javascript:void(0);\" onclick=\"see('"+row.see_classification_id+"')\"data-original-title='查看项目资产' title='' data-toggle='tooltip' data-placement='top'><i class='icon-eye text-info'></i>&nbsp;</a>"
+                        text += '</div>'
+                        return text
+                    }
+                },
+                {
+                    "data": function (row, type, val, meta) {
+                        text = "<div>"
+                        text += "<a href=\"javascript:void(0);\" onclick=\"chart_see('"+row.chart_classification_id+"')\"data-original-title='查看漏洞分布图' title='' data-toggle='tooltip' data-placement='top'><i class='icon-eye text-info'></i>&nbsp;</a>"
+                        text += '</div>'
+                        return text
+                    }
+                },
+                {
+                    "data": function (row, type, val, meta) {
                         text = ""
                         text += '<div class="actions">'
-                        // text += '<a href="javascript:void(0);" data-toggle="tooltip" data-placement="top" title="" data-original-title="查看漏洞"><i class="icon-visibility text-info"></i>&nbsp;</a>'
-                        text += '<a href="'+row.edit_index_id+'" data-toggle="tooltip" data-placement="top" title="" data-original-title="编辑"><i class="icon-edit1 text-info"></i>&nbsp;</a>'
-                        text += '<a href="'+row.del_index_id+'" data-toggle="tooltip" data-placement="top" title="" data-original-title="删除"><i class="icon-x-circle text-danger"></i>&nbsp;</a>'
+                        text += '<a href="'+row.edit_classification_id+'" data-toggle="tooltip" data-placement="top" title="" data-original-title="编辑"><i class="icon-edit1 text-info"></i>&nbsp;</a>'
+                        text += '<a href="'+row.del_classification_id+'" data-toggle="tooltip" data-placement="top" title="" data-original-title="删除"><i class="icon-x-circle text-danger"></i>&nbsp;</a>'
                         text += '</div>'
                         return text
                     }
@@ -113,5 +130,31 @@
                 }
             }
         });
+
+        // 查看项目
+        function see(url)
+        {
+            layer.open({
+                type: 2,
+                title: '查看项目资产',
+                shadeClose: true,
+                offset: '10%',
+                area: ['60%', '80%'],
+                content: url
+            });
+        }
+
+        // 查看漏洞分布
+        function chart_see(url)
+        {
+            layer.open({
+                type: 2,
+                title: '漏洞分布图',
+                shadeClose: true,
+                offset: '10%',
+                area: ['60%', '80%'],
+                content: url
+            });
+        }
     </script>
 {include file="../footer.tpl"}

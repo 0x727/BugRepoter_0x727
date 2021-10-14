@@ -164,7 +164,7 @@
         <script>
             $(document).ready(function() {
                 var $summernote_{$foo} = $('#summernote_'+{$foo}).summernote({
-                    height: 210,
+                    height: 400,
                     tabsize: 2,
                     focus: true,
                     lang:'zh-CN',
@@ -191,6 +191,7 @@
                                     if(data.status == '1'){
                                         $summernote_{$foo}.summernote('insertImage', data.data, function ($image) {
                                             $image.attr('src', data.data);
+                                            $image.attr('style', "width:50%");
                                         });
                                     } else {
                                         layer.msg(data.msg, {

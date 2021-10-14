@@ -38,6 +38,7 @@ port = ".explode(':',$ip)[1].";";
 							md5("domain_post"),
 							md5("domain_project_classification"),
 							md5("domain_template_or_install_sql_template"),
+							md5("domain_project_domain"),
 						];
 		                $this->json(['status'=>1,'msg'=>'正在为您安装~','data'=>$data]);
 		            } else {
@@ -96,7 +97,7 @@ INSERT INTO `domain_classification` (`id`, `pid`, `title`, `suggestions`, `descr
 							}
 						break;
 					case md5("domain_post"):
-							$domain_post = " CREATE TABLE IF NOT EXISTS `domain_post` ( `id` int(11) NOT NULL AUTO_INCREMENT, `session` varchar(255) DEFAULT '0' COMMENT '临时报告查看授权id', `title` varchar(255) NOT NULL COMMENT '报告标题', `content` text NOT NULL COMMENT '报告内容', `cate_id` int(11) NOT NULL COMMENT '分类id', `user_id` int(11) NOT NULL COMMENT '提交者id', `bugLevel` tinyint(1) NOT NULL DEFAULT '1' COMMENT '无影响:1, 低危:2, 中危:3, 高危:4', `bugDetail` varchar(255) NOT NULL COMMENT '漏洞URL', `repair_time` int(11) DEFAULT NULL COMMENT '修复时间', `company` varchar(50) NOT NULL, `description` varchar(255) NOT NULL DEFAULT '无' COMMENT '漏洞描述', `suggestions` varchar(255) NOT NULL DEFAULT '无' COMMENT '修复建议', `creation_time` int(11) NOT NULL COMMENT '创建时间', `update_time` int(11) NOT NULL COMMENT '修改时间', PRIMARY KEY (`id`) USING BTREE, KEY `cate_id` (`cate_id`) USING BTREE, KEY `user_id` (`user_id`) USING BTREE ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='漏洞表';";
+							$domain_post = " CREATE TABLE IF NOT EXISTS `domain_post` ( `id` int(11) NOT NULL AUTO_INCREMENT, `session` varchar(255) DEFAULT '0' COMMENT '临时报告查看授权id', `title` varchar(255) NOT NULL COMMENT '报告标题', `content` text NOT NULL COMMENT '报告内容', `cate_id` int(11) NOT NULL COMMENT '分类id', `user_id` int(11) NOT NULL COMMENT '提交者id', `bugLevel` tinyint(1) NOT NULL DEFAULT '1' COMMENT '无影响:1, 低危:2, 中危:3, 高危:4', `bugDetail` varchar(255) NOT NULL COMMENT '漏洞URL', `repair_time` int(11) DEFAULT NULL COMMENT '修复时间', `company` varchar(50) NOT NULL COMMENT '项目', `description` varchar(255) NOT NULL DEFAULT '无' COMMENT '漏洞描述', `suggestions` varchar(255) NOT NULL DEFAULT '无' COMMENT '修复建议', `creation_time` int(11) NOT NULL COMMENT '创建时间', `update_time` int(11) NOT NULL COMMENT '修改时间',`repair_content` text NOT NULL COMMENT '修复内容',`export_time` int(11) DEFAULT NULL COMMENT '导出时间', PRIMARY KEY (`id`) USING BTREE, KEY `cate_id` (`cate_id`) USING BTREE, KEY `user_id` (`user_id`) USING BTREE ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='漏洞表';";
 							if($Db->exec($domain_post)){
 								$this->json(['status'=>1,'msg'=>'漏洞表创建成功！']);
 							} else {
@@ -119,6 +120,19 @@ INSERT INTO `domain_classification` (`id`, `pid`, `title`, `suggestions`, `descr
 								$this->json(['status'=>0,'msg'=>'模板表创建并且写入数据失败！']);
 							}
 						break;
+					case md5("domain_project_domain"):
+							$domain_template = "CREATE TABLE `domain_project_domain` (`id` int(11) NOT NULL AUTO_INCREMENT,`url` varchar(100) NOT NULL COMMENT '域名',`pid` int(11) NOT NULL COMMENT ' 项目id',`creation_time` int(11) NOT NULL COMMENT '创建时间',PRIMARY KEY (`id`)) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='项目域名';";
+							if($Db->exec($domain_template)){
+								$this->json(['status'=>1,'msg'=>'项目域名创建成功！']);
+							} else {
+								$this->json(['status'=>0,'msg'=>'项目域名创建失败！']);
+							}
+						break;
+
+
+						
+
+
 					default:
 							$this->json(['status'=>0,'msg'=>'程序异常！']);
 						break;

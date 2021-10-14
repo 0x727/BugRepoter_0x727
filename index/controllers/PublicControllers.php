@@ -50,7 +50,7 @@ class PublicControllers extends AuthControllers
                 	$this->log_db("加密文件：".filterWords($path.$name),"10");
 	        		@unlink($info);
                 	$this->log_db("删除原始文件：".filterWords($info),"10");
-	      			$this->json(["status"=>1,"msg"=>"文件上传成功","data"=>"/".root_filename.".php?".AuthCode("m=Public&a=enup_img&id=".$name,"ENCODE",$_SESSION['domain_key'])]);
+	      			$this->json(["status"=>1,"msg"=>"文件上传成功","data"=>"/".root_filename.".php?".AuthCode("m=Public&a=enup_img&id=".$name,"ENCODE",$_SESSION['domain_content_key'])]);
 	        	} else {
 	        		$this->log_db("用户异常上传文件操作：".$upload->errorInfo.",文件名：".filterWords(basename($_FILES['file']['name'])),"8");
 	        		$this->json(["status"=>0,"msg"=>$upload->errorInfo]);

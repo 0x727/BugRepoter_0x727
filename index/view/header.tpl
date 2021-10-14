@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" style="overflow: hidden;">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -21,6 +21,11 @@
         <script>
             var watermark_username = "账户：{$session_username}"
         </script>
+        <style>
+            table.dataTable td .actions{
+                display: -webkit-inline-box !important;
+            }
+        </style>
     </head>
     <body>
         <div class="page-wrapper">
@@ -82,11 +87,11 @@
                                 <div class="sidebar-menu">
                                     <ul>
                                         <li>
-                                            <a href="{$menu['products_index']}" {if $url_path == "ProductsControllers" && ($url_path_action == "index" || $url_path_action == "add_index" || $url_path_action == "edit_index")} class="current-page" {/if}>漏洞列表</a>
+                                            <a href="{$menu['products_index']}" {if $url_path == "ProductsControllers" && ($url_path_action == "index" || $url_path_action == "add_index" || $url_path_action == "edit_index" || $url_path_action == "repair_index" || $url_path_action == "repair_view_index")} class="current-page" {/if}>漏洞列表</a>
                                         </li>
                                         {if $user_info['id'] == "1"}
                                             <li>
-                                                <a href="{$menu['products_classification']}" {if $url_path == "ProductsControllers" && ($url_path_action == "classification" || $url_path_action == "add_classification" || $url_path_action == "edit_classification")} class="current-page" {/if}>项目分类</a>
+                                                <a href="{$menu['products_classification']}" {if $url_path == "ProductsControllers" && ($url_path_action == "classification" || $url_path_action == "add_classification" || $url_path_action == "edit_classification")} class="current-page" {/if}>项目列表</a>
                                             </li>
                                             <li>
                                                 <a href="{$menu['products_template']}" {if $url_path == "ProductsControllers" && $url_path_action == "template"} class="current-page" {/if}>模板列表</a>
@@ -108,7 +113,7 @@
                                     <ul>
                                         {if $user_info['id'] == "1"}
                                             <li>
-                                                <a href="{$menu['user_member']}" {if $url_path == "UserControllers" && $url_path_action == "member"} class="current-page" {/if}>用户管理</a>
+                                                <a href="{$menu['user_member']}" {if $url_path == "UserControllers" && $url_path_action == "member" || $url_path_action == "add_member" || $url_path_action == "edit_member"} class="current-page" {/if}>用户管理</a>
                                             </li>
                                         {/if}
                                         <li>
