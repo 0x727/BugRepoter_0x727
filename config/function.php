@@ -5,28 +5,28 @@
  * $post_data Array 需要提交的内容
  */
 function send_post($url, $post_data) {
-  	$postdata = http_build_query($post_data);
-  	$options = array(
-    	'http' => array(
-      		'method' => 'POST',
-      		'header' => 'Content-type:application/x-www-form-urlencoded',
-     		'content' => $postdata,
-      		'timeout' => 15 * 60 // 超时时间（单位:s）
-    	)
-  	);
-  	$context = stream_context_create($options);
-  	$result = file_get_contents($url,false, $context);
-  	return $result;
+    $postdata = http_build_query($post_data);
+    $options = array(
+      'http' => array(
+          'method' => 'POST',
+          'header' => 'Content-type:application/x-www-form-urlencoded',
+        'content' => $postdata,
+          'timeout' => 15 * 60 // 超时时间（单位:s）
+      )
+    );
+    $context = stream_context_create($options);
+    $result = file_get_contents($url,false, $context);
+    return $result;
 }
 
 /**
  * 随机获取 一串8位密钥
  */
 function code() {
-	$code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-	$rand = $code[rand(0,25)].strtoupper(dechex(date('m'))).date('d').substr(time(),-5).substr(microtime(),2,5).sprintf('%02d',rand(0,99));
-	for ($a = md5( $rand, true ),$s = '0123456789ABCDEFGHIJKLMNOPQRSTUV',$d = '',$f = 0;$f < 8;$g = ord( $a[ $f ] ),$d .= $s[ ( $g ^ ord( $a[ $f + 8 ] ) ) - $g & 0x1F ],$f++);
-	return $d;
+  $code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  $rand = $code[rand(0,25)].strtoupper(dechex(date('m'))).date('d').substr(time(),-5).substr(microtime(),2,5).sprintf('%02d',rand(0,99));
+  for ($a = md5( $rand, true ),$s = '0123456789ABCDEFGHIJKLMNOPQRSTUV',$d = '',$f = 0;$f < 8;$g = ord( $a[ $f ] ),$d .= $s[ ( $g ^ ord( $a[ $f + 8 ] ) ) - $g & 0x1F ],$f++);
+  return $d;
 }
 
 /**
@@ -45,23 +45,23 @@ function getip() {
  * XSS代码防护
  */
 function xss_clean($data){
- 	$data=str_replace(array('&','<','>'),array('&amp;','&lt;','&gt;'),$data);
- 	$data=preg_replace('/(&#*\w+)[\x00-\x20]+;/u','$1;',$data);
- 	$data=preg_replace('/(&#x*[0-9A-F]+);*/iu','$1;',$data);
-	$data=html_entity_decode($data,ENT_COMPAT,'UTF-8');
-	$data=preg_replace('#(<[^>]+?[\x00-\x20"\'])(?:on|xmlns)[^>]*+>#iu','$1>',$data);
-	$data=preg_replace('#([a-z]*)[\x00-\x20]*=[\x00-\x20]*([`\'"]*)[\x00-\x20]*j[\x00-\x20]*a[\x00-\x20]*v[\x00-\x20]*a[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu','$1=$2nojavascript...',$data);
-	$data=preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*v[\x00-\x20]*b[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu','$1=$2novbscript...',$data);
-	$data=preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*-moz-binding[\x00-\x20]*:#u','$1=$2nomozbinding...',$data);
-	$data=preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?expression[\x00-\x20]*\([^>]*+>#i','$1>',$data);
-	$data=preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?behaviour[\x00-\x20]*\([^>]*+>#i','$1>',$data);
-	$data=preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:*[^>]*+>#iu','$1>',$data);
-	$data=preg_replace('#</*\w+:\w[^>]*+>#i','',$data);
-	do{
-		$old_data=$data;
-		$data=preg_replace('#</*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|i(?:frame|layer)|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|title|xml)[^>]*+>#i','',$data);
-	}while($old_data!==$data);
- 	return $data;
+  $data=str_replace(array('&','<','>'),array('&amp;','&lt;','&gt;'),$data);
+  $data=preg_replace('/(&#*\w+)[\x00-\x20]+;/u','$1;',$data);
+  $data=preg_replace('/(&#x*[0-9A-F]+);*/iu','$1;',$data);
+  $data=html_entity_decode($data,ENT_COMPAT,'UTF-8');
+  $data=preg_replace('#(<[^>]+?[\x00-\x20"\'])(?:on|xmlns)[^>]*+>#iu','$1>',$data);
+  $data=preg_replace('#([a-z]*)[\x00-\x20]*=[\x00-\x20]*([`\'"]*)[\x00-\x20]*j[\x00-\x20]*a[\x00-\x20]*v[\x00-\x20]*a[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu','$1=$2nojavascript...',$data);
+  $data=preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*v[\x00-\x20]*b[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu','$1=$2novbscript...',$data);
+  $data=preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*-moz-binding[\x00-\x20]*:#u','$1=$2nomozbinding...',$data);
+  $data=preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?expression[\x00-\x20]*\([^>]*+>#i','$1>',$data);
+  $data=preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?behaviour[\x00-\x20]*\([^>]*+>#i','$1>',$data);
+  $data=preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:*[^>]*+>#iu','$1>',$data);
+  $data=preg_replace('#</*\w+:\w[^>]*+>#i','',$data);
+  do{
+    $old_data=$data;
+    $data=preg_replace('#</*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|i(?:frame|layer)|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|title|xml)[^>]*+>#i','',$data);
+  }while($old_data!==$data);
+  return $data;
 }
 
 /**
@@ -74,7 +74,7 @@ function filterWords($str)
     $farr = array(
             "/<(\\/?)(script|i?frame|html|body|title|link|meta|object|svg|onabort|onactivate|onafterprint|onafterupdate|onanimationend|onanimationiteration|onanimationstart|onautocomplete|onautocompleteerror|onbeforeactivate|onbeforecopy|onbeforecut|onbeforedeactivate|onbeforeeditfocus|onbeforepaste|onbeforeprint|onbeforeunload|onbeforeupdate|onbegin|onblur|onbounce|oncancel|oncanplay|oncanplaythrough|oncellchange|onchange|onclick|onclose|oncompassneedscalibration|oncontextmenu|oncontrolselect|oncopy|oncuechange|oncut|ondataavailable|ondatasetchanged|ondatasetcomplete|ondblclick|ondeactivate|ondevicelight|ondevicemotion|ondeviceorientation|ondeviceproximity|ondrag|ondragdrop|ondragend|ondragenter|ondragexit|ondragleave|ondragover|ondragstart|ondrop|ondurationchange|onemptied|onend|onended|onerror|onerrorupdate|onexit|onfilterchange|onfinish|onfocus|onfocusin|onfocusout|onformchange |onforminput |ongesturechange|ongestureend|ongesturestart|onhashchange|onhelp|oninput|oninvalid|onkeydown|onkeypress|onkeyup|onlanguagechange|onlayoutcomplete|onload|onloadeddata|onloadedmetadata|onloadstart|onlosecapture|onmediacomplete|onmediaerror|onmessage|onmousedown|onmouseenter|onmouseleave|onmousemove|onmouseout|onmouseover|onmouseup|onmousewheel|onmove|onmoveend|onmovestart|onmozfullscreenchange|onmozfullscreenerror|onmozpointerlockchange|onmozpointerlockerror|onmsgesturechange|onmsgesturedoubletap|onmsgesturehold|onmsgesturerestart|onmsinertiastart|onmspointercancel|onmspointerdown|onmspointerenter|onmspointerhover|onmspointerleave|onmspointermove|onmspointerout|onmspointerover|onmspointerup|onoffline|ononline|onorientationchange|onoutofsync|onpagehide|onpageshow|onpaste|onpause|onplay|onplaying|onpopstate|onprogress|onpropertychange|onratechange|onreadystatechange|onreceived|onrepeat|onreset|onresize|onresizeend|onresizestart|onresume|onreverse|onrowdelete|onrowenter|onrowexit|onrowinserted|onrowsdelete|onrowsinserted|onscroll|onsearch|onseek|onseeked|onseeking|onselect|onselectionchange|onselectstart|onshow|onstalled|onstart|onstop|onstorage|onsubmit|onsuspend|onsynchrestored|ontimeerror|ontimeupdate|ontoggle|ontouchcancel|ontouchend|ontouchmove|ontouchstart|ontrackchange|ontransitionend|onunload|onurlflip|onuserproximity|onvolumechange|onwaiting|onwebkitanimationend|onwebkitanimationiteration|onwebkitanimationstart|onwebkitmouseforcechanged|onwebkitmouseforcedown|onwebkitmouseforceup|onwebkitmouseforcewillbegin|onwebkittransitionend|onwebkitwillrevealbottom|onwheel|onzoom\\?|\\%)([^>]*?)>/isU",
             "/(<[^>]*)on[a-zA-Z]+\s*=([^>]*>)/isU",
-            "/select|insert|update|delete|join|union|into|load_file|outfile|dump|and|count|asc|create|where/is"
+            "/select|insert|update|delete|join|union|into|load_file|outfile|dump|count|asc|create|where/is"
     );
     if(is_string($str)){
       $str = @preg_replace($farr,'',$str);
@@ -549,9 +549,9 @@ function try_mysql($host,$db,$db_user,$db_pwd){
     'db_pwd'  => $db_pwd, 
     );
   
-  $pdo = new PDO("mysql:host=" . $mysql_conf['host'] . "; port=". $mysql_conf['port'] . "; dbname=" . $mysql_conf['db'], $mysql_conf['db_user'], $mysql_conf['db_pwd']);
-  
+  $pdo = new PDO("mysql:host=" . $mysql_conf['host'] . "; port=". $mysql_conf['port'], $mysql_conf['db_user'], $mysql_conf['db_pwd']);
   if($pdo){
+    $pdo->exec("CREATE DATABASE if not exists $db DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci");
     return true;
   } else {
     return false;
