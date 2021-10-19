@@ -127,17 +127,17 @@
             var scrollTop = $("#one_content").scrollTop();
             var windowHeight = $("#one_content").height();
             var scrollHeight = $("#one_content")[0].scrollHeight;
-            if(scrollTop+windowHeight!=scrollHeight){
-                layer.msg("请阅读完协议！", {
-                    icon: 2
-                }, function(){
+            // if(scrollTop+windowHeight!=scrollHeight){
+            //     layer.msg("请阅读完协议！", {
+            //         icon: 2
+            //     }, function(){
                     
-                });
-            } else {
+            //     });
+            // } else {
     			$("#one").attr("style","display:none;");
     			$("#three").attr("style","display:;");
     			$(".subscribe-screen").attr("style","");
-            }
+            // }
 		}
 		function next_step_two()
 		{

@@ -87,8 +87,7 @@ if(!$_GET){
 		if(isset($_SERVER["HTTP_X_REQUESTED_WITH"]) && strtolower($_SERVER["HTTP_X_REQUESTED_WITH"])=="xmlhttprequest"){
 			echo json_encode(["status"=>0,"msg"=>"Url参数错误！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Error&a=index","ENCODE",$_SESSION['domain_key'])]]);
 		} else {
-			echo "<script>alert('Url参数错误！')</script>";
-			header("refresh:1;url=/".root_filename.".php?".AuthCode("m=Error&a=index","ENCODE",$_SESSION['domain_key']));
+			header_flush('Url参数错误！',"./".root_filename.".php?".AuthCode("m=Error&a=index","ENCODE",$_SESSION['domain_key']));
 		}
 	}
 }
@@ -157,8 +156,7 @@ if(!in_array($m, $m_auth_array)){
 	if(isset($_SERVER["HTTP_X_REQUESTED_WITH"]) && strtolower($_SERVER["HTTP_X_REQUESTED_WITH"])=="xmlhttprequest"){
 		echo json_encode(["status"=>0,"msg"=>"程序异常","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Error&a=index","ENCODE",$_SESSION['domain_key'])]]);
 	} else {
-		echo "<script>alert('程序异常')</script>";
-		header("refresh:1;url=/".root_filename.".php?".AuthCode("m=Error&a=index","ENCODE",$_SESSION['domain_key']));
+		header_flush('程序异常',"./".root_filename.".php?".AuthCode("m=Error&a=index","ENCODE",$_SESSION['domain_key']));
 	}
 	die;
 }
@@ -166,8 +164,7 @@ if(!is_file(dirname(__FILE__)."/index/controllers/".$m.".php")){
 	if(isset($_SERVER["HTTP_X_REQUESTED_WITH"]) && strtolower($_SERVER["HTTP_X_REQUESTED_WITH"])=="xmlhttprequest"){
 		echo json_encode(["status"=>0,"msg"=>"控制器不存在","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Error&a=index","ENCODE",$_SESSION['domain_key'])]]);
 	} else {
-		echo "<script>alert('控制器不存在')</script>";
-		header("refresh:1;url=/".root_filename.".php?".AuthCode("m=Error&a=index","ENCODE",$_SESSION['domain_key']));
+		header_flush('控制器不存在',"./".root_filename.".php?".AuthCode("m=Error&a=index","ENCODE",$_SESSION['domain_key']));
 	}
 	die;
 }
@@ -179,8 +176,7 @@ if(!method_exists($info,$a)){
 	if(isset($_SERVER["HTTP_X_REQUESTED_WITH"]) && strtolower($_SERVER["HTTP_X_REQUESTED_WITH"])=="xmlhttprequest"){
 		echo json_encode(["status"=>0,"msg"=>"方法不存在","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Login&a=index","ENCODE",$_SESSION['domain_key'])]]);
 	} else {
-		echo "<script>alert('方法不存在')</script>";
-		header("refresh:1;url=/".root_filename.".php?".AuthCode("m=Error&a=index","ENCODE",$_SESSION['domain_key']));
+		header_flush('方法不存在',"./".root_filename.".php?".AuthCode("m=Error&a=index","ENCODE",$_SESSION['domain_key']));
 	}
 	die;
 }

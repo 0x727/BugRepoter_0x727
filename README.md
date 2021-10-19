@@ -185,14 +185,36 @@ location ^~ /public/auto/ {
 location ^~ /public/img/ {
   deny all;
 }
-# 把.php 隐藏起来
-if (!-e $request_filename){
-	rewrite  ^(.*)$ $1.php last;
+# 禁止访问docker目录
+location ^~ /docker {
+   deny all;
+}
+#一键申请SSL证书验证目录相关设置
+location ~ \.well-known{
+    allow all;
+}
+#禁止访问文件后缀文件
+location ~ .*\.(sh|py|docx|doc|ini|yml) {
+  deny all;
 }
 ```
 ![nginx_config](./public/img/nginx_config.png)
 
-## 0x06 版本更新
+## 0x06 Docker一键安装
+
+```
+首先给予目录所有权限
+chmod 777 -R BugRepoter_0x727
+
+进去docker目录
+cd docker
+
+运行run_docker.sh
+```
+
+![run_docker](./public/img/run_docker.png)
+
+## 0x07 版本更新
 
 V1.0 项目支持项目批量提交，批量按项目分类进行导出，快速生成并且统计年度汇总报告。
 
@@ -204,7 +226,29 @@ V1.3 增加项目资产自动归属，增加漏洞分布图。
 
 V1.4 优化一键安装页面问题。
 
-## 0x07 反馈
+V1.5 增加docker一键部署环境。
+
+## 0x08 待添加/优化功能
+
+V1.6优化登陆防护，判断用户输入错误多次并且锁定账户。
+
+V1.7增加github对比并自动更新。
+
+V1.8增加邮件提醒功能，漏洞报告提交超过5天后自动提醒提交者是否修复漏洞。
+
+V1.9增加自定义模板上传，需要申请wps开发者平台权限。
+
+V1.10 增加报告分享外链方式进行分享，无需登录即可查看报告内容。
+
+V1.11增加防漏扫功能，避免AwVS，Nessus等一些开源软件进行漏洞扫描。
+
+V1.12增加认证访问链，自动形成整条认证访问链，行为操作链。
+
+V1.13优化post提交内容，进行RSA加密进行提交到后端。
+
+V1.14优化页面弹出消息提示层。
+
+## 0x09 反馈
 
 BugRepoter_0x727（自动化编写报告平台） 是一个免费且开源的项目，我们欢迎任何人为其开发和进步贡献力量。
 
@@ -215,3 +259,9 @@ BugRepoter_0x727（自动化编写报告平台） 是一个免费且开源的项
 * 贡献代码请提交 PR 至 dev 分支，master 分支仅用于发布稳定可用版本。
 
 *提醒：和项目相关的问题最好在 issues 中反馈，这样方便其他有类似问题的人可以快速查找解决方法，并且也避免了我们重复回答一些问题。*
+
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/0x727/BugRepoter_0x727.svg)](https://starchart.cc/0x727/BugRepoter_0x727)
+
+<img align='right' src="https://profile-counter.glitch.me/BugRepoter_0x727/count.svg" width="200">

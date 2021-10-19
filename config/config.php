@@ -1,4 +1,4 @@
-host = "127.0.0.1";
+host = "";
 user = "";
 password = "";
 dbname = "";

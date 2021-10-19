@@ -636,3 +636,17 @@ function img_unlik($url = [])
     }
   }
 }
+
+/**
+  * 清除缓存并跳转
+  * @param type $url 内容
+  * @return bool
+  */
+function header_flush($msg = "",$url = "")
+{
+  // ob_start();
+  echo "<script>alert('".$msg."');window.location.href='".$url."'</script>";
+  // header($url);
+  // ob_end_flush();
+  die();
+}

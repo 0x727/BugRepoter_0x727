@@ -73,9 +73,10 @@ class AuthControllers
 		}else{
 			$url = isset($array['data']['url']) ? $array['data']['url'] : "/".root_filename.".php?".AuthCode("m=Login&a=index","ENCODE",$_SESSION['domain_key']);
 			$msg = isset($array['msg']) ? $array['msg'] : '程序异常';
-			echo "<script>alert('".$msg."')</script>";
-			header("refresh:1;url=".$url);
-			die;
+			// echo "<script>alert('".$msg."')</script>";
+			// header("refresh:1;url=".$url);
+			header_flush($msg,$url);
+			die();
 		}
 	}
 

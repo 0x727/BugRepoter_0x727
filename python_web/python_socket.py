@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import threading
 import socket
+import sys
 import time
 import json,os
 import XmlTransformationDoc
@@ -46,12 +47,13 @@ class Reader(threading.Thread):
 # 监听线程，监听远程连接
 # 当远程计算机请求连接时，它将创建一个要处理的读取线程
 class Listener(threading.Thread):
-    def __init__(self, port):
+    def __init__(self, ip, port):
         threading.Thread.__init__(self)
+        self.ip = ip
         self.port = port
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.sock.bind(("127.0.0.1", port))
+        self.sock.bind((ip, port))
         self.sock.listen(0)
 
     def run(self):
@@ -62,6 +64,7 @@ class Listener(threading.Thread):
             Reader(client).start()
             cltadd = cltadd
             print("accept a connect(new reader..)")
-
-lst = Listener(5678)  # 创建侦听线程
-lst.start()  # 开始
+ip = sys.argv[1].split(":")[0]
+port = sys.argv[1].split(":")[1]
+lst = Listener(ip,int(port))
+lst.start()

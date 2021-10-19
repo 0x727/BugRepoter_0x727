@@ -692,7 +692,7 @@ class ProductsControllers extends AuthControllers
 						    $code = code();
 						    @file_put_contents(ROOT_PATH."/python_web/tmp/".$code.".json", json_encode($zong_data));
 						    try {
-								$sw = new stockConnector("127.0.0.1","5678");
+								$sw = new stockConnector(isset($_SESSION['system_config']['socket_ip'])?$_SESSION['system_config']['socket_ip']:'127.0.0.1',"5678");
 								$aa = ["path"=>ROOT_PATH."/python_web/tmp/".$code.".json","name"=>$k."安全测试报告".date("Y-m-d"),'template_path'=>ROOT_PATH."/python_web/template/".$file_path_name];
 								$con = @$sw->sendMsg(json_encode($aa));
 								$ret = @$sw->getMsg();
