@@ -15,12 +15,12 @@ $(function() {
 	});
 });
 
-$(function() {
-	var interval = setInterval(function() {
-		var momentNow = moment();
-		$('#todays-date').html(momentNow.format('DD MMMM YYYY'));
-	}, 100);
-});
+// $(function() {
+// 	var interval = setInterval(function() {
+// 		var momentNow = moment();
+// 		$('#todays-date').html(momentNow.format('DD MMMM YYYY'));
+// 	}, 100);
+// });
 
 
 $('.todo-body').on('click', 'li.todo-list', function() {
@@ -136,18 +136,10 @@ var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
 })
 
 function fIsUrL(sUrl) {
-    var sRegex = '^((https|http)?://)' + '?(([0-9a-z_!~*\'().&=+$%-]+: )?[0-9a-z_!~*\'().&=+$%-]+@)?' //ftp的user@ 
-        + '(([0-9]{1,3}.){3}[0-9]{1,3}' // IP形式的URL- 199.194.52.184 
-        + '|' // 允许IP和DOMAIN（域名） 
-        + '([0-9a-z_!~*\'()-]+.)*' // 域名- www. 
-        + '([0-9a-z][0-9a-z-]{0,61})?[0-9a-z].' // 二级域名 
-        + '[a-z]{2,6})' // first level domain- .com or .museum 
-        + '(:[0-9]{1,4})?' // 端口- :80 
-        + '((/?)|' // a slash isn't required if there is no file name 
-        + '(/[0-9a-z_!~*\'().;?:@&=+$,%#-]+)+/?)$';
-    var re = new RegExp(sRegex);
-    //re.test() 
-    if (re.test(sUrl)) {
+    var str = sUrl,
+    Expression = /http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/,
+    re = new RegExp(Expression);
+    if(re.test(str) == true) {
         return true;
     }
     return false;
@@ -183,7 +175,7 @@ function fIsUrL(sUrl) {
     watermark_parent_width:0,   
     watermark_parent_height:0,  
     watermark_parent_node:null, 
-    monitor:true,               
+    monitor:false,               
   };
 
   var settingsToDefaultSetting = function (settings) {
@@ -352,7 +344,6 @@ function fIsUrL(sUrl) {
 
   /*手动加载水印*/
   watermark.load = function(settings){
-    console.log(settings, 'settings')
     globalSetting = settings;
     loadMark(settings);
   };
@@ -369,7 +360,6 @@ function fIsUrL(sUrl) {
     'attributes': true,
     'subtree': true,
   };
-
   return watermark;
 }));
 
