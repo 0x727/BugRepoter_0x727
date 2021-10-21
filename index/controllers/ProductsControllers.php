@@ -636,6 +636,7 @@ class ProductsControllers extends AuthControllers
 						    	'id'=>count($company[$v['realname']])+1,
 						    	'pathname'=>$v['title'],
 						    	'name'=>$v['title'],
+						    	'repair_time'=>3,
 						    	'level'=>intval($v['bugLevel']),
 						    	'url'=>$v['bugDetail'],
 						    	'analysis'=>$v['description'],
@@ -673,6 +674,7 @@ class ProductsControllers extends AuthControllers
 						foreach ($company as $k => $v) {
 							$zong_data = [
 						    	'name'=>$k,
+						    	'doctype'=>1,
 						    	'time'=>date("Y年m月d日"),
 						    	'producer'=>isset($_SESSION['name']) ? $_SESSION['name'] : 'admin',
 						    	'producer_time'=>date("Y.m.d"),
@@ -773,6 +775,313 @@ class ProductsControllers extends AuthControllers
 	    }
 	}
 
+	/**
+	 * 下载复测漏洞报告
+	 * @access  public
+	 * @return html
+	 */	
+	public function repair_download_index()
+	{
+		$this->jurisdiction("非法访问下载漏洞报告");
+		$this->log_db("用户访问下载漏洞报告","7");
+	    $db = $this->Db();
+	    if($_POST){
+    		$id = isset($_POST['id']) ? explode(",", $_POST['id']) : '';
+		    $path = isset($_POST['path']) ? $_POST['path'] : '';
+			$token = isset($_POST['token']) ? $_POST['token'] : '';
+	      	$session_token = isset($_SESSION['token']) ? $_SESSION['token'] : '';
+	      	#IF判断区域
+     	 	if(empty($id)) $this->json(['status'=>0,'msg'=>'输入ID！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+	      	if(empty($path)) $this->json(['status'=>0,'msg'=>'输入模板ID！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+	      	if(empty($token)) $this->json(['status'=>0,'msg'=>'输入token！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+	      	if(empty($session_token)) $this->json(['status'=>0,'msg'=>'token异常！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+	      	if($token != $session_token) $this->json(['status'=>0,'msg'=>'token验证失败！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+	      	unset($_SESSION['token']);
+
+	      	$token = md5(code().time().code());
+	      	$_SESSION['token'] = $token;
+
+      		$this->json(['status'=>1,'msg'=>'正在导出！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=repair_download_index&id=".implode(",", $id)."&token=".$token."&path=".$path,"ENCODE",$_SESSION['domain_key'])]]);
+    	}
+	    if($_GET){
+	      	$path = isset($_GET['path']) ? $_GET['path'] : '';
+	      	$id = isset($_GET['id']) ? explode(",", $_GET['id']) : '';
+	      	$token = isset($_GET['token']) ? $_GET['token'] : '';
+	      	$session_token = isset($_SESSION['token']) ? $_SESSION['token'] : '';
+	      	#IF判断区域
+	      	if(empty($id)) $this->json(['status'=>0,'msg'=>'输入ID！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+	      	if(empty($path)) $this->json(['status'=>0,'msg'=>'输入模板ID！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+	      	if(empty($token)) $this->json(['status'=>0,'msg'=>'输入token！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+	      	if(empty($session_token)) $this->json(['status'=>0,'msg'=>'token异常！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+	      	if($token != $session_token) $this->json(['status'=>0,'msg'=>'token验证失败！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+	      	unset($_SESSION['token']);
+
+	      	$db = $this->Db();
+	      	$db->bind("uuid", $path);
+			$list = $db->find_one("select * from domain_template WHERE uuid = :uuid");
+			if($list){
+				$file_path_name = basename($list['file_path']);
+				if(file_exists(ROOT_PATH."/python_web/template/".$file_path_name)){
+					if(!is_array($id)) $this->json(['status'=>0,'msg'=>'程序异常！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+			      	$sql_where = "";
+		    		foreach ($id as $k => $v) {
+		    			$sql_where .= ":session".$k.",";
+		    			$db->bind("session".$k, $v);
+		    		}
+		    		$sql = "select a.title,a.content,a.bugLevel,a.bugDetail,a.description,a.suggestions,b.title as realname,b.id,c.title as cate_id,a.repair_content,a.repair_time from domain_post as a left join domain_project_classification as b on a.company = b.id left join domain_classification as c on a.cate_id = c.id where a.session in ( ".trim($sql_where,",")." )";
+		    		if($_SESSION['userid'] != '1'){
+					    $db->bind("user_id", $_SESSION['userid']);
+						$sql .= " AND a.user_id = :user_id";
+					}
+					$post = $db->query($sql);
+					if($post){
+						// 公司数组
+						$company = [];
+						// URL数组
+						$hostlist = [];
+
+						$url = [];
+						
+						$vulnerability_types = [];
+
+						$zong_shu = [];
+
+						$risk_level = '';
+						$high = 0;
+						$medium = 0;
+						$low = 0;
+						$serious = 0;
+
+						// 临时图片存储
+						$tmp_img = [];
+
+						// 初始默认设置 漏洞等级
+						foreach ($post as $k => $v) {
+							$zong_shu[$v['realname']] = ['serious'=>0,'high'=>0,'medium'=>0,'low'=>0];
+						}
+
+						foreach ($post as $k => $v) {
+							if(empty($v['repair_time'])){
+								$v['content'] = htmlspecialchars_decode(str_replace(["《","》","截图、本地图片可直接复制粘贴进编辑器中"], ['<','>',''], AuthCode($v['content'],"DECODE",$_SESSION['domain_content_key'])));
+
+							    preg_match_all("/<\s*img\s+[^>]*?src\s*=\s*(\'|\")(.*?)\\1[^>]*?\/?\s*>/i",$v['content'],$match);
+						     	if($match[0]){
+						     		foreach (end($match) as $key) {
+						     			if(!AuthCode(str_replace("/".root_filename.".php?","",$key),"DECODE",$_SESSION['domain_content_key'])){
+						     				$post['content'] = str_replace(str_replace("/".root_filename.".php?","",$key),AuthCode(str_replace("/".root_filename.".php?","",$key),"ENCODE",$_SESSION['domain_content_key']),$post['content']);
+						     			}
+						     		}
+						     	}
+							    preg_match_all("/<p[^>]*>\s*.*\s*<\/p>/isU",$v['content'],$match);
+							    $array = [];
+							    foreach ($match[0] as $ks => $vs) {
+							    	preg_match_all("/<\s*img\s+[^>]*?src\s*=\s*(\'|\")(.*?)\\1[^>]*?\/?\s*>/i",$vs,$match);
+							    	if($match[0]){
+							    		foreach (end($match) as $key) {
+							    			$img = @AuthCode(explode("/".root_filename.".php?", $key)[1],"DECODE",$_SESSION['domain_content_key']);
+							    			if($img){
+								    			$path = ROOT_PATH."/public/auto/".str_replace("m=Public&a=enup_img&id=", "", $img);
+								    			if(file_exists($path)){
+								    				@file_put_contents(ROOT_PATH."/python_web/tmp/".str_replace("m=Public&a=enup_img&id=", "", $img).".png",@binary_decode(@file_get_contents($path),str_replace("m=Public&a=enup_img&id=", "", $img)));
+								    				$tmp_img[] = ROOT_PATH."/python_web/tmp/".str_replace("m=Public&a=enup_img&id=", "", $img).".png";
+								    				$array[] = ['text'=>ROOT_PATH."/python_web/tmp/".str_replace("m=Public&a=enup_img&id=", "", $img).".png",'type'=>1];
+								    			}
+							    			}
+							    		}
+							    	} else {
+							    	  $array[] = ['text'=>strip_tags($vs),'type'=>2];
+							    	}
+							    }
+							} else {
+							    $v['repair_content'] = htmlspecialchars_decode(str_replace(["《","》","截图、本地图片可直接复制粘贴进编辑器中"], ['<','>',''], AuthCode($v['repair_content'],"DECODE",$_SESSION['domain_content_key'])));
+
+							    preg_match_all("/<\s*img\s+[^>]*?src\s*=\s*(\'|\")(.*?)\\1[^>]*?\/?\s*>/i",$v['repair_content'],$match);
+						     	if($match[0]){
+						     		foreach (end($match) as $key) {
+						     			if(!AuthCode(str_replace("/".root_filename.".php?","",$key),"DECODE",$_SESSION['domain_content_key'])){
+						     				$post['repair_content'] = str_replace(str_replace("/".root_filename.".php?","",$key),AuthCode(str_replace("/".root_filename.".php?","",$key),"ENCODE",$_SESSION['domain_content_key']),$post['repair_content']);
+						     			}
+						     		}
+						     	}
+							    preg_match_all("/<p[^>]*>\s*.*\s*<\/p>/isU",$v['repair_content'],$match);
+							    $array = [];
+							    foreach ($match[0] as $ks => $vs) {
+							    	preg_match_all("/<\s*img\s+[^>]*?src\s*=\s*(\'|\")(.*?)\\1[^>]*?\/?\s*>/i",$vs,$match);
+							    	if($match[0]){
+							    		foreach (end($match) as $key) {
+							    			$img = @AuthCode(explode("/".root_filename.".php?", $key)[1],"DECODE",$_SESSION['domain_content_key']);
+							    			if($img){
+								    			$path = ROOT_PATH."/public/auto/".str_replace("m=Public&a=enup_img&id=", "", $img);
+								    			if(file_exists($path)){
+								    				@file_put_contents(ROOT_PATH."/python_web/tmp/".str_replace("m=Public&a=enup_img&id=", "", $img).".png",@binary_decode(@file_get_contents($path),str_replace("m=Public&a=enup_img&id=", "", $img)));
+								    				$tmp_img[] = ROOT_PATH."/python_web/tmp/".str_replace("m=Public&a=enup_img&id=", "", $img).".png";
+								    				$array[] = ['text'=>ROOT_PATH."/python_web/tmp/".str_replace("m=Public&a=enup_img&id=", "", $img).".png",'type'=>1];
+								    			}
+							    			}
+							    		}
+							    	} else {
+							    	  $array[] = ['text'=>strip_tags($vs),'type'=>2];
+							    	}
+							    }
+							}
+							if(empty($v['repair_time'])){
+							    if($v['bugLevel'] == 2){
+							    	$zong_shu[$v['realname']]['low'] += 1;
+							    	$low += 1;
+							    } elseif($v['bugLevel'] == 3){
+							    	$zong_shu[$v['realname']]['medium'] += 1;
+							    	$medium += 1;
+							    } elseif($v['bugLevel'] == 4){
+							    	$zong_shu[$v['realname']]['high'] += 1;
+							    	$high += 1;
+							    } elseif($v['bugLevel'] == 5){
+							    	$zong_shu[$v['realname']]['serious'] += 1;
+							    	$serious += 1;
+							    }
+							}
+						    $post[$k]['repair_content'] = $v['repair_content'] = $array;
+						    @$company[$v['realname']][] = [
+						    	'id'=>count($company[$v['realname']])+1,
+						    	'pathname'=>$v['title'],
+						    	'name'=>$v['title'],
+						    	'repair_time'=>empty($v['repair_time']) ? 1 : 2,
+						    	'level'=>intval($v['bugLevel']),
+						    	'url'=>$v['bugDetail'],
+						    	'analysis'=>$v['description'],
+						    	'verification'=>$array,
+						    	'suggestions'=>$v['suggestions'],
+						    ];
+						    if(empty($v['repair_time'])){
+							    @$hostlist[$v['realname']][] = ['id'=>count($hostlist[$v['realname']])+1,'url'=>$v['bugDetail'],'name'=>$v['title'],'type'=>$v['cate_id'],'bugLevel'=>$v['bugLevel']];
+						    	@$vulnerability_types[$v['realname']][] = $v['cate_id'];
+							}
+						    $url[] = @getTopHost($v['bugDetail']);
+				   		}
+				   		if($serious>=1 || $high >= 3){
+				   			$risk_level = "极度风险";
+				   		} elseif ($high > 0 || $medium >= 5) {
+				   			$risk_level = "严重风险";
+				   		} elseif ($medium >= 2) {
+				   			$risk_level = "严重隐患";
+				   		}  else {
+				   			$risk_level = "一般隐患";
+				   		}
+
+					   	$alerts = [];
+					   	foreach ($company as $k => $v) {
+					   	 	$alerts[$k] = [
+					   	 		'name'=>$k,
+					   	 		'path'=>$v,
+					   	 	];
+					   	}
+					   	foreach ($url as $k => $v) {
+					   		$url[$k] = "*.".$v;
+					   	}
+					   	$url = array_unique($url);
+						reset($company);
+					   	include_once ROOT_PATH."/lib/socket/stockConnector.php";
+					   	$file_path = [];
+						foreach ($company as $k => $v) {
+							$zong_data = [
+						    	'name'=>$k,
+						    	'doctype'=>2,
+						    	'time'=>date("Y年m月d日"),
+						    	'producer'=>isset($_SESSION['name']) ? $_SESSION['name'] : 'admin',
+						    	'producer_time'=>date("Y.m.d"),
+						    	'reviewer'=>"",
+						    	'reviewer_time'=>"",
+						    	'url'=>implode(",", $url),
+						    	'hostlist'=>$hostlist[$k],
+						    	'alerts'=>[$alerts[$k]],
+						    	'low'=>$zong_shu[$k]['low'],
+						    	'medium'=>$zong_shu[$k]['medium'],
+						    	'high'=>$zong_shu[$k]['high'],
+						    	'serious'=>$zong_shu[$k]['serious'],
+						    	'risk_level'=>$risk_level,
+						    	'common'=>$zong_shu[$k]['low']+$zong_shu[$k]['medium']+$zong_shu[$k]['high']+$zong_shu[$k]['serious'],
+						    	'vulnerability_types'=>implode(",", array_unique($vulnerability_types[$k])),
+						    ];
+						    $code = code();
+						    @file_put_contents(ROOT_PATH."/python_web/tmp/".$code.".json", json_encode($zong_data));
+						    try {
+								$sw = new stockConnector(isset($_SESSION['system_config']['socket_ip'])?$_SESSION['system_config']['socket_ip']:'127.0.0.1',"5678");
+								$aa = ["path"=>ROOT_PATH."/python_web/tmp/".$code.".json","name"=>$k."复测报告".date("Y-m-d"),'template_path'=>ROOT_PATH."/python_web/template/".$file_path_name];
+								$con = @$sw->sendMsg(json_encode($aa));
+								$ret = @$sw->getMsg();
+								if($ret){
+									$file_dir = ROOT_PATH."/python_web/tmp/".json_decode($ret,true)['path'];
+									$file_path[] = $file_dir;
+								}
+							} catch (Exception $e) {
+								img_unlik($tmp_img);
+			      				$this->json(["status"=>0,"msg"=>"系统异常：".$e->getMessage(),"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+							}
+							@unlink(ROOT_PATH."/python_web/tmp/".$code.".json");
+						}
+
+						if(count($file_path) <= 0){
+							img_unlik($tmp_img);$this->json(["status"=>0,"msg"=>"系统异常：导出报告服务错误！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+						}
+
+						// 记录导出时间
+						$sql_where = "";
+			    		foreach ($id as $k => $v) {
+			    			$sql_where .= ":session".$k.",";
+			    			$db->bind("session".$k, $v);
+			    		}
+						$db->bind("export_time", time());
+			    		$sql = "UPDATE domain_post SET `export_time` = :export_time WHERE session in ( ".trim($sql_where,",")." )";
+			    		if($_SESSION['userid'] != '1'){
+						    $db->bind("user_id", $_SESSION['userid']);
+							$sql .= " AND user_id = :user_id";
+						}
+						$db->query($sql);
+
+					    // 文件下载
+						if(count($file_path) <= 1){
+							img_unlik($tmp_img);
+							$file_path = array_shift($file_path);
+							downloadFile($file_path,basename($file_path));
+							$this->log_db("用户成功下载漏洞报告：".filterWords(basename($file_path)),"9");
+							@unlink($file_path);
+						} else {
+							$this->log_db("用户成功下载漏洞报告：".filterWords('共'.count($file_path).'报告'.date("Y-m-d").'.zip'),"9");
+							$name = '共'.count($file_path).'报告'.date("Y-m-d").'.zip';
+							$filename = ROOT_PATH."/python_web/tmp/".$name; //最终生成的文件名
+							if(!is_dir(dirname($filename))){
+							　　mkdir(dirname($filename), 0777, true);
+							}
+							$zip = new \ZipArchive();
+							if($zip->open($filename,\ZIPARCHIVE::CREATE)!==TRUE){
+								img_unlik($tmp_img);
+			      				$this->json(["status"=>0,"msg"=>"无法打开文件，或者文件创建失败","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+							}
+							foreach ($file_path as $value) {
+							    $fileData = @file_get_contents($value);
+							    if ($fileData) {
+							        $zip->addFromString(basename($value), $fileData);
+							    }
+							}
+							$zip->close();//关闭
+							downloadFile($filename,$name);
+							foreach ($file_path as $value) {
+								@unlink($value);
+							}
+							@unlink($filename);
+							img_unlik($tmp_img);
+						}
+					} else {
+	      				$this->json(["status"=>0,"msg"=>"漏洞不存在！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+					}
+				}
+			} else {
+	      		$this->json(["status"=>0,"msg"=>"模板id不存在！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+			}
+	    } else {
+	      	$this->json(["status"=>0,"msg"=>"错误异常！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
+	    }
+	}
+	
 	/**
 	 * 项目分类
 	 * @access  public

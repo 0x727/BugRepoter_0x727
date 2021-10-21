@@ -3,9 +3,9 @@
     <link rel="stylesheet" href="./public/index/vendor/datatables/dataTables.bs4-custom.css" />
     <link rel="stylesheet" href="./public/index/vendor/datatables/buttons.bs.css" rel="stylesheet" />
     <style>
-		#index_length{
-			margin-left: 20px;
-		}
+        #index_length{
+            margin-left: 20px;
+        }
     </style>
     <div class="content-wrapper">
         <div class="row gutters">
@@ -27,6 +27,11 @@
                                 <a href="javascript:void(0);" onclick="download_all_export('{$token}')">
                                     <button class="dt-button buttons-copy buttons-html5" tabindex="0" aria-controls="copy-print-scroll" type="button">
                                         <span>导出漏洞报告</span>
+                                    </button>
+                                </a>
+                                <a href="javascript:void(0);" onclick="download_repair_all_export('{$token}')">
+                                    <button class="dt-button buttons-copy buttons-html5" tabindex="0" aria-controls="copy-print-scroll" type="button">
+                                        <span>导出复测报告</span>
                                     </button>
                                 </a>
                                 <style>
@@ -144,6 +149,50 @@
                 yes: function (index,layero) {
                     if($('#range').val()){
                         $.post("{$products_download_index}",{
+                            id:data,
+                            token:token,
+                            path:$('#range').val(),
+                        },function(data){
+                            if(data.status == '1'){
+                                layer.msg('正在为您下载！', {
+                                    icon: 1
+                                }, function(){
+                                   window.location.href = "."+data.data.url
+                                   // window.setTimeout("window.location.reload()",1000);
+                                });
+                            } else {
+                                layer.msg(data.msg, {
+                                    icon: 2
+                                }, function(){
+                                   window.location.reload();
+                                });
+                            }
+                        },"json");
+                    } else {
+                        layer.msg("请选择导出模板！");
+                    }
+                }
+            });
+        }
+
+        // 批量下载复测报告
+        function download_repair_all_export(token)
+        {
+            var data = ""
+            $("#index td :checkbox").each(function(){
+                if($(this).prop("checked")){
+                    data+=$(this).val()+","
+                }
+            })
+            data = data.substring(0,data.length-1);
+            layer.open({
+                title: '请选择导出模板',
+                btn: ['确定'],
+                content: '' +
+                '<div class="field-wrapper"><div class="field-wrapper"><select class="select-single js-states" title="" data-live-search="true" id="range">'+'{$template}'+'</select></div></div>',
+                yes: function (index,layero) {
+                    if($('#range').val()){
+                        $.post("{$products_repair_download_index}",{
                             id:data,
                             token:token,
                             path:$('#range').val(),

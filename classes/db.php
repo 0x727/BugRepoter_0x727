@@ -359,8 +359,7 @@ class DB
         }else{
             $url = isset($array['data']['url']) ? $array['data']['url'] : '/'.root_filename.'.php?m=Login&a=index';
             $msg = isset($array['msg']) ? $array['msg'] : '程序异常';
-            echo "<script>alert('".$msg."')</script>";
-            header("refresh:1;url=".$url);
+            echo "<script>alert('".$msg."');window.location.href='".$url."'</script>";
             die;
         }
     }

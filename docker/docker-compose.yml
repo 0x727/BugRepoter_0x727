@@ -45,7 +45,7 @@ services:
     volumes:
       - ../public:/var/www/public
       - ../python_web:/var/www/python_web
-    command: python3 /var/www/python_web/python_socket.py 0.0.0.0:5678
+    command: python3 /var/www/python_web/python_socket.py 192.168.5.103:5678
     networks:
       nn:
         ipv4_address: 192.168.5.103

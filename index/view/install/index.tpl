@@ -152,29 +152,37 @@
 			var username = $("input[name='username']").val();
 			var password = $("input[name='password']").val();
 			var token = "{$token}"
-			$.post("{$menu['install_index']}",{
-				ip:ip,
-				library_name:library_name,
-				username:username,
-				password:password,
-				token:token,
-				type:'three',
-			},function(data){
-				if(data.status == '1'){
-                    layer.msg(data.msg, {
-                        icon: 1
-                    }, function(){
-                        $("#three").attr("style","display:none;");
-                        $("#four").attr("style","display:;");
-                        install_sql(data.data)
-                    });
-                } else {
-                    layer.msg(data.msg, {
-                        icon: 2
-                    }, function(){
-                    });
-                }
-			},"json");
+            var re = /^[a-zA-Z]+$/;
+            if(!re.test(library_name)){
+                layer.msg('只能输入英文', {
+                    icon: 2
+                }, function(){
+                });
+            }else{
+    			$.post("{$menu['install_index']}",{
+    				ip:ip,
+    				library_name:library_name,
+    				username:username,
+    				password:password,
+    				token:token,
+    				type:'three',
+    			},function(data){
+    				if(data.status == '1'){
+                        layer.msg(data.msg, {
+                            icon: 1
+                        }, function(){
+                            $("#three").attr("style","display:none;");
+                            $("#four").attr("style","display:;");
+                            install_sql(data.data)
+                        });
+                    } else {
+                        layer.msg(data.msg, {
+                            icon: 2
+                        }, function(){
+                        });
+                    }
+    			},"json");
+            }
 		}
 
         function install_sql(data)

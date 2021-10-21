@@ -548,12 +548,15 @@ function try_mysql($host,$db,$db_user,$db_pwd){
     'db_user' => $db_user, 
     'db_pwd'  => $db_pwd, 
     );
-  
-  $pdo = new PDO("mysql:host=" . $mysql_conf['host'] . "; port=". $mysql_conf['port'], $mysql_conf['db_user'], $mysql_conf['db_pwd']);
-  if($pdo){
-    $pdo->exec("CREATE DATABASE if not exists $db DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci");
-    return true;
-  } else {
+  try{
+    $pdo = new PDO("mysql:host=" . $mysql_conf['host'] . "; port=". $mysql_conf['port'], $mysql_conf['db_user'], $mysql_conf['db_pwd']);
+    if($pdo){
+      $pdo->exec("CREATE DATABASE if not exists $db DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci");
+      return true;
+    } else {
+      return false;
+    }
+  }catch(PDOException $e){
     return false;
   }
 }
