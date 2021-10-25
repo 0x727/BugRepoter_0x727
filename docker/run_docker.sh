@@ -1,8 +1,9 @@
 #!/bin/bash
 sed -i "s|127.0.0.1|192.168.5.103|" ../config/system.php
+docker_compose="/usr/local/bin/docker-compose"
 if grep -Eqii "CentOS" /etc/issue || grep -Eq "CentOS" /etc/*-release; then
 	yum install wget yum-utils device-mapper-persistent-data lvm2 -y
-	if [ ! -d "/usr/local/bin/docker-compose"]; then
+	if [ ! -f "$docker_compose" ]; then
 	    curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 	    chmod +x /usr/local/bin/docker-compose
 	    ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose

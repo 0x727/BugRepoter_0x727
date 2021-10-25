@@ -80,7 +80,7 @@
             <div class="subscribe-body" id="three" style="display: none;">
                 <h1>网站配置</h1>
                 <div class="field-wrapper">
-                    <input type="text" name="ip" placeholder="如, 127.0.0.1:3306">
+                    <input type="text" name="ip" placeholder="如, 192.168.5.102:3306">
                     <div class="field-placeholder">数据库地址:</div>
                 </div>
                 <div class="field-wrapper">
