@@ -72,7 +72,16 @@ INSERT INTO `domain_classification` (`id`, `pid`, `title`, `suggestions`, `descr
 INSERT INTO `domain_classification` (`id`, `pid`, `title`, `suggestions`, `description`, `creation_time`, `update_time`) VALUES ('17', '1', '弱口令', '[1]强制用户首次登录时修改默认口令，或是使用用户自定义初始密码的策略；\n[2]完善密码策略，信息安全最佳实践的密码策略为8位（包括）以上字符，包含数字、大小写字母、特殊字符中的至少3种；\n[3]增加人机验证机制，限制ip访问次数。', '由于网站用户帐号存在弱口令，导致攻击者通过弱口令可轻松登录到网站中，从而进行下一步的攻击，如上传webshell，获取敏感数据；另外攻击者利用弱口令登录网站管理后台，可执行任意管理员的操作。', '0', '0');
 INSERT INTO `domain_classification` (`id`, `pid`, `title`, `suggestions`, `description`, `creation_time`, `update_time`) VALUES ('18', '1', '未授权的访问/权限绕过', '[1]页面进行严格的访问权限的控制以及对访问角色进行权限检查；\n[2]可以使用session对用户的身份进行判断和控制。', '由于没有对网站敏感页面进行登录状态、访问权限的检查，导致攻击者可未授权访问，获取敏感信息及进行未授权操作。', '0', '0');
 INSERT INTO `domain_classification` (`id`, `pid`, `title`, `suggestions`, `description`, `creation_time`, `update_time`) VALUES ('19', '1', '暴力破解', '[1]建议图形验证码包含随机干扰像素、有扭曲、变形等元素，以增加口令破解难度；\r\n[2]密码输入错误超过一定次数情况，应采用锁定账号等安全措施；\r\n[3]采用双因子认证机制，如手机短信验证、U 盾等；', '登录页面使用验证码复杂度过于简单，且缺乏密码错误次数限制或双因子认证等防爆力破解机制，攻击者可以利用口令破解工具进行表单破解从而获取正确的账号口令。', '0', '0');
-INSERT INTO `domain_classification` (`id`, `pid`, `title`, `suggestions`, `description`, `creation_time`, `update_time`) VALUES ('20', '0', '暂无', '暂无', '暂无', '0', '0');
+INSERT INTO `domain_classification` (`id`, `pid`, `title`, `suggestions`, `description`, `creation_time`, `update_time`) VALUES ('20', '1', '用户名信息泄露', '[1]采用模糊提示，如“登录失败”即可；\r\n[2]增加动态验证码机制，防止被枚举账号吗；', '网站登录失败、账户注册、密码找回等功能，有些网站会提示类似“用户名不存在”的错误，攻击者可以通过提示先猜测系统存在哪些账户，然后再进一步猜测密码，降低了暴力破解的成本。', '0', '0');
+INSERT INTO `domain_classification` (`id`, `pid`, `title`, `suggestions`, `description`, `creation_time`, `update_time`) VALUES ('21', '1', '源代码泄露', '[1]设置源代码访问权限；\r\n[2]修改源代码存放位置；', '源代码中可能包含有敏感信息，并且源代码可以有效的帮助攻击者理解网站应用逻辑，为展开其他类型的攻击提供有利信息，降低攻击的难度。', '0', '0');
+INSERT INTO `domain_classification` (`id`, `pid`, `title`, `suggestions`, `description`, `creation_time`, `update_time`) VALUES ('22', '1', '文件包含', '[1]尝试对所有提交的输入中可能包含文件地址（包括服务器本地文件及远程文件）进行严格的检查，参数中不允许出现 ../ 之类的目录跳转符；\r\n[2]严格检查 include 类的文件包含函数中的参数是否外界可控；\r\n[3]将关键的过滤步骤放在服务端执行；', '文件包含漏洞是一种针对依赖于脚本运行时间的Web应用程序漏洞。当应用程序使用攻击者控制的变量构建可执行代码的路径时，一旦其运行攻击者控制运行时执行哪个文件，则会引发该漏洞。该漏洞可被利用在服务器上远程执行命令，攻击者可以把上传的静态文件或网站日志文件作为代码执行，获取服务器权限，并进一步篡改用户和交易数据，恶意删除网站等。', '0', '0');
+INSERT INTO `domain_classification` (`id`, `pid`, `title`, `suggestions`, `description`, `creation_time`, `update_time`) VALUES ('23', '1', '拒绝服务攻击', '[1]禁止接受外部参数', '当图片/验证码的高度,宽度参数能被用户控制时，可能导致服务器的崩溃。', '0', '0');
+INSERT INTO `domain_classification` (`id`, `pid`, `title`, `suggestions`, `description`, `creation_time`, `update_time`) VALUES ('24', '1', '任意文件上传', '[1]设置白名单，指定运行上传文件的文件格式；\n[2]设置上传目录的权限；（只开启读写权限，关闭执行权限）\n[3]对于重要的业务系统，对于上传的文件和图片等增加人工审核功能，审核通过后用户才可以访问；', '文件上传主要是用来向服务器上传图片、文件或其他格式文件的上传接口，如果上传文件过滤不严就可能导致黑客通过其它手段来达到向服务器上传后门的目的。', '0', '0');
+INSERT INTO `domain_classification` (`id`, `pid`, `title`, `suggestions`, `description`, `creation_time`, `update_time`) VALUES ('25', '1', 'phpinfo信息泄露', '[1]限制 phpinfo.php 的访问权限；\n[1]如果不需要使用该页面，应删除该页面；', 'phpinfo 页面包含了大量的关于 PHP 的当前状态信息，PHP 的编译选项和扩展、PHP 版本、服务器信息和环境、PHP 环境、操作系统版本信息、Web 应用物理路径和 PHP 的许可信息等等。', '0', '0');
+INSERT INTO `domain_classification` (`id`, `pid`, `title`, `suggestions`, `description`, `creation_time`, `update_time`) VALUES ('26', '1', 'redis未授权访问', '[1]页面进行严格的访问权限的控制以及对访问角色进行权限检查。\n[2]可以使用session对用户的身份进行判断和控制。', 'Redis因配置不当可造成未授权访问。攻击者无需通过身份认证便可访问到内部数据，造成敏感信息泄露，也可以恶意执行flushall来清空所有数据。如果Redis以root身份运行，可以给root账户写入SSH公钥文件，直接通过SSH登录受害服务器。', '0', '0');
+INSERT INTO `domain_classification` (`id`, `pid`, `title`, `suggestions`, `description`, `creation_time`, `update_time`) VALUES ('27', '1', '内部IP信息泄露', '[1]关闭 Web 应用程序/服务器中有问题的详细错误消息；\n[2]确保内部 IP 信息未搂在 HTML/Javript 代码/HTTP 响应或注释中；', '威胁分析	内部 IP 通常出现在 Web 应用程序/服务器所生成的错误消息中，或出现在 HTML/Javript 代码/HTTP响应或注释中。对攻击者而言，泄漏内部 IP 非常有价值，因为它显示了内部网络的 IP 地址方案，因为它显示了内部网络的 IP 地址方案。知道内部网络的 IP 地址方案，可以辅助攻击者策划出内部网络进一步的攻击。', '0', '0');
+INSERT INTO `domain_classification` (`id`, `pid`, `title`, `suggestions`, `description`, `creation_time`, `update_time`) VALUES ('28', '1', 'NFS配置不当导致信息泄露', '[1]重新配置NFS。', 'NFS（Network File System）即网络文件系统，是 FreeBSD 支持的文件系统中的一种，它允许网络中的计算机之间通过 TCP/IP 网络共享资源。在 NFS 的应用中，本地 NFS 的客户端应用可以透明地读写位于远端 NFS 服务器上的文件，就像访问本地文件一样。同时NFS服务配置漏洞赋予了根目录远程可写权限，导致 /root/.ssh/authorized_keys 可被修改，实现远程 SSH 无密码登录。', '0', '0');
+INSERT INTO `domain_classification` (`id`, `pid`, `title`, `suggestions`, `description`, `creation_time`, `update_time`) VALUES ('29', '1', 'Nginx软件版本较低', '[1]在不影响正常业务的前提下，升级 Nginx 到最新版本，升级前请先做好备份。', '主机使用的 Nginx 软件版本过低，导致存在多个漏洞，可能存在溢出、注入、跨站脚本漏洞、拒绝服务攻击等等。', '0', '0');
 ";
 						if($Db->exec($domain_classification)){
 							$this->json(['status'=>1,'msg'=>'漏洞分类表创建并且写入数据成功！']);
@@ -89,7 +98,7 @@ INSERT INTO `domain_classification` (`id`, `pid`, `title`, `suggestions`, `descr
 							}
 						break;
 					case md5("domain_member_or_install_sql_member"):
-							$domain_member = "CREATE TABLE IF NOT EXISTS `domain_member` ( `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '用户ID', `uuid` varchar(255) NOT NULL COMMENT 'uuid', `username` varchar(20) DEFAULT '路人甲' COMMENT '用户昵称', `salt` varchar(9) NOT NULL DEFAULT '暂无' COMMENT '加密salt', `password` varchar(32) DEFAULT NULL COMMENT '用户密码', `create_at` varchar(11) DEFAULT '0' COMMENT '创建时间', `update_at` varchar(11) DEFAULT '0' COMMENT '更新时间', `login_ip` varchar(20) DEFAULT '0' COMMENT '登录IP', `email` varchar(50) DEFAULT NULL COMMENT '邮箱', `phone` varchar(50) DEFAULT NULL COMMENT '手机号码', `img` varchar(100) DEFAULT NULL COMMENT '头像', PRIMARY KEY (`id`), KEY `username` (`username`) USING BTREE, KEY `password` (`password`) USING BTREE ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户表';INSERT INTO `domain_member` VALUES ('1', 'c394e47f-350f-0eea-7cc9-67d300b57502', 'admin', '6JTD4IKN', '199346966b7fa9a77cc562b712a7dc47', '0', '1631936587', '', '', null, './public/index/img/user.svg');";
+							$domain_member = "CREATE TABLE IF NOT EXISTS `domain_member` ( `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '用户ID', `uuid` varchar(255) NOT NULL COMMENT 'uuid', `username` varchar(20) DEFAULT '路人甲' COMMENT '用户昵称', `salt` varchar(9) NOT NULL DEFAULT '暂无' COMMENT '加密salt', `password` varchar(32) DEFAULT NULL COMMENT '用户密码', `create_at` varchar(11) DEFAULT '0' COMMENT '创建时间', `update_at` varchar(11) DEFAULT '0' COMMENT '更新时间', `login_ip` varchar(20) DEFAULT '0' COMMENT '登录IP', `email` varchar(50) DEFAULT NULL COMMENT '邮箱', `phone` varchar(50) DEFAULT NULL COMMENT '手机号码', `img` varchar(100) DEFAULT NULL COMMENT '头像',`error_num` int(11) DEFAULT '0' COMMENT '错误登录时间',`error_time` int(11) DEFAULT '0' COMMENT '锁定时间', PRIMARY KEY (`id`), KEY `username` (`username`) USING BTREE, KEY `password` (`password`) USING BTREE ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户表';INSERT INTO `domain_member` VALUES ('1', 'c394e47f-350f-0eea-7cc9-67d300b57502', 'admin', '6JTD4IKN', '199346966b7fa9a77cc562b712a7dc47', '0', '1631936587', '', '', null, './public/index/img/user.svg',0,0);";
 							if($Db->exec($domain_member)){
 								$this->json(['status'=>1,'msg'=>'用户表创建并且写入数据成功！']);
 							} else {
@@ -128,11 +137,6 @@ INSERT INTO `domain_classification` (`id`, `pid`, `title`, `suggestions`, `descr
 								$this->json(['status'=>0,'msg'=>'项目域名创建失败！']);
 							}
 						break;
-
-
-						
-
-
 					default:
 							$this->json(['status'=>0,'msg'=>'程序异常！']);
 						break;

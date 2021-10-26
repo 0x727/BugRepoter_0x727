@@ -232,9 +232,16 @@ V1.6 增加复测报告导出，优化一键安装页面问题。
 
 V1.7 解决docker环境部署兼容性问题。
 
-## 0x08 待添加/优化功能
-
 V1.8 优化登陆防护，判断用户输入错误多次并且锁定账户。
+
+```
+增加domain_member字段
+ALTER TABLE `domain_member`
+ADD COLUMN `error_num`  int(11) NULL DEFAULT 0 AFTER `img`,
+ADD COLUMN `error_time`  int(11) NULL DEFAULT 0 AFTER `error_num`;
+```
+
+## 0x08 待添加/优化功能
 
 V1.9 增加github对比并自动更新。
 

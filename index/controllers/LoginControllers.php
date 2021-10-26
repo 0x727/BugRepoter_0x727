@@ -27,10 +27,41 @@ class LoginControllers extends AuthControllers
             $db->bind("name", $name);
             $Query_login = $db->find_one("select * from domain_member where `username` = :name");
             if ($Query_login) {
-                //检查账户密码是否正确
+
+                // 判断是否存在锁定用户并且检查账户密码是否正确
                 if(md5($password.$Query_login['salt']) != $Query_login['password']){
+	            	$error_num = $Query_login['error_num']+1;
+	            	$error_time = strtotime("+10 minutes");
+
+	            	// 超过10次就不进行写入
+	            	if($error_num <= 10){
+	            		$error_time = strtotime("+30 minutes");
+		            	$db->bind("error_num",$error_num);
+		            	$db->bind("error_time",$error_time);
+		            	$db->bind("id",$Query_login['id']);
+		            	$db->query("UPDATE domain_member SET error_num = :error_num,error_time = :error_time WHERE id = :id");
+	            	}
+
+	            	// 判断当前时间是否小于锁定时间
+	            	if(time() < $Query_login['error_time']){
+                		// 判断错误超过10次锁30分钟
+	            		if($Query_login['error_num'] >= 10){
+	                		$this->log_db("该账户已锁定，30分钟后重试！","0",$Query_login['id']);
+	                		$this->json(['status'=>0,'msg'=>'该账户已锁定，30分钟后重试！']);
+	                	}
+                		// 判断错误超过5次锁30分钟
+	                	if($Query_login['error_num'] >= 5){
+	                		$this->log_db("该账户已锁定，10分钟后重试！","0",$Query_login['id']);
+	                		$this->json(['status'=>0,'msg'=>'该账户已锁定，10分钟后重试！']);
+	                	}
+	            	}
                     $this->log_db("密码输入错误！","0",$Query_login['id']);
-                    $this->json(['status'=>0,'msg'=>'账户登录异常！']);
+                    $this->json(['status'=>0,'msg'=>'登陆失败！']);
+                } else {
+                	$db->bind("error_num",0);
+                	$db->bind("error_time",0);
+                	$db->bind("id",$Query_login['id']);
+                	$db->query("UPDATE domain_member SET error_num = :error_num,error_time = :error_time WHERE id = :id");
                 }
                 
                 //验证成功赋予账户密码到SESSION中
@@ -44,7 +75,6 @@ class LoginControllers extends AuthControllers
                 $db->query("UPDATE domain_member SET update_at = :update_at,login_ip = :login_ip WHERE id = :id");
 
                 $this->log_db("登陆成功","1");
-
                 $this->json(["status"=>1,"msg"=>"登陆成功！"]);
             } else {
                 $this->log_db("查询不到此账户：".filterWords($name),"8");
