@@ -1,3 +1,11 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title></title>
+</head>
+<body>
 <link rel="stylesheet" href="./public/index/vendor/datatables/dataTables.bs4.css" />
 <link rel="stylesheet" href="./public/index/vendor/datatables/dataTables.bs4-custom.css" />
 <link rel="stylesheet" href="./public/index/vendor/datatables/buttons.bs.css" rel="stylesheet" />
@@ -136,3 +144,4 @@
         },"json");
     } 
 </script>
+</body>

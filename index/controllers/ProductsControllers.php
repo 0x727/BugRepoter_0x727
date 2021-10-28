@@ -1118,6 +1118,11 @@ class ProductsControllers extends AuthControllers
 					$post_count = "SELECT count(*) as num FROM domain_post WHERE company = :company";
 					$post_count = $db->find_one($post_count);
 	          		$list[$k]['num'] = isset($post_count['num']) ? $post_count['num'] : 0;;
+	          		$db->bind("company", $v['id']);
+	          		$repair_post_count = "SELECT count(*) as num FROM domain_post WHERE company = :company AND repair_content != ''";
+					$repair_post_count = $db->find_one($repair_post_count);
+	          		$list[$k]['repair_num'] = isset($repair_post_count['num']) ? $repair_post_count['num'] : 0;;
+
 	          		$list[$k]['edit_classification_id'] = "./".root_filename.".php?".AuthCode("m=Products&a=edit_classification&id=".$v['id'],"ENCODE",$_SESSION['domain_key']);
 		        	$list[$k]['del_classification_id'] = "./".root_filename.".php?".AuthCode("m=Products&a=del_classification&id=".$v['id']."&token=".$token,"ENCODE",$_SESSION['domain_key']);
 		        	$list[$k]['see_classification_id'] = "./".root_filename.".php?".AuthCode("m=Products&a=see_classification&id=".$v['id'],"ENCODE",$_SESSION['domain_key']);

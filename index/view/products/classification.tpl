@@ -21,10 +21,10 @@
                                       <th>项目编号</th>
                                       <th>项目名称</th>
                                       <th>漏洞数量</th>
-                                      <th>提交时间</th>
-                                      <th>修改时间</th>
+                                      <th>漏洞修复数量</th>
                                       <th>项目资产</th>
                                       <th>漏洞分布图</th>
+                                      <th>提交时间</th>
                                       <th>操作</th>
                                     </tr>
                                 </thead>
@@ -73,10 +73,7 @@
                     "data": "num"
                 },
                 {
-                    "data": "creation_time"
-                },
-                {
-                    "data": "update_time"
+                    "data": "repair_num"
                 },
                 {
                     "data": function (row, type, val, meta) {
@@ -93,6 +90,9 @@
                         text += '</div>'
                         return text
                     }
+                },
+                {
+                    "data": "creation_time"
                 },
                 {
                     "data": function (row, type, val, meta) {
@@ -138,7 +138,7 @@
                 type: 2,
                 title: '查看项目资产',
                 shadeClose: true,
-                offset: '10%',
+                maxmin: true,
                 area: ['60%', '80%'],
                 content: url
             });
@@ -151,7 +151,7 @@
                 type: 2,
                 title: '漏洞分布图',
                 shadeClose: true,
-                offset: '10%',
+                maxmin: true,
                 area: ['60%', '80%'],
                 content: url
             });

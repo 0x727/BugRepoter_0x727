@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" style="overflow: hidden;">
     <head>
         <meta charset="utf-8">
