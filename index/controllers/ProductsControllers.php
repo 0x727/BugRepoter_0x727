@@ -548,7 +548,7 @@ class ProductsControllers extends AuthControllers
 			$list = $db->find_one("select * from domain_template WHERE uuid = :uuid");
 			if($list){
 				$file_path_name = basename($list['file_path']);
-				if(file_exists(ROOT_PATH."/python_web/template/".$file_path_name)){
+				if(file_exists(ROOT_PATH."/public/docx/".$_SESSION['user_info']['uuid']."/".$file_path_name)){
 					if(!is_array($id)) $this->json(['status'=>0,'msg'=>'程序异常！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
 					$sql_where = "";
 		    		foreach ($id as $k => $v) {
@@ -695,7 +695,7 @@ class ProductsControllers extends AuthControllers
 						    @file_put_contents(ROOT_PATH."/python_web/tmp/".$code.".json", json_encode($zong_data));
 						    try {
 								$sw = new stockConnector(isset($_SESSION['system_config']['socket_ip'])?$_SESSION['system_config']['socket_ip']:'127.0.0.1',"5678");
-								$aa = ["path"=>ROOT_PATH."/python_web/tmp/".$code.".json","name"=>$k."安全测试报告".date("Y-m-d"),'template_path'=>ROOT_PATH."/python_web/template/".$file_path_name];
+								$aa = ["path"=>ROOT_PATH."/python_web/tmp/".$code.".json","name"=>$k."安全测试报告".date("Y-m-d"),'template_path'=>ROOT_PATH."/public/docx/".$_SESSION['user_info']['uuid']."/".$file_path_name];
 								$con = @$sw->sendMsg(json_encode($aa));
 								$ret = @$sw->getMsg();
 								if($ret){
@@ -821,7 +821,7 @@ class ProductsControllers extends AuthControllers
 			$list = $db->find_one("select * from domain_template WHERE uuid = :uuid");
 			if($list){
 				$file_path_name = basename($list['file_path']);
-				if(file_exists(ROOT_PATH."/python_web/template/".$file_path_name)){
+				if(file_exists(ROOT_PATH."/public/docx/".$_SESSION['user_info']['uuid']."/".$file_path_name)){
 					if(!is_array($id)) $this->json(['status'=>0,'msg'=>'程序异常！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
 			      	$sql_where = "";
 		    		foreach ($id as $k => $v) {
@@ -1005,7 +1005,7 @@ class ProductsControllers extends AuthControllers
 						    @file_put_contents(ROOT_PATH."/python_web/tmp/".$code.".json", json_encode($zong_data));
 						    try {
 								$sw = new stockConnector(isset($_SESSION['system_config']['socket_ip'])?$_SESSION['system_config']['socket_ip']:'127.0.0.1',"5678");
-								$aa = ["path"=>ROOT_PATH."/python_web/tmp/".$code.".json","name"=>$k."复测报告".date("Y-m-d"),'template_path'=>ROOT_PATH."/python_web/template/".$file_path_name];
+								$aa = ["path"=>ROOT_PATH."/python_web/tmp/".$code.".json","name"=>$k."复测报告".date("Y-m-d"),'template_path'=>ROOT_PATH."/public/docx/".$_SESSION['user_info']['uuid']."/".$file_path_name];
 								$con = @$sw->sendMsg(json_encode($aa));
 								$ret = @$sw->getMsg();
 								if($ret){
