@@ -40,7 +40,7 @@
 
 ![install_two](./public/img/install_two.png)
 
-程序安装
+程序安装 【如果使用docker的数据库那么IP：192.168.5.102 账户：root 密码：123456】
 
 ![install_three](./public/img/install_three.png)
 
