@@ -9,6 +9,11 @@
                     <div class="card-body">
                         <div class="table-responsive">
                             <div class="dt-buttons">
+                                <a href="{$menu['products_add_template']}">
+                                    <button class="dt-button buttons-copy buttons-html5" tabindex="0" aria-controls="copy-print-scroll" type="button">
+                                        <span>添加</span>
+                                    </button>
+                                </a>
                             </div>
                             <table id="template" class="table v-middle" style="text-align: center;">
                                 <thead style="text-indent: 1rem;">
@@ -68,6 +73,7 @@
                         text = ""
                         text += '<div class="actions">'
                         text += '<a href="'+row.download_template_id+'" data-toggle="tooltip" data-placement="top" title="" data-original-title="下载模板"><i class="icon-download1 text-info"></i>&nbsp;</a>'
+                        text += '<a href="'+row.edit_template_id+'" data-toggle="tooltip" data-placement="top" title="" data-original-title="编辑"><i class="icon-edit1 text-info"></i>&nbsp;</a>'
                         text += '<a href="'+row.del_template_id+'" data-toggle="tooltip" data-placement="top" title="" data-original-title="删除"><i class="icon-x-circle text-danger"></i>&nbsp;</a>'
                         text += '</div>'
                         return text

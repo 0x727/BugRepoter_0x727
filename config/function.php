@@ -5,28 +5,28 @@
  * $post_data Array 需要提交的内容
  */
 function send_post($url, $post_data) {
-    $postdata = http_build_query($post_data);
-    $options = array(
-      'http' => array(
-          'method' => 'POST',
-          'header' => 'Content-type:application/x-www-form-urlencoded',
-        'content' => $postdata,
-          'timeout' => 15 * 60 // 超时时间（单位:s）
-      )
-    );
-    $context = stream_context_create($options);
-    $result = file_get_contents($url,false, $context);
-    return $result;
+  	$postdata = http_build_query($post_data);
+  	$options = array(
+    	'http' => array(
+      		'method' => 'POST',
+      		'header' => 'Content-type:application/x-www-form-urlencoded',
+     		'content' => $postdata,
+      		'timeout' => 15 * 60 // 超时时间（单位:s）
+    	)
+  	);
+  	$context = stream_context_create($options);
+  	$result = file_get_contents($url,false, $context);
+  	return $result;
 }
 
 /**
  * 随机获取 一串8位密钥
  */
 function code() {
-  $code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  $rand = $code[rand(0,25)].strtoupper(dechex(date('m'))).date('d').substr(time(),-5).substr(microtime(),2,5).sprintf('%02d',rand(0,99));
-  for ($a = md5( $rand, true ),$s = '0123456789ABCDEFGHIJKLMNOPQRSTUV',$d = '',$f = 0;$f < 8;$g = ord( $a[ $f ] ),$d .= $s[ ( $g ^ ord( $a[ $f + 8 ] ) ) - $g & 0x1F ],$f++);
-  return $d;
+	$code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	$rand = $code[rand(0,25)].strtoupper(dechex(date('m'))).date('d').substr(time(),-5).substr(microtime(),2,5).sprintf('%02d',rand(0,99));
+	for ($a = md5( $rand, true ),$s = '0123456789ABCDEFGHIJKLMNOPQRSTUV',$d = '',$f = 0;$f < 8;$g = ord( $a[ $f ] ),$d .= $s[ ( $g ^ ord( $a[ $f + 8 ] ) ) - $g & 0x1F ],$f++);
+	return $d;
 }
 
 /**
@@ -45,23 +45,23 @@ function getip() {
  * XSS代码防护
  */
 function xss_clean($data){
-  $data=str_replace(array('&','<','>'),array('&amp;','&lt;','&gt;'),$data);
-  $data=preg_replace('/(&#*\w+)[\x00-\x20]+;/u','$1;',$data);
-  $data=preg_replace('/(&#x*[0-9A-F]+);*/iu','$1;',$data);
-  $data=html_entity_decode($data,ENT_COMPAT,'UTF-8');
-  $data=preg_replace('#(<[^>]+?[\x00-\x20"\'])(?:on|xmlns)[^>]*+>#iu','$1>',$data);
-  $data=preg_replace('#([a-z]*)[\x00-\x20]*=[\x00-\x20]*([`\'"]*)[\x00-\x20]*j[\x00-\x20]*a[\x00-\x20]*v[\x00-\x20]*a[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu','$1=$2nojavascript...',$data);
-  $data=preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*v[\x00-\x20]*b[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu','$1=$2novbscript...',$data);
-  $data=preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*-moz-binding[\x00-\x20]*:#u','$1=$2nomozbinding...',$data);
-  $data=preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?expression[\x00-\x20]*\([^>]*+>#i','$1>',$data);
-  $data=preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?behaviour[\x00-\x20]*\([^>]*+>#i','$1>',$data);
-  $data=preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:*[^>]*+>#iu','$1>',$data);
-  $data=preg_replace('#</*\w+:\w[^>]*+>#i','',$data);
-  do{
-    $old_data=$data;
-    $data=preg_replace('#</*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|i(?:frame|layer)|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|title|xml)[^>]*+>#i','',$data);
-  }while($old_data!==$data);
-  return $data;
+ 	$data=str_replace(array('&','<','>'),array('&amp;','&lt;','&gt;'),$data);
+ 	$data=preg_replace('/(&#*\w+)[\x00-\x20]+;/u','$1;',$data);
+ 	$data=preg_replace('/(&#x*[0-9A-F]+);*/iu','$1;',$data);
+	$data=html_entity_decode($data,ENT_COMPAT,'UTF-8');
+	$data=preg_replace('#(<[^>]+?[\x00-\x20"\'])(?:on|xmlns)[^>]*+>#iu','$1>',$data);
+	$data=preg_replace('#([a-z]*)[\x00-\x20]*=[\x00-\x20]*([`\'"]*)[\x00-\x20]*j[\x00-\x20]*a[\x00-\x20]*v[\x00-\x20]*a[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu','$1=$2nojavascript...',$data);
+	$data=preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*v[\x00-\x20]*b[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu','$1=$2novbscript...',$data);
+	$data=preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*-moz-binding[\x00-\x20]*:#u','$1=$2nomozbinding...',$data);
+	$data=preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?expression[\x00-\x20]*\([^>]*+>#i','$1>',$data);
+	$data=preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?behaviour[\x00-\x20]*\([^>]*+>#i','$1>',$data);
+	$data=preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:*[^>]*+>#iu','$1>',$data);
+	$data=preg_replace('#</*\w+:\w[^>]*+>#i','',$data);
+	do{
+		$old_data=$data;
+		$data=preg_replace('#</*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|i(?:frame|layer)|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|title|xml)[^>]*+>#i','',$data);
+	}while($old_data!==$data);
+ 	return $data;
 }
 
 /**
@@ -174,6 +174,9 @@ function get_curl()
 */
 function AuthCode($string, $operation='DECODE', $key='', $expiry=0)
 {
+  $encryption_url = isset($GLOBALS["encryption_url"]) ? $GLOBALS["encryption_url"] : '1';
+  if($encryption_url == '0') return $string;
+
   $ckey_length = 4;
   $key = md5($key ? $key : "11xxAA");
   $keya = md5(substr($key, 0, 16));
@@ -641,6 +644,28 @@ function img_unlik($url = [])
 }
 
 /**
+  * 递归删除文件
+  * @param type $url 内容
+  * @return bool
+  */
+function deldir($path){
+  $dh = opendir($path);
+  while(($d = readdir($dh)) !== false){
+    if($d == '.' || $d == '..'){//如果为.或..
+      continue;
+    }
+    $tmp = $path.'/'.$d;
+    if(!is_dir($tmp)){//如果为文件
+      @unlink($tmp);
+    }else{//如果为目录
+      deldir($tmp);
+    }
+  }
+  closedir($dh);
+  rmdir($path); 
+}
+
+/**
   * 清除缓存并跳转
   * @param type $url 内容
   * @return bool
@@ -653,3 +678,177 @@ function header_flush($msg = "",$url = "")
   // ob_end_flush();
   die();
 }
+
+/**
+  * 检测onlyoffice服务是否启动
+  * @return bool
+  */
+function if_onlyoffice(){
+  $sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+  socket_set_nonblock($sock);
+  socket_connect($sock,'192.168.5.104', "8000");
+  socket_set_block($sock);
+  $return = @socket_select($r = array($sock), $w = array($sock), $f = array($sock), 3);
+  socket_close($sock);
+  //1 端口已使用
+  //2 端口未使用
+  //0 端口不存在
+  if($return == 1){
+    return true;
+  } else {
+    return false;
+  }
+}
+
+/**
+  * 在线编辑文档
+  * @return bool
+  */
+function getInternalExtension($filename) {
+    $ExtsDocument = array(".doc", ".docx", ".docm",".dot", ".dotx", ".dotm",".odt", ".fodt", ".ott", ".rtf", ".txt",".html", ".htm", ".mht", ".xml",".pdf", ".djvu", ".fb2", ".epub", ".xps", ".oxps");
+    $ExtsSpreadsheet = array(".xls", ".xlsx", ".xlsm",".xlt", ".xltx", ".xltm",".ods", ".fods", ".ots", ".csv");
+    $ExtsPresentation = array(".pps", ".ppsx", ".ppsm",".ppt", ".pptx", ".pptm",".pot", ".potx", ".potm",".odp", ".fodp", ".otp");
+    $ext = strtolower('.' . pathinfo($filename, PATHINFO_EXTENSION));
+
+    if (in_array($ext, $ExtsDocument)) return ".docx";  // .docx for text document extensions
+    if (in_array($ext, $ExtsSpreadsheet)) return ".xlsx";  // .xlsx for spreadsheet extensions
+    if (in_array($ext, $ExtsPresentation)) return ".pptx";  // .pptx for presentation extensions
+    return "";
+}
+
+function getDocumentType($filename) {
+    $ExtsDocument = array(".doc", ".docx", ".docm",".dot", ".dotx", ".dotm",".odt", ".fodt", ".ott", ".rtf", ".txt",".html", ".htm", ".mht", ".xml",".pdf", ".djvu", ".fb2", ".epub", ".xps", ".oxps");
+    $ExtsSpreadsheet = array(".xls", ".xlsx", ".xlsm",".xlt", ".xltx", ".xltm",".ods", ".fods", ".ots", ".csv");
+    $ExtsPresentation = array(".pps", ".ppsx", ".ppsm",".ppt", ".pptx", ".pptm",".pot", ".potx", ".potm",".odp", ".fodp", ".otp");
+    $ext = strtolower('.' . pathinfo($filename, PATHINFO_EXTENSION));
+
+    if (in_array($ext, $ExtsDocument)) return "word";  // word for text document extensions
+    if (in_array($ext, $ExtsSpreadsheet)) return "cell";  // cell for spreadsheet extensions
+    if (in_array($ext, $ExtsPresentation)) return "slide";  // slide for presentation extensions
+    return "word";
+}
+
+/**
+ * [superBuilt  commomBuilt方法的简写方法]
+ * @param  string $dirname [目录名称]
+ * @return [type]          [description]
+ */
+function superBuilt($dirname)
+{
+    return is_dir($dirname) or superBuilt(dirname($dirname)) and mkdir($dirname, 0777);
+}
+
+/**
+* Translation key to a supported form.
+*
+* @param string $expected_key  Expected key
+*
+* @return Supported key
+*/
+function GenerateRevisionId($expected_key) {
+    if (strlen($expected_key) > 20) $expected_key = crc32( $expected_key);  // if the expected key length is greater than 20, calculate the crc32 for it
+    $key = preg_replace("[^0-9-.a-zA-Z_=]", "_", $expected_key);
+    $key = substr($key, 0, min(array(strlen($key), 20)));  // the resulting key length is 20 or less
+    return $key;
+}
+// 获取当前用户主机地址
+function getCurUserHostAddress() {
+    $ipaddress =
+      getenv('HTTP_CLIENT_IP')?:
+      getenv('HTTP_X_FORWARDED_FOR')?:
+      getenv('HTTP_X_FORWARDED')?:
+      getenv('HTTP_FORWARDED_FOR')?:
+      getenv('HTTP_FORWARDED')?:
+      getenv('REMOTE_ADDR')?:
+      'Storage';
+
+    $ipaddress = preg_replace("/[^0-9a-zA-Z.=]/", "_", $ipaddress);
+
+    return $ipaddress;
+}
+
+// 从历史目录中获取上一个文件版本的编号
+function getFileVersion($histDir) {
+    if (!file_exists($histDir) || !is_dir($histDir)) return 1;  // check if the history directory exists
+
+    $cdir = scandir($histDir);
+    $ver = 1;
+    foreach($cdir as $key => $fileName) {
+        if (!in_array($fileName,array(".", ".."))) {
+            if (is_dir($histDir . DIRECTORY_SEPARATOR . $fileName)) {
+                $ver++;
+            }
+        }
+    }
+    return $ver;
+}
+
+// 获取指定文件版本的路径
+function getVersionDir($histDir, $version) {
+    return $histDir . DIRECTORY_SEPARATOR . $version;
+}
+
+function getHistory($filename, $filetype, $docKey, $fileuri) {
+  $histDir = $filename."-hist";
+  if(!is_dir($histDir)){
+    superBuilt($histDir);
+  }
+  if (getFileVersion($histDir) > 0) {
+    $curVer = getFileVersion($histDir);
+    $hist = [];
+    $histData = [];
+    for ($i = 1; $i <= $curVer; $i++) {
+      $verDir = getVersionDir($histDir, $i);
+      $key = $i == $curVer ? $docKey : @file_get_contents($verDir . DIRECTORY_SEPARATOR . "key.txt");  // get document key
+      $obj["key"] = $key;
+      $obj["version"] = $i;
+      if ($i == 1) {
+        $createdInfo = @file_get_contents($histDir . DIRECTORY_SEPARATOR . "createdInfo.json"); 
+        $json = json_decode($createdInfo, true);
+        $obj["created"] = $json["created"];
+        $obj["user"] = [
+            "id" => $json["uid"],
+            "name" => $json["name"]
+        ];
+      }
+      $prevFileName = $verDir . DIRECTORY_SEPARATOR . "prev." . $filetype;
+      $prevFileName = substr($prevFileName, strlen(pathinfo($filename)['dirname']));
+      $dataObj["key"] = $key;
+      $dataObj["url"] = $i == $curVer ? $fileuri : pathinfo($filename)['dirname'] . str_replace("%5C", "/", rawurlencode($prevFileName));
+      $dataObj["version"] = $i;
+      if ($i > 1) {
+          $changes = json_decode(@file_get_contents(getVersionDir($histDir, $i - 1) . DIRECTORY_SEPARATOR . "changes.json"), true);
+          $change = $changes["changes"][0];
+
+          $obj["changes"] = $change ? $changes["changes"][0] : null; 
+          $obj["serverVersion"] = $changes["serverVersion"];
+          $obj["created"] = $change ? $change["created"] : null;
+          $obj["user"] = $change ? $change["user"] : null;
+
+          $prev = $histData[$i - 2];
+          $dataObj["previous"] = [
+              "key" => $prev["key"],
+              "url" => $prev["url"]
+          ];
+          $changesUrl = getVersionDir($histDir, $i - 1) . DIRECTORY_SEPARATOR . "diff.zip";
+          $changesUrl = substr($changesUrl, strlen(pathinfo($filename)['dirname']));
+
+          $dataObj["changesUrl"] = pathinfo($filename)['dirname'] . str_replace("%5C", "/", rawurlencode($changesUrl));
+      }
+
+      include_once ROOT_PATH."/example/jwtmanager.php";
+      if (isJwtEnabled()) {
+        $dataObj["token"] = jwtEncode($dataObj);
+      }
+      
+      array_push($hist, $obj);  // add object dictionary to the hist list
+      $histData[$i - 1] = $dataObj;  // write data object information to the history data
+    }
+    $out = [];
+    array_push($out, ["currentVersion" => $curVer,"history" => $hist],$histData);
+    return $out;
+  } else {
+    return false;
+  }
+}
+

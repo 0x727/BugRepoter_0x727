@@ -68,7 +68,9 @@ class AuthControllers
 	 */
 	public function json($array = [])
 	{
-		if(isset($_SERVER["HTTP_X_REQUESTED_WITH"]) && strtolower($_SERVER["HTTP_X_REQUESTED_WITH"])=="xmlhttprequest"){ 
+		if(isset($_SERVER["HTTP_X_REQUESTED_WITH"]) && strtolower($_SERVER["HTTP_X_REQUESTED_WITH"])=="xmlhttprequest"){
+			header('Content-Type: application/json');
+			ob_clean();
 			echo json_encode($array);die;
 		}else{
 			$url = isset($array['data']['url']) ? $array['data']['url'] : "/".root_filename.".php?".AuthCode("m=Login&a=index","ENCODE",$_SESSION['domain_key']);
@@ -135,9 +137,11 @@ class AuthControllers
 			'user_member'=>"./".root_filename.".php?".AuthCode("m=User&a=member","ENCODE",$_SESSION['domain_key']),
 			'user_index'=>"./".root_filename.".php?".AuthCode("m=User&a=index","ENCODE",$_SESSION['domain_key']),
 			'setup_index'=>"./".root_filename.".php?".AuthCode("m=Setup&a=index","ENCODE",$_SESSION['domain_key']),
+			'email_index'=>"./".root_filename.".php?".AuthCode("m=Setup&a=email","ENCODE",$_SESSION['domain_key']),
 			'index_about_us'=>"./".root_filename.".php?".AuthCode("m=Index&a=about_us","ENCODE",$_SESSION['domain_key']),
 			'products_classification'=>"./".root_filename.".php?".AuthCode("m=Products&a=classification","ENCODE",$_SESSION['domain_key']),
-			'products_template'=>"./".root_filename.".php?".AuthCode("m=Products&a=template","ENCODE",$_SESSION['domain_key']),
+			'products_template'=>"./".root_filename.".php?".AuthCode("m=Docx&a=template","ENCODE",$_SESSION['domain_key']),
+			'products_add_template'=>"./".root_filename.".php?".AuthCode("m=Docx&a=add_template","ENCODE",$_SESSION['domain_key']),
 			'products_loophole_classification'=>"./".root_filename.".php?".AuthCode("m=Products&a=loophole_classification","ENCODE",$_SESSION['domain_key']),
 			'log_index'=>"./".root_filename.".php?".AuthCode("m=Log&a=index","ENCODE",$_SESSION['domain_key']),
 			'login_logout'=>"./".root_filename.".php?".AuthCode("m=Login&a=logout","ENCODE",$_SESSION['domain_key']),

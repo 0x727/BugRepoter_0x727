@@ -548,7 +548,7 @@ class ProductsControllers extends AuthControllers
 			$list = $db->find_one("select * from domain_template WHERE uuid = :uuid");
 			if($list){
 				$file_path_name = basename($list['file_path']);
-				if(file_exists(ROOT_PATH."/python_web/template/".$file_path_name)){
+				if(file_exists(ROOT_PATH."/public/docx/".$_SESSION['user_info']['uuid']."/".$file_path_name)){
 					if(!is_array($id)) $this->json(['status'=>0,'msg'=>'程序异常！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
 					$sql_where = "";
 		    		foreach ($id as $k => $v) {
@@ -695,7 +695,7 @@ class ProductsControllers extends AuthControllers
 						    @file_put_contents(ROOT_PATH."/python_web/tmp/".$code.".json", json_encode($zong_data));
 						    try {
 								$sw = new stockConnector(isset($_SESSION['system_config']['socket_ip'])?$_SESSION['system_config']['socket_ip']:'127.0.0.1',"5678");
-								$aa = ["path"=>ROOT_PATH."/python_web/tmp/".$code.".json","name"=>$k."安全测试报告".date("Y-m-d"),'template_path'=>ROOT_PATH."/python_web/template/".$file_path_name];
+								$aa = ["path"=>ROOT_PATH."/python_web/tmp/".$code.".json","name"=>$k."安全测试报告".date("Y-m-d"),'template_path'=>ROOT_PATH."/public/docx/".$_SESSION['user_info']['uuid']."/".$file_path_name];
 								$con = @$sw->sendMsg(json_encode($aa));
 								$ret = @$sw->getMsg();
 								if($ret){
@@ -821,7 +821,7 @@ class ProductsControllers extends AuthControllers
 			$list = $db->find_one("select * from domain_template WHERE uuid = :uuid");
 			if($list){
 				$file_path_name = basename($list['file_path']);
-				if(file_exists(ROOT_PATH."/python_web/template/".$file_path_name)){
+				if(file_exists(ROOT_PATH."/public/docx/".$_SESSION['user_info']['uuid']."/".$file_path_name)){
 					if(!is_array($id)) $this->json(['status'=>0,'msg'=>'程序异常！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=index","ENCODE",$_SESSION['domain_key'])]]);
 			      	$sql_where = "";
 		    		foreach ($id as $k => $v) {
@@ -1005,7 +1005,7 @@ class ProductsControllers extends AuthControllers
 						    @file_put_contents(ROOT_PATH."/python_web/tmp/".$code.".json", json_encode($zong_data));
 						    try {
 								$sw = new stockConnector(isset($_SESSION['system_config']['socket_ip'])?$_SESSION['system_config']['socket_ip']:'127.0.0.1',"5678");
-								$aa = ["path"=>ROOT_PATH."/python_web/tmp/".$code.".json","name"=>$k."复测报告".date("Y-m-d"),'template_path'=>ROOT_PATH."/python_web/template/".$file_path_name];
+								$aa = ["path"=>ROOT_PATH."/python_web/tmp/".$code.".json","name"=>$k."复测报告".date("Y-m-d"),'template_path'=>ROOT_PATH."/public/docx/".$_SESSION['user_info']['uuid']."/".$file_path_name];
 								$con = @$sw->sendMsg(json_encode($aa));
 								$ret = @$sw->getMsg();
 								if($ret){
@@ -1668,136 +1668,6 @@ class ProductsControllers extends AuthControllers
 	      	}
 	    } else {
 	      	$this->json(["status"=>0,"msg"=>"错误异常！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=loophole_classification","ENCODE",$_SESSION['domain_key'])]]);
-	    }
-	}
-
-	/**
-	 * 模板列表
-	 * @access  public
-	 * @return html
-	 */
-	public function template()
-	{
-		$this->jurisdiction("非法访问模板列表");
-		$this->log_db("用户访问模板列表","7");
-		$token = md5(code().time().code());
-      	$_SESSION['token'] = $token;
-      	$this->smarty->assign('token',$token);
-    	if ($_POST) {
-			$draw = isset($_POST['draw']) ? intval($_POST['draw']) : "1";
-	      	$start = isset($_POST['start']) ? intval($_POST['start']) : "1";
-	      	$length = isset($_POST['length']) ? intval($_POST['length']) : "10";
-	      	if($length < 0 || $length > 10) $length = 10;
-
-	      	$value = isset($_POST['value']) ? $_POST['value'] : "";
-			$db = $this->Db();
-			$sql = "SELECT * FROM domain_template limit ".$start.",".$length;
-			$count = "SELECT count(*) as num FROM domain_template";
-			if($value){
-				$sql = "SELECT * FROM domain_template WHERE name LIKE :name limit ".$start.",".$length;
-			  	$db->bind("name", "%".$value."%");
-			}
-			$list = $db->query($sql);
-			if($list){
-	        	foreach ($list as $k => $v) {
-	          		$list[$k]['add_time'] = $v['add_time'] == 0 ? '-' : date("Y-m-d H:i:s",$v['add_time']);
-	          		$list[$k]['download_template_id'] = "./".root_filename.".php?".AuthCode("m=Products&a=download_template&id=".$v['uuid']."&token=".$token,"ENCODE",$_SESSION['domain_key']);
-		        	$list[$k]['del_template_id'] = "./".root_filename.".php?".AuthCode("m=Products&a=del_template&id=".$v['uuid']."&token=".$token,"ENCODE",$_SESSION['domain_key']);
-	        	}
-	      	}
-
-	      	if($value){
-				$count = "SELECT count(*) as num FROM domain_template WHERE name LIKE :name";
-			  	$db->bind("name", "%".$value."%");
-			}
-      		$classification_count = $db->find_one($count);
-      		$classification_num = isset($classification_count['num']) ? $classification_count['num'] : 0;
-	      	$this->json(["draw"=>$draw,"recordsTotal"=>$classification_num,"recordsFiltered"=>$classification_num,"data"=>$list]);
-		} else {
-	    	$this->smarty->display('products/template.tpl');
-		}
-	}
-
-	/**
-	 * 下载模板模板
-	 * @access  public
-	 * @return html
-	 */
-  	public function download_template()
-  	{
-		$this->jurisdiction("非法访问下载模板模板");
-		$this->log_db("用户访问下载模板模板","9");
-
-	    $db = $this->Db();
-	    if($_GET){
-	      	$id = isset($_GET['id']) ? intval($_GET['id']) : '';
-	      	$token = isset($_GET['token']) ? $_GET['token'] : '';
-	      	$session_token = isset($_SESSION['token']) ? $_SESSION['token'] : '';
-	      	#IF判断区域
-	      	if(empty($id)) $this->json(['status'=>0,'msg'=>'输入ID！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=template"]]);
-	      	if(empty($token)) $this->json(['status'=>0,'msg'=>'输入token！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=template"]]);
-	      	if(empty($session_token)) $this->json(['status'=>0,'msg'=>'token异常！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=template"]]);
-	      	if($token != $session_token) $this->json(['status'=>0,'msg'=>'token验证失败！',"data"=>["url"=>"/".root_filename.".php?m=Products&a=template"]]);
-	      	unset($_SESSION['token']);
-
-	      	$db = $this->Db();
-	      	$db->bind("uuid", $id);
-			$list = $db->find_one("select * from domain_template WHERE uuid = :uuid");
-			if($list){
-				$file_path = basename($list['file_path']);
-				if(file_exists(ROOT_PATH."/python_web/template/".$file_path)){
-				    $file = fopen ( ROOT_PATH."/python_web/template/".$file_path, "rb"); 
-				    Header ("Content-type: application/octet-stream"); 
-				    Header ("Accept-Ranges: bytes" );  
-				    Header ("Accept-Length: " . filesize(ROOT_PATH."/python_web/template/".$file_path));  
-				    Header ("Content-Disposition: attachment; filename=" . $file_path );    
-				    echo fread ( $file, filesize(ROOT_PATH."/python_web/template/".$file_path));    
-				    fclose($file);    
-				    exit();
-				} else {
-	      			$this->json(["status"=>0,"msg"=>"模板文件不存在！","data"=>["url"=>"/".root_filename.".php?m=Products&a=template"]]);
-				}
-			} else {
-	      		$this->json(["status"=>0,"msg"=>"模板id不存在！","data"=>["url"=>"/".root_filename.".php?m=Products&a=template"]]);
-			}
-	    } else {
-	      	$this->json(["status"=>0,"msg"=>"错误异常！","data"=>["url"=>"/".root_filename.".php?m=Products&a=template"]]);
-	    }
-	}
-
-	/**
-	 * 删除模板
-	 * @access  public
-	 * @return html
-	 */
-  	public function del_template()
-  	{
-		$this->jurisdiction("非法访问删除模板");
-		$this->log_db("用户访问删除模板","5");
-  		
-	    $db = $this->Db();
-	    if($_GET){
-	      	$id = isset($_GET['id']) ? intval($_GET['id']) : '';
-	      	$token = isset($_GET['token']) ? $_GET['token'] : '';
-	      	$session_token = isset($_SESSION['token']) ? $_SESSION['token'] : '';
-	      	#IF判断区域
-	      	if(empty($id)) $this->json(['status'=>0,'msg'=>'输入ID！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=template","ENCODE",$_SESSION['domain_key'])]]);
-	      	if(empty($token)) $this->json(['status'=>0,'msg'=>'输入token！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=template","ENCODE",$_SESSION['domain_key'])]]);
-	      	if(empty($session_token)) $this->json(['status'=>0,'msg'=>'token异常！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=template","ENCODE",$_SESSION['domain_key'])]]);
-	      	if($token != $session_token) $this->json(['status'=>0,'msg'=>'token验证失败！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=template","ENCODE",$_SESSION['domain_key'])]]);
-	      	unset($_SESSION['token']);
-
-	      	if($id == "656b721dee262140946d1120f35f84e3") $this->json(['status'=>0,'msg'=>'默认模板禁止删除！',"data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=template","ENCODE",$_SESSION['domain_key'])]]);
-
-	      	$db->bind("uuid", $id);
-	      	$info = $db->query("DELETE from domain_template where `uuid` = :uuid");
-	      	if($info){
-	        	$this->json(["status"=>1,"msg"=>"删除成功！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=template","ENCODE",$_SESSION['domain_key'])]]);
-	      	} else {
-	        	$this->json(["status"=>0,"msg"=>"删除失败！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=template","ENCODE",$_SESSION['domain_key'])]]);
-	      	}
-	    } else {
-	      	$this->json(["status"=>0,"msg"=>"错误异常！","data"=>["url"=>"/".root_filename.".php?".AuthCode("m=Products&a=template","ENCODE",$_SESSION['domain_key'])]]);
 	    }
 	}
 }

@@ -51,6 +51,42 @@
 	                                    </div>
 	                                </div>
 	                            </div>
+	                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+	                                <div class="field-wrapper">
+	                                    <div class="checkbox-container form-control">
+	                                        <div class="form-check form-check-inline">
+	                                            <input class="form-check-input" type="radio" name="config_debug" value="0" {if $config_debug == 0 } checked="checked" {/if}>
+	                                            <label class="form-check-label" for="inlineRadio1">关闭Debug模式</label>
+	                                        </div>
+	                                        <div class="form-check form-check-inline">
+	                                            <input class="form-check-input" type="radio" name="config_debug" value="1" {if $config_debug == 1 } checked="checked" {/if}>
+	                                            <label class="form-check-label" for="inlineRadio2">开启Debug模式</label>
+	                                        </div>
+	                                    </div>
+	                                    <div class="field-placeholder">Debug模式 <span class="text-danger">*</span></div>
+	                                    <div class="form-text">
+	                                        请选择Debug模式
+	                                    </div>
+	                                </div>
+	                            </div>
+	                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+	                                <div class="field-wrapper">
+	                                    <div class="checkbox-container form-control">
+	                                        <div class="form-check form-check-inline">
+	                                            <input class="form-check-input" type="radio" name="encryption_url" value="0" {if $encryption_url == 0 } checked="checked" {/if}>
+	                                            <label class="form-check-label" for="inlineRadio1">关闭URL加密</label>
+	                                        </div>
+	                                        <div class="form-check form-check-inline">
+	                                            <input class="form-check-input" type="radio" name="encryption_url" value="1" {if $encryption_url == 1 } checked="checked" {/if}>
+	                                            <label class="form-check-label" for="inlineRadio2">开启URL加密</label>
+	                                        </div>
+	                                    </div>
+	                                    <div class="field-placeholder">URL加密模式 <span class="text-danger">*</span></div>
+	                                    <div class="form-text">
+	                                        请选择URL加密模式
+	                                    </div>
+	                                </div>
+	                            </div>
 	                        </div>
 	                    </div>
 						<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
@@ -67,12 +103,16 @@
 	{
 		var legitimate_ip = $("textarea[name='legitimate_ip']").val();
 		var repair_time = $("input[name='repair_time']:checked").val();
+		var config_debug = $("input[name='config_debug']:checked").val();
+		var encryption_url = $("input[name='encryption_url']:checked").val();
 		var name = $("input[name='name']").val();
 		var token = "{$token}";
 		$.post("{$menu['setup_index']}",{
 			legitimate_ip:legitimate_ip,
 			name:name,
 			repair_time:repair_time,
+			config_debug:config_debug,
+			encryption_url:encryption_url,
 			token:token,
 		},function(data){
 			if(data.status == 0){

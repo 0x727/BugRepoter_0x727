@@ -15,6 +15,8 @@ class SetupControllers extends AuthControllers
 		if($_POST){
 	      	$data['name'] = isset($_POST['name']) ? $_POST['name'] : '';
 			$data['legitimate_ip'] = isset($_POST['legitimate_ip']) ? $_POST['legitimate_ip'] : '';
+			$data['config_debug'] = isset($_POST['config_debug']) ? $_POST['config_debug'] : '0';
+			$data['encryption_url'] = isset($_POST['encryption_url']) ? $_POST['encryption_url'] : '0';
 			$data['legitimate_type'] = isset($_POST['repair_time']) ? intval($_POST['repair_time']) : '0';
 			$token = isset($_POST['token']) ? $_POST['token'] : '';
 	      	$session_token = isset($_SESSION['token']) ? $_SESSION['token'] : '';
@@ -53,6 +55,8 @@ class SetupControllers extends AuthControllers
 	      	$this->smarty->assign('token',$token);
 			$this->smarty->assign('name',$system_config['name']);
 			$this->smarty->assign('legitimate_type',$system_config['legitimate_type']);
+			$this->smarty->assign('config_debug',$system_config['config_debug']);
+			$this->smarty->assign('encryption_url',$system_config['encryption_url']);
 			$this->smarty->assign('legitimate_ip',implode("\n", $system_config['legitimate_ip']));
 	    	$this->smarty->display('setup/index.tpl');
 	    }

@@ -3,16 +3,11 @@ header("Conten-type:text/html;charset=utf-8");
 
 include_once dirname(__FILE__)."/config/function.php";
 
-ini_set("display_errors", "Off");//关闭错误提示
-// ini_set("display_errors", "On");//打开错误提示
-// ini_set("error_reporting", E_ALL);//显示所有错误
-
 //获取文件名
 define("root_filename", pathinfo(__FILE__)['filename']);
 
 // 获取项目根目录
 define("ROOT_PATH", dirname(__FILE__));
-
 
 // 设置session参数配置  开始
 $Lifetime = 5 * 3600;//保存一天
@@ -20,7 +15,6 @@ $Lifetime = 5 * 3600;//保存一天
 $DirectoryPath = dirname(__FILE__)."/runtime/session_tmp/";//设置session保存路径
 
 is_dir($DirectoryPath) or mkdir($DirectoryPath, 0777);
-
 
 //是否开启基于url传递sessionid,这里是不开启，发现开启也要关闭掉
 if (ini_get("session.use_trans_sid") == true) {
@@ -46,8 +40,18 @@ ini_set("session.name", "BQ");//设置session名字
 session_start();
 // 设置session参数配置 结束
 
+$system_config = include_once ROOT_PATH."/config/system.php";
+
+// 设置debug模式
+$config_debug = isset($system_config["config_debug"]) ? $system_config["config_debug"] : '0';
+if($config_debug == '1'){
+	ini_set("display_errors", "On");//打开错误提示
+	ini_set("error_reporting", E_ALL);//显示所有错误
+} else {
+	ini_set("display_errors", "Off");//关闭错误提示
+}
+
 if(empty($_SESSION['domain_key'])){
-	$system_config = include_once ROOT_PATH."/config/system.php";
 	if(empty($system_config['domain_key'])){
 		$system_config['domain_key'] = md5(code().time().code());
 		$string = "<?php return [\n";
@@ -71,7 +75,11 @@ if(empty($_SESSION['domain_key'])){
 		$_SESSION['domain_content_key'] = $system_config['domain_key'];
 		$_SESSION['domain_key'] = $system_config['domain_key'].getip();
 	}
+} else {
+	$_SESSION['domain_content_key'] = $system_config['domain_key'];
+	$_SESSION['domain_key'] = $system_config['domain_key'].getip();
 }
+	
 // 开始做URL防止篡改
 if(empty($_SERVER['QUERY_STRING'])){
 	if(@file_exists(ROOT_PATH."/runtime/install.lock")){
@@ -150,6 +158,7 @@ $m_auth_array = [
 	'PublicControllers',
 	'LogControllers',
 	'SetupControllers',
+	'DocxControllers',
 ];
 
 if(!in_array($m, $m_auth_array)){

@@ -50,6 +50,13 @@ services:
       nn:
         ipv4_address: 192.168.5.103
 
+  onlyoffice:
+    build: ./onlyoffice
+    ports:
+      - "8000:80"
+    networks:
+      nn:
+        ipv4_address: 192.168.5.104
 networks:
   nn:
     driver: bridge

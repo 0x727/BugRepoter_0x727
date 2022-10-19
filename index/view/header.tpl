@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" style="overflow: hidden;">
     <head>
         <meta charset="utf-8">
@@ -79,7 +79,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade {if $url_path == "ProductsControllers"}show active{/if}" id="tab-product" role="tabpanel" aria-labelledby="product-tab">
+                        <div class="tab-pane fade {if ($url_path == "ProductsControllers" || $url_path == "DocxControllers")}show active{/if}" id="tab-product" role="tabpanel" aria-labelledby="product-tab">
                             <div class="tab-pane-header">
                                 项目
                             </div>
@@ -94,7 +94,7 @@
                                                 <a href="{$menu['products_classification']}" {if $url_path == "ProductsControllers" && ($url_path_action == "classification" || $url_path_action == "add_classification" || $url_path_action == "edit_classification")} class="current-page" {/if}>项目列表</a>
                                             </li>
                                             <li>
-                                                <a href="{$menu['products_template']}" {if $url_path == "ProductsControllers" && $url_path_action == "template"} class="current-page" {/if}>模板列表</a>
+                                                <a href="{$menu['products_template']}" {if $url_path == "DocxControllers" && ($url_path_action == "template" || $url_path_action == "add_template" || $url_path_action == "edit_template")} class="current-page" {/if}>模板列表</a>
                                             </li>
                                         {/if}
                                         <li>
