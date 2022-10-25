@@ -122,6 +122,9 @@
     <script src="./public/layer/layer.js"></script>
     <script>
         var install_data = []
+        var success = 0;
+        var data_count = 0;
+        var int = null;
         function next_step_one()
         {
             var scrollTop = $("#one_content").scrollTop();
@@ -174,6 +177,7 @@
                         }, function(){
                             $("#three").attr("style","display:none;");
                             $("#four").attr("style","display:;");
+                            data_count = data.data.length
                             install_sql(data.data)
                         });
                     } else {
@@ -188,6 +192,7 @@
 
         function install_sql(data)
         {
+            int=self.setInterval("clock()",2000);
             for (var i = 0; i < data.length; i++) {
                 $.post("{$menu['install_index']}",{
                     md5:data[i],
@@ -195,15 +200,23 @@
                 },function(data){
                     if(data.status == '1'){
                         i++
+                        success++
                         $("#four_content").html($("#four_content").html()+"<div style=\"line-height: 25px;\">"+data.msg+"</div>")
                         $("#four_content")[0].scrollTop = $("#four_content")[0].scrollHeight
                     }
                 },"json");
             }
-            $("#step_four").attr("disabled",false);
-            $.post("{$menu['install_index']}",{
-                type:'yes',
-            });
+        }
+
+        function clock()
+        {
+            if(success == data_count){
+                $("#step_four").attr("disabled",false);
+                $.post("{$menu['install_index']}",{
+                    type:'yes',
+                });
+                window.clearInterval(int)
+            }
         }
 
         function next_step_four()
