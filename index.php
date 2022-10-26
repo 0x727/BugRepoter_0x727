@@ -51,6 +51,8 @@ if($config_debug == '1'){
 	ini_set("display_errors", "Off");//关闭错误提示
 }
 
+$GLOBALS["encryption_url"] = isset($system_config["encryption_url"]) ? $system_config["encryption_url"] : '0';
+
 if(empty($_SESSION['domain_key'])){
 	if(empty($system_config['domain_key'])){
 		$system_config['domain_key'] = md5(code().time().code());

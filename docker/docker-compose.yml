@@ -16,7 +16,7 @@ services:
   php:
     build: ./php
     ports:
-      - "9000:9000"
+      - "127.0.0.1:9000:9000"
     links:
       - "mysql"
       - "python"
@@ -29,7 +29,7 @@ services:
   mysql:
     build: ./mysql
     ports:
-      - "3306:3306"
+      - "127.0.0.1:3306:3306"
     volumes:
       - ./mysql/data/:/var/lib/mysql/
     environment:
@@ -41,7 +41,7 @@ services:
   python:
     build: ./python
     ports:
-      - "5678:5678"
+      - "127.0.0.1:5678:5678"
     volumes:
       - ../public:/var/www/public
       - ../python_web:/var/www/python_web
