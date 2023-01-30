@@ -33,9 +33,9 @@ elif grep -Eqi "Ubuntu" /etc/issue || grep -Eq "Ubuntu" /etc/*-release; then
 fi
 sleep 5
 rm -rf $(dirname $(pwd))"/html"
-docker_onlyoffice=`docker ps -a|grep docker_onlyoffice|awk '{print $1}'`
-if [ -n "$docker_onlyoffice" ]; then
-    jwt_code=`docker exec ${docker_onlyoffice} /var/www/onlyoffice/documentserver/npm/json -f /etc/onlyoffice/documentserver/local.json 'services.CoAuthoring.secret.session.string'`
-	cur_dir=$(dirname $(pwd))"/example/config.php"
-	sed -i "s/'DOC_SERV_JWT_SECRET'] = \"\"/'DOC_SERV_JWT_SECRET'] = \"${jwt_code}\"/g" ${cur_dir}
-fi
+#docker_onlyoffice=`docker ps -a|grep docker_onlyoffice|awk '{print $1}'`
+#if [ -n "$docker_onlyoffice" ]; then
+#    jwt_code=`docker exec ${docker_onlyoffice} /var/www/onlyoffice/documentserver/npm/json -f /etc/onlyoffice/documentserver/local.json 'services.CoAuthoring.secret.session.string'`
+#	cur_dir=$(dirname $(pwd))"/example/config.php"
+#	sed -i "s/'DOC_SERV_JWT_SECRET'] = \"\"/'DOC_SERV_JWT_SECRET'] = \"${jwt_code}\"/g" ${cur_dir}
+#fi

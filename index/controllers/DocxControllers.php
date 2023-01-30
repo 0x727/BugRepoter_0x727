@@ -248,7 +248,7 @@ class DocxControllers extends AuthControllers
 	            "fileType" => $filetype,
 	            "key" => $docKey,
 	            "info" => [
-	                "owner" => "Me",
+	                "owner" => $_SESSION['user_info']['username'],
 	                "uploaded" => date('d.m.y'),
 	                "favorite" => NULL
 	            ],

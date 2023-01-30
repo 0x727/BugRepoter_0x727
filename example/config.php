@@ -50,7 +50,7 @@ if(strstr($_SERVER['HTTP_USER_AGENT'], "Node.js") || $GLOBALS['docx_template'] =
     if(empty($get_id)){
         // 把url转换成数组
         parse_str($_SERVER["QUERY_STRING"],$_GET);
-        $get_id = isset($_GET['1f2018903']) ? $_GET['1f2018903'] : '';
+        $get_id = isset($_GET['1f2018903']) ? $_GET['1f2018903'] : isset($_REQUEST['1f2018903']) ? $_REQUEST['1f2018903'] : '';
         if(empty($get_id)){
             die("错误异常！");
         }
