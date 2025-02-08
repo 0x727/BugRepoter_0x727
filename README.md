@@ -255,6 +255,8 @@ V1.14 docker全局访问改成私有访问。
 
 V1.15 解决onlyoffice打开文档错误。
 
+V1.16 解决onlyoffice打开白屏问题。
+
 ## 0x08 待添加/优化功能
 
 V1.1 增加github对比并自动更新。
