@@ -54,6 +54,8 @@ services:
     build: ./onlyoffice
     ports:
       - "8000:80"
+    environment:
+      - JWT_ENABLED=false
     networks:
       nn:
         ipv4_address: 192.168.5.104
