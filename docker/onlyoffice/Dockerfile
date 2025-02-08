@@ -1,1 +1,1 @@
-FROM onlyoffice/documentserver:7.0
+FROM 186184848/documentserver:8.1.3
