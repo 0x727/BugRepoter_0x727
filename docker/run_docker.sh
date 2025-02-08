@@ -13,7 +13,7 @@ if grep -Eqii "CentOS" /etc/issue || grep -Eq "CentOS" /etc/*-release; then
 			chmod +x /usr/bin/docker-compose
 			ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 			yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-			yum install docker-ce-17.12.0.ce -y
+			yum install -y docker-ce docker-ce-cli containerd.io -y
 			systemctl start docker
 			docker-compose up --build -d
 	    fi
@@ -24,15 +24,17 @@ if grep -Eqii "CentOS" /etc/issue || grep -Eq "CentOS" /etc/*-release; then
 		chmod +x /usr/local/bin/docker-compose
 		chmod +x /usr/bin/docker-compose
 		yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-		yum install docker-ce-17.12.0.ce -y
+		yum install -y docker-ce docker-ce-17.12.0.ce docker-ce-cli containerd.io -y
 		systemctl start docker
-		docker-compose up --build -d && rm -rf ../html 
+		docker-compose up --build -d
 	fi
+	sudo chmod -R 777 ../runtime
 elif grep -Eqi "Ubuntu" /etc/issue || grep -Eq "Ubuntu" /etc/*-release; then
     apt-get install -y docker docker.io docker-compose && docker-compose up --build -d
 fi
 sleep 5
 rm -rf $(dirname $(pwd))"/html"
+sudo chmod -R 777 $(dirname $(pwd))"/runtime"
 #docker_onlyoffice=`docker ps -a|grep docker_onlyoffice|awk '{print $1}'`
 #if [ -n "$docker_onlyoffice" ]; then
 #    jwt_code=`docker exec ${docker_onlyoffice} /var/www/onlyoffice/documentserver/npm/json -f /etc/onlyoffice/documentserver/local.json 'services.CoAuthoring.secret.session.string'`
